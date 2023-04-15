@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Controller.Scripts
@@ -12,6 +13,7 @@ namespace Controller.Scripts
         [SerializeField] private float angularDrag;
 
         private Rigidbody _tankRigidbody;
+        private TrackController _trackController;
 
         private void Start()
         {
@@ -19,6 +21,7 @@ namespace Controller.Scripts
             if (_tankRigidbody != null) return;
             
             _tankRigidbody = tank.AddComponent<Rigidbody>();
+            
             SetUpRigidBody();
         }
     
