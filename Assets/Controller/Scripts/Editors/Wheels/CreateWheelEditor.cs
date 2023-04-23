@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Controller.Scripts.Managers.Wheels;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Controller.Scripts.Editors.Wheels
@@ -10,80 +11,93 @@ namespace Controller.Scripts.Editors.Wheels
     [CanEditMultipleObjects]
     public class CreateWheelEditor: Editor
     {
-        private SerializedProperty _wheelMassProp;
-        private SerializedProperty _wheelColliderRadiusProp;
-        private SerializedProperty _wheelColliderMaterialProp;
-        private SerializedProperty _wheelMeshProp;
-        private SerializedProperty _wheelMaterialProp;
+        protected SerializedProperty ShowLabels;
+        protected SerializedProperty WheelMassProp;
+        protected SerializedProperty WheelColliderRadiusProp;
+        protected SerializedProperty WheelColliderMaterialProp;
+        protected SerializedProperty WheelMeshProp;
+        protected SerializedProperty WheelMaterialProp;
         
-        private SerializedProperty _wheelDistanceProp;
-        private SerializedProperty _wheelCountProp;
-        private SerializedProperty _wheelSpacingProp;
+        protected SerializedProperty WheelDistanceProp;
+        protected SerializedProperty WheelCountProp;
+        protected SerializedProperty WheelSpacingProp;
         
-        private Transform _transform;
-        private bool _created;
+        protected Transform Transform;
+        protected bool Created;
 
         private void OnEnable()
         {
-            _wheelMassProp = serializedObject.FindProperty("wheelMass");
-            _wheelColliderRadiusProp = serializedObject.FindProperty("wheelColliderRadius");
-            _wheelColliderMaterialProp = serializedObject.FindProperty("wheelColliderMaterial");
-            _wheelMeshProp = serializedObject.FindProperty("wheelMesh");
-            _wheelMaterialProp = serializedObject.FindProperty("wheelMaterial");
+            ShowLabels = serializedObject.FindProperty("showLabels");
+            WheelMassProp = serializedObject.FindProperty("wheelMass");
+            WheelColliderRadiusProp = serializedObject.FindProperty("wheelColliderRadius");
+            WheelColliderMaterialProp = serializedObject.FindProperty("wheelColliderMaterial");
+            WheelMeshProp = serializedObject.FindProperty("wheelMesh");
+            WheelMaterialProp = serializedObject.FindProperty("wheelMaterial");
             
-            _wheelDistanceProp = serializedObject.FindProperty("wheelDistance");
-            _wheelCountProp = serializedObject.FindProperty("wheelCount");
-            _wheelSpacingProp = serializedObject.FindProperty("wheelSpacing");
+            WheelDistanceProp = serializedObject.FindProperty("wheelDistance");
+            WheelCountProp = serializedObject.FindProperty("wheelCount");
+            WheelSpacingProp = serializedObject.FindProperty("wheelSpacing");
 
-            _transform = ((CreateWheel) target).gameObject.transform;
-            _created = true;
+            Transform = ((CreateWheel) target).gameObject.transform;
+            Created = true;
             
             InitWheelManager();
             
         }
+
+        private void ShowLabelGUI()
+        {
+            EditorGUILayout.PropertyField(ShowLabels);
+        }
         
         private void WheelMassGUI()
         {
-            EditorGUILayout.PropertyField(_wheelMassProp);
+            EditorGUILayout.PropertyField(WheelMassProp);
         }
         
         private void WheelColliderRadiusGUI()
         {
-            EditorGUILayout.PropertyField(_wheelColliderRadiusProp);
+            EditorGUILayout.Slider(WheelColliderRadiusProp, 0.1f, 10f, "Wheel Collider Radius");
         }
         
         private void WheelColliderMaterialGUI()
         {
-            EditorGUILayout.PropertyField(_wheelColliderMaterialProp);
+            EditorGUILayout.PropertyField(WheelColliderMaterialProp);
         }
         
         private void WheelMeshGUI()
         {
-            EditorGUILayout.PropertyField(_wheelMeshProp);
+            EditorGUILayout.PropertyField(WheelMeshProp);
         }
         
         private void WheelMaterialGUI()
         {
-            EditorGUILayout.PropertyField(_wheelMaterialProp);
+            EditorGUILayout.PropertyField(WheelMaterialProp);
         }
         
         private void WheelDistanceGUI()
         {
-            EditorGUILayout.PropertyField(_wheelDistanceProp);
+            EditorGUILayout.Slider(WheelDistanceProp, 0.1f, 20f, "Wheel Distance");
         }
         
         private void WheelCountGUI()
         {
-            EditorGUILayout.PropertyField(_wheelCountProp);
+            EditorGUILayout.PropertyField(WheelCountProp);
         }
         
         private void WheelSpacingGUI()
         {
-            EditorGUILayout.PropertyField(_wheelSpacingProp);
+            EditorGUILayout.Slider(WheelSpacingProp, 0.1f, 20f, "Wheel Spacing");
+        }
+        
+        private void DenyAccessGUI()
+        {
+            EditorGUILayout.HelpBox("You can only edit this prefab in a prefab stage", MessageType.Info);
         }
 
-        private void SetUpGUI()
+        protected virtual void SetUpGUI()
         {
+            ShowLabelGUI();
             WheelMassGUI();
             WheelColliderRadiusGUI();
             WheelColliderMaterialGUI();
@@ -98,90 +112,124 @@ namespace Controller.Scripts.Editors.Wheels
         {
             serializedObject.Update ();
             
+            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
+            {
+                DenyAccessGUI();
+                return;
+            }
+
             SetUpGUI();
 
-            if (GUI.changed || Event.current.commandName == "UndoRedoPerformed" || _created)
+            if (GUI.changed || Event.current.commandName == "UndoRedoPerformed" || Created)
             {
                 BulkDestroyAndCreateWheels();
-                _created = false;
+                Created = false;
             }
                 
             
             serializedObject.ApplyModifiedProperties ();
         }
         
-        private void BulkDestroyAndCreateWheels()
+        protected virtual void BulkDestroyAndCreateWheels()
         {
             BulkDestroyWheels();
             
-            for (int i = 0; i < _wheelCountProp.intValue; i++)
+            for (int i = 0; i < WheelCountProp.intValue; i++)
             {
                 CreateWheel(true, i);
                 CreateWheel(false, i);
             }
         }
 
-        private void BulkDestroyWheels()
+        protected virtual void BulkDestroyWheels()
         {
             // However missed adding the ConcurrentException whenever destroying
             // children using DestroyImmediate in a foreach loop should commit sudoku
-            var childCount = _transform.childCount;
+            var childCount = Transform.childCount;
             for (var i = 0; i < childCount; i++)
-                DestroyImmediate (_transform.GetChild(0).gameObject);
+                DestroyImmediate (Transform.GetChild(0).gameObject);
         }
 
-        private void CreateWheel(bool left, int i)
+        protected virtual void CreateWheel(bool left, int i)
         {
             string wheelName = left ? "Left Wheel " : "Right Wheel ";
-            float wheelDistance = left ? _wheelDistanceProp.floatValue : -_wheelDistanceProp.floatValue;
+            float wheelDistance = left ? WheelDistanceProp.floatValue : -WheelDistanceProp.floatValue;
             var wheel = new GameObject(wheelName + i)
             {
                 transform =
                 {
-                    parent = _transform,
-                    localPosition = new Vector3(i * _wheelSpacingProp.floatValue, 0, wheelDistance)
+                    parent = Transform,
+                    localPosition = new Vector3(i * WheelSpacingProp.floatValue, 0, wheelDistance)
                 },
             };
             
+            ShowWheelLabel(wheel);
+            InitComponents(wheel);
+        }
+        
+        protected virtual void ShowWheelLabel(GameObject wheel)
+        {
+            if (!ShowLabels.boolValue) return;
+            
             var iconContent = EditorGUIUtility.IconContent("sv_label_1");
             EditorGUIUtility.SetIconForObject(wheel, (Texture2D) iconContent.image);
-            
-            InitCollider(wheel);
-            
-            if(_wheelMeshProp.objectReferenceValue != null && _wheelMaterialProp.objectReferenceValue != null)
-                InitMesh(wheel);
-            
-            InitWheelScript(wheel);
         }
 
-        private void InitCollider(GameObject wheel)
+        protected virtual void InitComponents(GameObject wheel)
+        {
+            InitCollider(wheel);
+            InitWheelScript(wheel);
+            InitRigidbody(wheel);
+            InitHingeJoint(wheel);
+            
+            if(WheelMeshProp.objectReferenceValue != null && WheelMaterialProp.objectReferenceValue != null)
+                InitMesh(wheel);
+            
+        }
+
+        protected virtual void InitCollider(GameObject wheel)
         {
             var wheelCollider = wheel.AddComponent<SphereCollider>();
-            wheelCollider.radius = _wheelColliderRadiusProp.floatValue;
+            wheelCollider.radius = WheelColliderRadiusProp.floatValue;
             wheelCollider.center = Vector3.zero;
-            wheelCollider.material = _wheelColliderMaterialProp.objectReferenceValue as PhysicMaterial;
+            wheelCollider.material = WheelColliderMaterialProp.objectReferenceValue as PhysicMaterial;
         }
         
-        private void InitMesh(GameObject wheel)
+        protected virtual void InitMesh(GameObject wheel)
         {
             MeshFilter wheelMesh = wheel.AddComponent<MeshFilter>();
-            wheelMesh.mesh = _wheelMeshProp.objectReferenceValue as Mesh;
+            wheelMesh.mesh = WheelMeshProp.objectReferenceValue as Mesh;
             MeshRenderer wheelRenderer = wheel.AddComponent<MeshRenderer>();
-            wheelRenderer.material = _wheelMaterialProp.objectReferenceValue as Material;
+            wheelRenderer.material = WheelMaterialProp.objectReferenceValue as Material;
         }
         
-        private void InitWheelScript(GameObject wheel)
+        protected virtual void InitRigidbody(GameObject wheel)
+        {
+            Rigidbody wheelRigidbody = wheel.AddComponent<Rigidbody>();
+            wheelRigidbody.mass = WheelMassProp.floatValue;
+            wheelRigidbody.useGravity = true;
+        }
+
+        protected virtual void InitHingeJoint(GameObject wheel)
+        {
+            HingeJoint wheelHingeJoint = wheel.AddComponent<HingeJoint>();
+            wheelHingeJoint.anchor = Vector3.zero;
+            wheelHingeJoint.axis = Vector3.up;
+            wheelHingeJoint.connectedBody = Transform.parent.GetComponent<Rigidbody>();
+        }
+        
+        protected virtual void InitWheelScript(GameObject wheel)
         {
             Wheel wheelController = wheel.AddComponent<Wheel>();
             
-            wheelController.WheelManager = _transform.parent.GetComponent<WheelManager>();
+            wheelController.WheelManager = Transform.parent.GetComponent<WheelManager>();
         }
         
-        private void InitWheelManager()
+        protected virtual void InitWheelManager()
         {
-            WheelManager wheelManager = _transform.GetComponent<WheelManager>();
+            WheelManager wheelManager = Transform.GetComponent<WheelManager>();
             if (wheelManager == null)
-                _transform.gameObject.AddComponent<WheelManager>();
+                Transform.gameObject.AddComponent<WheelManager>();
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Controller.Scripts.Editors.Wheels
 {
     public class CreateWheel: MonoBehaviour
     {
+        public bool showLabels = false;
         public float wheelMass = 30f;
         public float wheelColliderRadius = 0.3f;
         public PhysicMaterial wheelColliderMaterial = null;
