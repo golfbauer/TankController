@@ -4,6 +4,9 @@ namespace Controller.Scripts.Managers.Wheels
 {
     public class WheelManager: MonoBehaviour
     {
-        public float RotationSpeed;
+        public float LeftRotationSpeed;
+        public float RightRotationSpeed;
+        public Vector3 LeftRotationDirection;
+        public Vector3 RightRotationDirection;
     }
 }

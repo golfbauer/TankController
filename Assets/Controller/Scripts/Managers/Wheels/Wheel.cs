@@ -6,12 +6,32 @@ namespace Controller.Scripts.Managers.Wheels
     public class Wheel: MonoBehaviour
     {
         public WheelManager WheelManager { get; set; }
-        public bool Left { get; set; }
+        
+        public bool IsLeftWheel;
+        
+        public void Start()
+        {
+            if (WheelManager == null)
+                WheelManager = transform.parent.GetComponent<WheelManager>();
+        }
         
         private void FixedUpdate()
         {
-            Vector3 direction = Left ? Vector3.forward : Vector3.back;
-            transform.Rotate(direction, WheelManager.RotationSpeed * Time.deltaTime);
+            float rotationSpeed;
+            Vector3 rotationDirection;
+            
+            if (IsLeftWheel)
+            {
+                rotationSpeed = WheelManager.LeftRotationSpeed;
+                rotationDirection = WheelManager.LeftRotationDirection;
+            }
+            else
+            {
+                rotationSpeed = WheelManager.RightRotationSpeed;
+                rotationDirection = WheelManager.RightRotationDirection;
+            }
+            
+            transform.Rotate(rotationDirection, rotationSpeed * Time.fixedDeltaTime, Space.Self);
         }
     }
 }
