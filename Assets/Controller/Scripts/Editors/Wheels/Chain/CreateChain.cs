@@ -6,6 +6,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
     {
         // General Settings
         public bool showLabels = false;
+        public bool showConnections = false;
         
         // Left Chain Component
         public Mesh leftMesh;
@@ -30,5 +31,10 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         
         // Chain Back Curve
         public int chainBackCurveCount;
+        
+        // Box Collider
+        public Vector3 boxColliderCenter;
+        public Vector3 boxColliderSize;
+        public PhysicMaterial boxColliderMaterial;
     }
 }

@@ -71,7 +71,7 @@ namespace Controller.Scripts.Editors.Wheels
             renderer.material = materialProp.objectReferenceValue as Material;
         }
         
-        protected void AttachRigidbody(GameObject gameObject, SerializedProperty massProp)
+        protected virtual void AttachRigidbody(GameObject gameObject, SerializedProperty massProp)
         {
             Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
             wheelRigidbody.mass = massProp.floatValue;
