@@ -267,6 +267,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         {
             Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
             wheelRigidbody.mass = massProp.floatValue;
+
+            // wheelRigidbody.constraints = RigidbodyConstraints.FreezePositionZ;
         }
 
         private void AttachHingeJoints(List<GameObject> chainLinks)
