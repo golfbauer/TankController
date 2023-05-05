@@ -5,10 +5,23 @@ namespace Controller.Scripts.Test
 {
     public class Wheels: MonoBehaviour
     {
-        [SerializeField] private float rotationSpeed;
+        [SerializeField] private float maxAngularVelocity;
+        [SerializeField] private float addTorque;
+        [SerializeField] private float drag;
+        [SerializeField] private Vector3 torqueDirection;
+        
+        private Rigidbody _rigidbody;
+
+        private void Awake()
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
+
         private void FixedUpdate()
         {
-            transform.Rotate(Vector3.back, rotationSpeed, Space.Self);
+            _rigidbody.maxAngularVelocity = maxAngularVelocity;
+            _rigidbody.AddRelativeTorque(torqueDirection * addTorque);
+            _rigidbody.angularDrag = drag;
         }
     }
 }

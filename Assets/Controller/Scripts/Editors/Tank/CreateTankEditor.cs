@@ -16,6 +16,9 @@ namespace Controller.Scripts.Editors.Tank
         
         private SerializedProperty _createComponent;
         private SerializedProperty _hullMass;
+
+        private SerializedProperty _hullMesh;
+        private SerializedProperty _hullMaterial;
         
         private Transform _transform;
         

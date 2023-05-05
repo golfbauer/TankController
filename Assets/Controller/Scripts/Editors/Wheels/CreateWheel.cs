@@ -9,16 +9,25 @@ namespace Controller.Scripts.Editors.Wheels
         public bool showLabels = false;
         
         // Wheel
-        // Settings
-        public Vector3 wheelEulerRotation = Vector3.zero;
+        // Right Settings
+        public Vector3 rightWheelRotation = Vector3.zero;
+        public Vector3 rightTorqueDirection = Vector3.right;
+        
+        // Left Settings
+        public Vector3 leftWheelRotation = Vector3.zero;
+        public Vector3 leftTorqueDirection = Vector3.right;
+
+        // Left Mesh settings
+        public Mesh leftWheelMesh = null;
+        public Material leftWheelMaterial = null;
+        
+        // Right Mesh settings
+        public Mesh rightWheelMesh = null;
+        public Material rightWheelMaterial = null;
         
         // Collider settings
         public float wheelColliderRadius = 0.3f;
         public PhysicMaterial wheelColliderMaterial = null;
-
-        // Mesh settings
-        public Mesh wheelMesh = null;
-        public Material wheelMaterial = null;
         
         // Relation
         public int wheelCount = 0;

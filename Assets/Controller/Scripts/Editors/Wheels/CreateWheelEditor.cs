@@ -14,7 +14,7 @@ namespace Controller.Scripts.Editors.Wheels
         public override void OnInspectorGUI()
         {
             serializedObject.Update ();
-            
+
             if (PrefabStageUtility.GetCurrentPrefabStage() == null)
             {
                 GUIUtils.DenyAccessGUI();
@@ -77,12 +77,31 @@ namespace Controller.Scripts.Editors.Wheels
             wheelRigidbody.mass = massProp.floatValue;
         }
         
-        protected void AttachWheelScript(GameObject wheel, bool isLeft)
+        protected void AttachFixedRigidbody(GameObject gameObject, SerializedProperty massProp)
+        {
+            Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
+            wheelRigidbody.mass = massProp.floatValue;
+            wheelRigidbody.constraints = RigidbodyConstraints.FreezePosition;
+        }
+        
+        protected void AttachWheelHingeJoint(GameObject wheel, Transform connectedTo, Vector3 axis)
+        {
+            HingeJoint wheelHingeJoint = wheel.AddComponent<HingeJoint>();
+            wheelHingeJoint.anchor = Vector3.zero;
+            wheelHingeJoint.axis = axis;
+            wheelHingeJoint.useSpring = false;
+            wheelHingeJoint.useMotor = false;
+            wheelHingeJoint.useLimits = false;
+            wheelHingeJoint.connectedBody = connectedTo.GetComponent<Rigidbody>();
+        }
+
+        protected void AttachWheelScript(GameObject wheel, bool isLeft, Vector3 torqueDirection)
         {
             Wheel wheelController = wheel.AddComponent<Wheel>();
             
             wheelController.WheelManager = Transform.parent.GetComponent<WheelManager>();
-            wheelController.IsLeftWheel = isLeft;
+            wheelController.isLeftWheel = isLeft;
+            wheelController.torqueDirection = torqueDirection;
         }
         
         protected void AttachWheelManager()
@@ -96,6 +115,11 @@ namespace Controller.Scripts.Editors.Wheels
         {
             if(GUILayout.Button(WheelUtilsMessages.UpdateAll))
                 UpdateAll = true;
+        }
+
+        protected void OnSceneGUI()
+        {
+            // Perhaps draw a circle to show the torque directon with the collider radius
         }
     }
 }

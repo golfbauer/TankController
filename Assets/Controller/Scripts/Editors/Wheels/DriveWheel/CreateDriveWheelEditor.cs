@@ -12,13 +12,20 @@ namespace Controller.Scripts.Editors.Wheels.DriveWheel
     {
         private SerializedProperty _showLabels;
 
-        private SerializedProperty _wheelEulerRotationProp;
+        private SerializedProperty _rightWheelRotationProp;
+        private SerializedProperty _leftTorqueDirectionProp;
+        
+        private SerializedProperty _leftWheelRotationProp;
+        private SerializedProperty _rightTorqueDirectionProp;
 
         private SerializedProperty _wheelColliderRadiusProp;
         private SerializedProperty _wheelColliderMaterialProp;
 
-        private SerializedProperty _wheelMeshProp;
-        private SerializedProperty _wheelMaterialProp;
+        private SerializedProperty _rightWheelMeshProp;
+        private SerializedProperty _rightWheelMaterialProp;
+        
+        private SerializedProperty _leftWheelMeshProp;
+        private SerializedProperty _leftWheelMaterialProp;
 
         private SerializedProperty _wheelMassProp;
 
@@ -29,13 +36,20 @@ namespace Controller.Scripts.Editors.Wheels.DriveWheel
         {
             _showLabels = serializedObject.FindProperty("showLabels");
 
-            _wheelEulerRotationProp = serializedObject.FindProperty("wheelEulerRotation");
+            _rightWheelRotationProp = serializedObject.FindProperty("rightWheelRotation");
+            _rightTorqueDirectionProp = serializedObject.FindProperty("rightTorqueDirection");
+            
+            _leftWheelRotationProp = serializedObject.FindProperty("leftWheelRotation");
+            _leftTorqueDirectionProp = serializedObject.FindProperty("leftTorqueDirection");
 
             _wheelColliderRadiusProp = serializedObject.FindProperty("wheelColliderRadius");
             _wheelColliderMaterialProp = serializedObject.FindProperty("wheelColliderMaterial");
 
-            _wheelMeshProp = serializedObject.FindProperty("wheelMesh");
-            _wheelMaterialProp = serializedObject.FindProperty("wheelMaterial");
+            _rightWheelMeshProp = serializedObject.FindProperty("rightWheelMesh");
+            _rightWheelMaterialProp = serializedObject.FindProperty("rightWheelMaterial");
+            
+            _leftWheelMeshProp = serializedObject.FindProperty("leftWheelMesh");
+            _leftWheelMaterialProp = serializedObject.FindProperty("leftWheelMaterial");
 
             _wheelMassProp = serializedObject.FindProperty("wheelMass");
 
@@ -52,13 +66,24 @@ namespace Controller.Scripts.Editors.Wheels.DriveWheel
             GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralSettings);
             GUIUtils.PropFieldGUI(_showLabels);
             
-            GUIUtils.HeaderGUI(WheelUtilsMessages.WheelSettings);
-            GUIUtils.PropFieldGUI(_wheelEulerRotationProp, WheelUtilsMessages.EulerRotation);
+            GUIUtils.HeaderGUI(WheelUtilsMessages.RightWheelSettings);
+            GUIUtils.PropFieldGUI(_rightWheelRotationProp, WheelUtilsMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_rightTorqueDirectionProp, WheelUtilsMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_rightWheelMeshProp, WheelUtilsMessages.Mesh);
+            GUIUtils.PropFieldGUI(_rightWheelMaterialProp, WheelUtilsMessages.Material);
+            
+            GUIUtils.HeaderGUI(WheelUtilsMessages.LeftWheelSettings);
+            GUIUtils.PropFieldGUI(_leftWheelRotationProp, WheelUtilsMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_leftTorqueDirectionProp, WheelUtilsMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_leftWheelMeshProp, WheelUtilsMessages.Mesh);
+            GUIUtils.PropFieldGUI(_leftWheelMaterialProp, WheelUtilsMessages.Material);
+            
+            GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralWheelSettings);
             GUIUtils.SliderGUI(_wheelColliderRadiusProp, 0.1f, 5f, WheelUtilsMessages.ColliderRadius);
             GUIUtils.PropFieldGUI(_wheelColliderMaterialProp, WheelUtilsMessages.ColliderMaterial);
-            GUIUtils.PropFieldGUI(_wheelMeshProp, WheelUtilsMessages.Mesh);
-            GUIUtils.PropFieldGUI(_wheelMaterialProp, WheelUtilsMessages.Material);
+            
             GUIUtils.PropFieldGUI(_wheelMassProp, WheelUtilsMessages.Mass);
+            
             GUIUtils.SliderGUI(_wheelDistanceProp, 0.1f, 5f, WheelUtilsMessages.Distance);
             GUIUtils.SliderGUI(_wheelSpacingProp, 0.1f, 5f, WheelUtilsMessages.Spacing);
 
@@ -83,14 +108,14 @@ namespace Controller.Scripts.Editors.Wheels.DriveWheel
         {
             string wheelName = isLeft ? WheelUtilsMessages.LeftWheel : WheelUtilsMessages.RightWheel;
             float wheelDistance = isLeft ? _wheelDistanceProp.floatValue : -_wheelDistanceProp.floatValue;
-            Vector3 eulerRotation = _wheelEulerRotationProp.vector3Value;
-
+            Vector3 eulerRotation = isLeft ? _leftWheelRotationProp.vector3Value : _rightWheelRotationProp.vector3Value;
+                
             var wheel = new GameObject(wheelName)
             {
                 transform =
                 {
                     parent = Transform,
-                    localPosition = new Vector3(_wheelSpacingProp.floatValue, 0, wheelDistance),
+                    localPosition = new Vector3(wheelDistance, 0, _wheelSpacingProp.floatValue),
                     localRotation = Quaternion.Euler(eulerRotation)
                 },
             };
@@ -101,23 +126,13 @@ namespace Controller.Scripts.Editors.Wheels.DriveWheel
 
         private void AttachComponents(GameObject wheel, bool isLeft)
         {
+            Vector3 torqueDirection = isLeft ? _leftTorqueDirectionProp.vector3Value : _rightTorqueDirectionProp.vector3Value;
+            
             AttachCollider(wheel, _wheelColliderRadiusProp, _wheelColliderMaterialProp);
-            AttachWheelScript(wheel, isLeft);
-            AttachRigidbody(wheel, _wheelMassProp);
-            AttachWheelHingeJoint(wheel);
-            AttachMesh(wheel, _wheelMeshProp, _wheelMaterialProp);
-        }
-
-
-        private void AttachWheelHingeJoint(GameObject wheel)
-        {
-            HingeJoint wheelHingeJoint = wheel.AddComponent<HingeJoint>();
-            wheelHingeJoint.anchor = Vector3.zero;
-            wheelHingeJoint.axis = Vector3.up;
-            wheelHingeJoint.useSpring = false;
-            wheelHingeJoint.useMotor = false;
-            wheelHingeJoint.useLimits = false;
-            wheelHingeJoint.connectedBody = Transform.parent.GetComponent<Rigidbody>();
+            AttachWheelScript(wheel, isLeft, torqueDirection);
+            AttachFixedRigidbody(wheel, _wheelMassProp);
+            AttachWheelHingeJoint(wheel, Transform.parent, torqueDirection);
+            AttachMesh(wheel, isLeft ? _leftWheelMeshProp : _rightWheelMeshProp, isLeft ? _leftWheelMaterialProp : _rightWheelMaterialProp);
         }
     }
 }

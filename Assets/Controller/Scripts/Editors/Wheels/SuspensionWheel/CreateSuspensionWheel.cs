@@ -16,12 +16,19 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         public float wheelMass = 1f;
 
         // Suspension
-        // Settings
-        public Vector3 suspensionEulerRotation = Vector3.zero;
+        // Left Settings
+        public Vector3 leftSuspensionRotation = Vector3.zero;
         
-        // Mesh settings
-        public Mesh suspensionMesh = null;
-        public Material suspensionMaterial = null;
+        // Right Settings
+        public Vector3 rightSuspensionRotation = Vector3.right;
+        
+        // Right Mesh settings
+        public Mesh rightSuspensionMesh = null;
+        public Material rightSuspensionMaterial = null;
+        
+        // Left Mesh settings
+        public Mesh leftSuspensionMesh = null;
+        public Material leftSuspensionMaterial = null;
         
         // Rigidbody settings
         public float suspensionMass = 1f;

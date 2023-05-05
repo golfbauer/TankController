@@ -7,8 +7,12 @@ namespace Controller.Scripts.Editors.Wheels
     {
         public const string Settings = "Settings";
         public const string GeneralSettings = "General Settings";
-        public const string WheelSettings = "Wheel Settings";
+        public const string GeneralWheelSettings = "General Wheel Settings";
+        public const string RightWheelSettings = "Right Wheel Settings";
+        public const string LeftWheelSettings = "Left Wheel Settings";
         public const string SuspensionSettings = "Suspension Settings";
+        public const string RightSuspensionSettings = "Right Suspension Settings";
+        public const string LeftSuspensionSettings = "Left Suspension Settings";
         
         public const string Spacing = "Spacing";
         public const string Distance = "Distance";
@@ -23,9 +27,10 @@ namespace Controller.Scripts.Editors.Wheels
         public const string SpringMinAngle = "Spring Min Angle";
         
         public const string EulerRotation = "Euler Rotation";
+        public const string TorqueDirection = "Torque Direction";
 
         public const string Mass = "Mass";
-        
+
         public const string Mesh = "Mesh";
         public const string Material = "Material";
 

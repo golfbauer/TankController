@@ -9,10 +9,12 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         public bool showConnections = false;
         
         // Left Chain Component
+        public Vector3 leftRotation;
         public Mesh leftMesh;
         public Material leftMaterial;
         
         // Right Chain Component
+        public Vector3 Rotation;
         public Mesh rightMesh;
         public Material rightMaterial;
         
@@ -24,13 +26,13 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         public float chainSpacing;
         
         // Chain Straight
-        public int chainStraightCount;
+        public int chainStraightCount = 1;
         
         // Chain Front Curve
-        public int chainFrontCurveCount;
+        public int chainFrontCurveCount = 1;
         
         // Chain Back Curve
-        public int chainBackCurveCount;
+        public int chainBackCurveCount = 1;
         
         // Box Collider
         public Vector3 boxColliderCenter;
