@@ -16,11 +16,8 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         public float wheelMass = 1f;
 
         // Suspension
-        // Left Settings
-        public Vector3 leftSuspensionRotation = Vector3.zero;
-        
-        // Right Settings
-        public Vector3 rightSuspensionRotation = Vector3.right;
+        //Rotation
+        public float suspensionRotation = 0f;
         
         // Right Mesh settings
         public Mesh rightSuspensionMesh = null;

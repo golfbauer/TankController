@@ -3,14 +3,22 @@ using UnityEngine;
 
 namespace Controller.Scripts.Editors.Wheels
 {
+    
+    public enum WheelType
+    {
+        SupportWheel,
+        DriveWheel,
+        SuspensionWheel,
+        RearWheel,
+    }
+    
     public static class WheelUtilsMessages 
     {
-        public const string Settings = "Settings";
         public const string GeneralSettings = "General Settings";
         public const string GeneralWheelSettings = "General Wheel Settings";
         public const string RightWheelSettings = "Right Wheel Settings";
         public const string LeftWheelSettings = "Left Wheel Settings";
-        public const string SuspensionSettings = "Suspension Settings";
+        public const string GeneralSuspensionSettings = "General Suspension Settings";
         public const string RightSuspensionSettings = "Right Suspension Settings";
         public const string LeftSuspensionSettings = "Left Suspension Settings";
         
@@ -28,6 +36,7 @@ namespace Controller.Scripts.Editors.Wheels
         
         public const string EulerRotation = "Euler Rotation";
         public const string TorqueDirection = "Torque Direction";
+        public const string HingeAxis = "Hinge Axis";
 
         public const string Mass = "Mass";
 
@@ -48,7 +57,7 @@ namespace Controller.Scripts.Editors.Wheels
         public static readonly Color Orange = new Color(1f, 0.3f, 0f, 0.3f);
     }
     
-    public static class WheelsUtils
+    public static class Utils
     {
         public static void ShowLabel(GameObject gameObject, SerializedProperty showLabel)
         {
@@ -69,5 +78,45 @@ namespace Controller.Scripts.Editors.Wheels
             Handles.color = color;
             Handles.DrawLine(start, end, width);
         }
+        
+        public static void DrawCircleWithDirection(Transform transform, Vector3 circleNormal, Vector3 torqueDir, float radius)
+        {
+            Vector3 worldNormal = transform.TransformDirection(circleNormal);
+            
+            if(circleNormal != Vector3.zero)
+                DrawCircle(transform, worldNormal, radius, WheelUtilsMessages.LightRed);
+                
+            if(torqueDir != Vector3.zero)
+                DrawArrow(transform.position, torqueDir, 0.1f, 0.01f);
+        }
+
+        public static void DrawCircle(Transform transform, Vector3 normal, float radius, Color color)
+        {
+            Handles.color = color;
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, normal);
+            Handles.DrawSolidArc(transform.position, normal, rotation * Vector3.right, 360, radius);        
+        }
+        
+        public static void DrawArrow(Vector3 startPosition, Vector3 direction, float distance, float arrowheadSize)
+        {
+            Vector3 endPosition = startPosition + direction.normalized * distance;
+
+            Handles.color = Color.blue;
+            Handles.DrawLine(startPosition, endPosition);
+
+            DrawArrowhead(endPosition, direction, arrowheadSize);
+        }
+
+        private static void DrawArrowhead(Vector3 position, Vector3 direction, float size)
+        {
+            Quaternion rotation = Quaternion.LookRotation(direction);
+
+            Vector3 right = rotation * Quaternion.Euler(0, 145, 0) * Vector3.forward;
+            Vector3 left = rotation * Quaternion.Euler(0, -145, 0) * Vector3.forward;
+
+            Handles.DrawLine(position, position + right * size);
+            Handles.DrawLine(position, position + left * size);
+        }
+        
     }
 }

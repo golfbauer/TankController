@@ -20,6 +20,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         
         // Chain Rigidbody
         public float chainMass;
+        public float angularDrag;
         
         // Chain Relation
         public float chainDistance;

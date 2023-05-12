@@ -26,9 +26,9 @@ namespace Controller.Scripts.Managers.Tracks
         
         private void FixedUpdate()
         {
-            Vector3 newPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, _fixedPosition.z);
-            Quaternion newRotation = Quaternion.Euler(_fixedRotation.eulerAngles.x, _fixedRotation.eulerAngles.y, transform.localRotation.eulerAngles.z);
-        
+            Vector3 newPosition = new Vector3(_fixedPosition.x, transform.localPosition.y, transform.localPosition.z);
+            Quaternion newRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, _fixedRotation.eulerAngles.y, _fixedRotation.eulerAngles.z);
+            
             transform.localPosition = newPosition;
             transform.localRotation = newRotation;
         }

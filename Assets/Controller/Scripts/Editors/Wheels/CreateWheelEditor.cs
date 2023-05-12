@@ -32,6 +32,7 @@ namespace Controller.Scripts.Editors.Wheels
             {
                 BulkUpdateComponents();
                 serializedObject.ApplyModifiedProperties();
+                RefreshParentSelection(Transform.gameObject);
             }
         }
 
@@ -70,11 +71,15 @@ namespace Controller.Scripts.Editors.Wheels
             MeshRenderer renderer = gameObject.AddComponent<MeshRenderer>();
             renderer.material = materialProp.objectReferenceValue as Material;
         }
-        
-        protected virtual void AttachRigidbody(GameObject gameObject, SerializedProperty massProp)
+
+        protected virtual void AttachRigidbody(GameObject gameObject, SerializedProperty massProp,
+            SerializedProperty angularDragProp = null)
         {
             Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
             wheelRigidbody.mass = massProp.floatValue;
+            
+            if (angularDragProp != null)
+                wheelRigidbody.angularDrag = angularDragProp.floatValue;
         }
         
         protected void AttachFixedRigidbody(GameObject gameObject, SerializedProperty massProp)
@@ -116,10 +121,36 @@ namespace Controller.Scripts.Editors.Wheels
             if(GUILayout.Button(WheelUtilsMessages.UpdateAll))
                 UpdateAll = true;
         }
-
-        protected void OnSceneGUI()
+        
+        private void RefreshParentSelection(GameObject parent)
         {
-            // Perhaps draw a circle to show the torque directon with the collider radius
+            Selection.activeGameObject = null;
+            Selection.activeGameObject = parent;
+        }
+
+        protected virtual void OnSceneGUI()
+        {
+            for (int i = 0; i < Transform.childCount; i++)
+            {
+                Transform wheel = Transform.GetChild(i);
+                
+                if (!wheel.name.Contains("Wheel"))
+                    continue;
+                
+                Vector3 hingeAxis = wheel.GetComponent<HingeJoint>().axis;
+                Vector3 torqueDir = wheel.GetComponent<Wheel>().torqueDirection;
+                Utils.DrawCircleWithDirection(wheel,hingeAxis, torqueDir, 0.1f);
+            }
+        }
+
+        protected virtual void SetLayers()
+        {
+            for (int i = 0; i < Transform.childCount; i++)
+            {
+                Transform components = Transform.GetChild(i);
+                if (components.name.Contains("Wheel"))
+                    LayersUtils.SetLayer(components.gameObject, LayersUtils.WheelLayer);
+            }
         }
     }
 }

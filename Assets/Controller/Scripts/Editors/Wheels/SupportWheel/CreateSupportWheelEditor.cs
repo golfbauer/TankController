@@ -10,10 +10,12 @@ namespace Controller.Scripts.Editors.Wheels.SupportWheel
         private SerializedProperty _showLabels;
         
         private SerializedProperty _rightWheelRotationProp;
-        private SerializedProperty _leftTorqueDirectionProp;
+        private SerializedProperty _leftWheelTorqueProp;
+        private SerializedProperty _leftWheelAxisProp;
         
         private SerializedProperty _leftWheelRotationProp;
-        private SerializedProperty _rightTorqueDirectionProp;
+        private SerializedProperty _rightWheelTorqueProp;
+        private SerializedProperty _rightWheelAxisProp;
 
         private SerializedProperty _rightWheelMeshProp;
         private SerializedProperty _rightWheelMaterialProp;
@@ -35,10 +37,12 @@ namespace Controller.Scripts.Editors.Wheels.SupportWheel
             _showLabels = serializedObject.FindProperty("showLabels");
             
             _rightWheelRotationProp = serializedObject.FindProperty("rightWheelRotation");
-            _rightTorqueDirectionProp = serializedObject.FindProperty("rightTorqueDirection");
+            _rightWheelTorqueProp = serializedObject.FindProperty("rightWheelTorque");
+            _leftWheelAxisProp = serializedObject.FindProperty("leftWheelHingeAxis");
             
             _leftWheelRotationProp = serializedObject.FindProperty("leftWheelRotation");
-            _leftTorqueDirectionProp = serializedObject.FindProperty("leftTorqueDirection");
+            _leftWheelTorqueProp = serializedObject.FindProperty("leftWheelTorque");
+            _rightWheelAxisProp = serializedObject.FindProperty("rightWheelHingeAxis");
             
             _rightWheelMeshProp = serializedObject.FindProperty("rightWheelMesh");
             _rightWheelMaterialProp = serializedObject.FindProperty("rightWheelMaterial");
@@ -67,19 +71,21 @@ namespace Controller.Scripts.Editors.Wheels.SupportWheel
             
             GUIUtils.HeaderGUI(WheelUtilsMessages.RightWheelSettings);
             GUIUtils.PropFieldGUI(_rightWheelRotationProp, WheelUtilsMessages.EulerRotation);
-            GUIUtils.PropFieldGUI(_rightTorqueDirectionProp, WheelUtilsMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_rightWheelTorqueProp, WheelUtilsMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_rightWheelAxisProp, WheelUtilsMessages.HingeAxis);
             GUIUtils.PropFieldGUI(_rightWheelMeshProp, WheelUtilsMessages.Mesh);
             GUIUtils.PropFieldGUI(_rightWheelMaterialProp, WheelUtilsMessages.Material);
             
             GUIUtils.HeaderGUI(WheelUtilsMessages.LeftWheelSettings);
             GUIUtils.PropFieldGUI(_leftWheelRotationProp, WheelUtilsMessages.EulerRotation);
-            GUIUtils.PropFieldGUI(_leftTorqueDirectionProp, WheelUtilsMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_leftWheelTorqueProp, WheelUtilsMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_leftWheelAxisProp, WheelUtilsMessages.HingeAxis);
             GUIUtils.PropFieldGUI(_leftWheelMeshProp, WheelUtilsMessages.Mesh);
             GUIUtils.PropFieldGUI(_leftWheelMaterialProp, WheelUtilsMessages.Material);
             
             GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralWheelSettings);
             GUIUtils.PropFieldGUI(_wheelMassProp, WheelUtilsMessages.Mass);
-            GUIUtils.PropFieldGUI(_wheelCountProp, WheelUtilsMessages.Count);
+            GUIUtils.IntSliderGUI(_wheelCountProp, 1, 10, WheelUtilsMessages.Count);
             GUIUtils.SliderGUI(_wheelDistanceProp, 0.1f, 5f, WheelUtilsMessages.Distance);
             GUIUtils.SliderGUI(_wheelSpacingProp, 0.1f, 5f, WheelUtilsMessages.Spacing);
             
@@ -108,8 +114,8 @@ namespace Controller.Scripts.Editors.Wheels.SupportWheel
         
         private void CreateWheel(bool isLeft, int i)
         {
-            string wheelName = isLeft ? "L Wheel " : "R Wheel ";
-            float wheelDistance = isLeft ? _wheelDistanceProp.floatValue : -_wheelDistanceProp.floatValue;
+            string wheelName = isLeft ? WheelUtilsMessages.LeftWheel : WheelUtilsMessages.RightWheel;
+            float wheelDistance = isLeft ? -_wheelDistanceProp.floatValue : _wheelDistanceProp.floatValue;
             Vector3 eulerRotation = isLeft ? _leftWheelRotationProp.vector3Value : _rightWheelRotationProp.vector3Value;
             
             var wheel = new GameObject(wheelName + i)
@@ -122,19 +128,21 @@ namespace Controller.Scripts.Editors.Wheels.SupportWheel
                 },
             };
             
-            WheelsUtils.ShowLabel(wheel, _showLabels);
+            Utils.ShowLabel(wheel, _showLabels);
             AttachComponents(wheel, isLeft);
         }
 
         private void AttachComponents(GameObject wheel, bool isLeft)
         {
-            Vector3 torque = isLeft ? _leftTorqueDirectionProp.vector3Value : _rightTorqueDirectionProp.vector3Value;
+            Vector3 torque = isLeft ? _leftWheelTorqueProp.vector3Value : _rightWheelTorqueProp.vector3Value;
+            Vector3 hingeAxis = isLeft ? _leftWheelAxisProp.vector3Value : _rightWheelAxisProp.vector3Value;
             
             AttachCollider(wheel, _wheelColliderRadiusProp, _wheelColliderMaterialProp);
             AttachWheelScript(wheel, isLeft, torque);
             AttachMesh(wheel, isLeft ? _leftWheelMeshProp : _rightWheelMeshProp, isLeft ? _leftWheelMaterialProp : _rightWheelMaterialProp);
             AttachFixedRigidbody(wheel, _wheelMassProp);
-            AttachWheelHingeJoint(wheel, Transform.parent, torque);
+            AttachWheelHingeJoint(wheel, Transform.parent, hingeAxis);
+            SetLayers();
         }
     }
 }

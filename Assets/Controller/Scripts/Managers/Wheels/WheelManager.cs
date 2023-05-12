@@ -29,8 +29,8 @@ namespace Controller.Scripts.Managers.Wheels
 
         private void FixedUpdate()
         {
-            leftTorque = _movementManager.torque;
-            rightTorque = _movementManager.torque;
+            leftTorque = _movementManager.leftTorque;
+            rightTorque = _movementManager.rightTorque;
             leftDrag = _movementManager.angularDrag;
             rightDrag = _movementManager.angularDrag;
             maxSpeed = _movementManager.maxSpeed;

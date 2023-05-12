@@ -29,6 +29,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private SerializedProperty _boxColliderMaterial;
         
         private SerializedProperty _chainMass;
+        private SerializedProperty _angularDrag;
         
         private SerializedProperty _chainDistance;
         private SerializedProperty _chainSpacing;
@@ -37,11 +38,22 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private SerializedProperty _chainFrontCurveCount;
         private SerializedProperty _chainBackCurveCount;
 
+        
         private Vector3 _leftFrontCurveCenter;
         private Vector3 _leftBackCurveCenter;
         
         private Vector3 _rightBackCurveCenter;
         private Vector3 _rightFrontCurveCenter;
+
+        private Vector3 _leftStraightUpperStart;
+        private Vector3 _leftStraightUpperEnd;
+        private Vector3 _leftStraightLowerStart;
+        private Vector3 _leftStraightLowerEnd;
+        
+        private Vector3 _rightStraightUpperStart;
+        private Vector3 _rightStraightUpperEnd;
+        private Vector3 _rightStraightLowerStart;
+        private Vector3 _rightStraightLowerEnd;
 
         private float _frontRadius;
         private float _backRadius;
@@ -72,6 +84,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             _boxColliderMaterial = serializedObject.FindProperty("boxColliderMaterial");
             
             _chainMass = serializedObject.FindProperty("chainMass");
+            _angularDrag = serializedObject.FindProperty("angularDrag");
             
             _chainDistance = serializedObject.FindProperty("chainDistance");
             _chainSpacing = serializedObject.FindProperty("chainSpacing");
@@ -105,6 +118,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             GUIUtils.PropFieldGUI(_boxColliderMaterial, "Collider Material");
 
             GUIUtils.PropFieldGUI(_chainMass, "Chain Mass");
+            GUIUtils.PropFieldGUI(_angularDrag, "Angular Drag");
             
             GUIUtils.SliderGUI(_chainDistance, 0.1f, 5f, "Distance");
             GUIUtils.SliderGUI(_chainSpacing, 0.01f, 1f, "Spacing");
@@ -138,12 +152,9 @@ namespace Controller.Scripts.Editors.Wheels.Chain
 
         private void CalculateInitialValues()
         {
-            float circumference = _chainSpacing.floatValue * _chainFrontCurveCount.intValue * 2;
-            _frontRadius = circumference / (2 * Mathf.PI);
-            
-            circumference = _chainSpacing.floatValue * _chainBackCurveCount.intValue * 2;
-            _backRadius = circumference / (2 * Mathf.PI);
-
+            _frontRadius = _chainSpacing.floatValue / (2 * Mathf.Tan(Mathf.PI / ((_chainFrontCurveCount.intValue - 1) * 2)));
+            _backRadius = _chainSpacing.floatValue / (2 * Mathf.Tan(Mathf.PI / ((_chainBackCurveCount.intValue - 1) * 2)));
+                
             float heightDifference = Mathf.Abs(_frontRadius - _backRadius);
             float straightDistance = _chainStraightCount.intValue * _chainSpacing.floatValue;
 
@@ -153,71 +164,75 @@ namespace Controller.Scripts.Editors.Wheels.Chain
                 _chainSpacing.floatValue));
             straightRotationAngle *= Mathf.Rad2Deg;
             
-            _straightUpperRotationAngle = _chainFrontCurveCount.intValue > _chainBackCurveCount.intValue ? straightRotationAngle : -straightRotationAngle;
-            _straightLowerRotationAngle = _chainFrontCurveCount.intValue > _chainBackCurveCount.intValue ? -straightRotationAngle : straightRotationAngle;
-
-            _leftFrontCurveCenter = new Vector3(_actualStraightDistance / 2, 0, _chainDistance.floatValue / 2);
-            _leftBackCurveCenter = new Vector3(-_actualStraightDistance / 2, 0, _chainDistance.floatValue / 2);
-            _rightFrontCurveCenter = new Vector3(_actualStraightDistance / 2, 0, -_chainDistance.floatValue / 2);
-            _rightBackCurveCenter = new Vector3(-_actualStraightDistance / 2, 0, -_chainDistance.floatValue / 2);
+            _straightUpperRotationAngle = _chainFrontCurveCount.intValue > _chainBackCurveCount.intValue ? -straightRotationAngle : straightRotationAngle;
+            _straightLowerRotationAngle = _chainFrontCurveCount.intValue > _chainBackCurveCount.intValue ? straightRotationAngle : -straightRotationAngle;
+            _straightLowerRotationAngle += 180;
+            
+            float z = _actualStraightDistance / 2;
+            _leftFrontCurveCenter = new Vector3( -_chainDistance.floatValue / 2, 0, z + _chainSpacing.floatValue / 2);
+            _leftBackCurveCenter = new Vector3(-_chainDistance.floatValue / 2, 0, -z - _chainSpacing.floatValue / 2);
+            _rightFrontCurveCenter = new Vector3(_chainDistance.floatValue / 2, 0, z + _chainSpacing.floatValue / 2);
+            _rightBackCurveCenter = new Vector3(_chainDistance.floatValue / 2, 0, -z - _chainSpacing.floatValue / 2);
+            
+            _leftStraightUpperStart = new Vector3(_leftBackCurveCenter.x, _backRadius, -z);
+            _leftStraightUpperEnd = new Vector3(_leftFrontCurveCenter.x, _frontRadius, z);
+            _leftStraightLowerStart = new Vector3(_leftBackCurveCenter.x, -_backRadius, -z);
+            _leftStraightLowerEnd = new Vector3(_leftFrontCurveCenter.x, -_frontRadius, z);
+            
+            _rightStraightUpperStart = new Vector3(_rightBackCurveCenter.x, _backRadius, -z);
+            _rightStraightUpperEnd = new Vector3(_rightFrontCurveCenter.x, _frontRadius, z);
+            _rightStraightLowerStart = new Vector3(_rightBackCurveCenter.x, -_backRadius, -z);
+            _rightStraightLowerEnd = new Vector3(_rightFrontCurveCenter.x, -_frontRadius, z);
         }
 
         private void CreateLeftChainLinks()
         {
             // Left Upper Straight
-            Vector3 start = new Vector3(_leftFrontCurveCenter.x, _leftFrontCurveCenter.y + _frontRadius, _leftFrontCurveCenter.z);
-            Vector3 end = new Vector3(_leftBackCurveCenter.x, _leftBackCurveCenter.y + _backRadius, _leftBackCurveCenter.z);
-            CreateStraight(start, end, true, true, _straightUpperRotationAngle, _leftChainLinks);
-            
-            // Back Left Curve
-            CreateCurve(_leftBackCurveCenter, _chainBackCurveCount.intValue, 0f, true, _leftChainLinks);
-            
-            // Left Lower Straight
-            start.y = -_frontRadius;
-            end.y = -_backRadius;
-            CreateStraight(end, start , true, false, _straightLowerRotationAngle, _leftChainLinks);
+            CreateStraight(_leftStraightUpperStart, _leftStraightUpperEnd, true, true, _straightUpperRotationAngle, _leftChainLinks);
             
             // Front Left Curve
-            CreateCurve(_leftFrontCurveCenter, _chainFrontCurveCount.intValue, 180f, true, _leftChainLinks);
+            CreateCurve(_leftFrontCurveCenter, true, 0f, true, _leftChainLinks);
+            
+            // Left Lower Straight
+            CreateStraight(_leftStraightLowerEnd, _leftStraightLowerStart , true, false, _straightLowerRotationAngle, _leftChainLinks);
+            
+            // Back Left Curve
+            CreateCurve(_leftBackCurveCenter, false, 180f, true, _leftChainLinks);
         }
         
         private void CreateRightChainLinks()
         {
             // Right Upper Straight
-            Vector3 start = new Vector3(_rightFrontCurveCenter.x, _rightFrontCurveCenter.y + _frontRadius, _rightFrontCurveCenter.z);
-            Vector3 end = new Vector3(_rightBackCurveCenter.x, _rightBackCurveCenter.y + _backRadius, _rightBackCurveCenter.z);
-            CreateStraight(start, end, false, true, _straightUpperRotationAngle, _rightChainLinks);
-            
-            // Back Right Curve
-            CreateCurve(_rightBackCurveCenter, _chainBackCurveCount.intValue,0f, false, _rightChainLinks);
-
-            // Right Lower Straight
-            start.y = -_frontRadius;
-            end.y = -_backRadius;
-            CreateStraight(end, start, false, false, _straightLowerRotationAngle, _rightChainLinks);
+            CreateStraight(_rightStraightUpperStart, _rightStraightUpperEnd, false, true, _straightUpperRotationAngle, _rightChainLinks);
             
             // Front Right Curve
-            CreateCurve(_rightFrontCurveCenter, _chainFrontCurveCount.intValue, 180f, false, _rightChainLinks);
+            CreateCurve(_rightFrontCurveCenter, true, 0f, false, _rightChainLinks);
+            
+            // Right Lower Straight
+            CreateStraight(_rightStraightLowerEnd, _rightStraightLowerStart, false, false, _straightLowerRotationAngle, _rightChainLinks);
+            
+            // Back Right Curve
+            CreateCurve(_rightBackCurveCenter, false,180f, false, _rightChainLinks);
         }
 
-        private void CreateCurve(Vector3 center, int curveCount, float startingAngle, bool isLeft, ICollection<GameObject> chainLinks)
+        private void CreateCurve(Vector3 center, bool isFront, float startingAngle, bool isLeft, ICollection<GameObject> chainLinks)
         {
-            float circumference = _chainSpacing.floatValue * curveCount * 2;
-            float radius = circumference / (2 * Mathf.PI);
+            float radius = isFront ? _frontRadius : _backRadius;
+            float curveCount = isFront ? _chainFrontCurveCount.intValue : _chainBackCurveCount.intValue;
             
-            float angle = 180f / curveCount;
+            float angle = 180f / (curveCount - 1);
             Vector3 startingVector = Vector3.up * radius;
 
             for (int i = 0; i < curveCount; i++)
             {
                 float currentAngle = i * angle + startingAngle;
-                float x = startingVector.x * Mathf.Cos(currentAngle * Mathf.Deg2Rad) - startingVector.y * Mathf.Sin( currentAngle * Mathf.Deg2Rad);
-                float y = startingVector.x * Mathf.Sin(currentAngle * Mathf.Deg2Rad) + startingVector.y * Mathf.Cos(currentAngle * Mathf.Deg2Rad);
+                float z = startingVector.z * Mathf.Cos(currentAngle * Mathf.Deg2Rad) - startingVector.y * Mathf.Sin( currentAngle * Mathf.Deg2Rad);
+                float y = startingVector.z * Mathf.Sin(currentAngle * Mathf.Deg2Rad) + startingVector.y * Mathf.Cos(currentAngle * Mathf.Deg2Rad);
 
-                Vector3 pivot = new Vector3(x + center.x, y + center.y, center.z);
+                Vector3 pivot = new Vector3(center.x, y + center.y, center.z - z);
                 
                 Vector3 rotation = _rotationProp.vector3Value;
-                rotation.z += currentAngle;
+                rotation.x += currentAngle;
                 
                 string linkName = isLeft ? "L Curve " : "R Curve ";
                 GameObject chainLink = CreateChainLink(pivot, linkName + i, isLeft, rotation);
@@ -229,14 +244,12 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         {
             Vector3 direction = (end - start).normalized;
 
-            for (int i = 0; i < _chainStraightCount.intValue; i++)
+            for (float i = 0.5f; i < _chainStraightCount.intValue; i++)
             {
                 Vector3 pivot = start + direction * (i * _chainSpacing.floatValue);
                 string linkName = isUpper ? "Upper " : "Lower ";
                 linkName += isLeft ? "L Straight " + i : "R Straight " + i;
-                Vector3 rotation = isUpper ? _rotationProp.vector3Value : -_rotationProp.vector3Value;
-                rotation.x += rotationAngle;
-                rotation.z += isUpper ? 180f : 0f;
+                Vector3 rotation = new Vector3(rotationAngle, 0, 0);
                 GameObject chainLink = CreateChainLink(pivot, linkName, isLeft, rotation);
                 chainLinks.Add(chainLink);
             }
@@ -253,7 +266,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
                     localRotation = Quaternion.Euler(rotation)
                 },
             };
-            WheelsUtils.ShowLabel(chainLink, _showLabelsProp);
+            Utils.ShowLabel(chainLink, _showLabelsProp);
             AttachComponents(chainLink, isLeft);
             return chainLink;
         }
@@ -262,7 +275,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         {
             SerializedProperty mesh =  isLeft ? _leftMesh : _rightMesh;
             AttachMesh(chainLink, mesh, _leftMaterial);
-            AttachRigidbody(chainLink, _chainMass);
+            AttachRigidbody(chainLink, _chainMass, _angularDrag);
             AttachBoxCollider(chainLink);
             AttachScript(chainLink);
         }
@@ -280,26 +293,26 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             foreach (GameObject chainLink in chainLinks)
             {
                 int index = chainLinks.IndexOf(chainLink);
-                if (index == 0) continue;
-                AttachHingeJoint(chainLink, chainLinks[index - 1]);
+                if (index == chainLinks.Count - 1) continue;
+                AttachHingeJoint(chainLink, chainLinks[index + 1]);
             }
             
-            AttachHingeJoint(chainLinks[0], chainLinks[^1]);
+            AttachHingeJoint(chainLinks[^1], chainLinks[0]);
         }
 
         private void AttachHingeJoint(GameObject link, GameObject prevLink)
         {
-            float x = _chainSpacing.floatValue / 2;
-            if (link.name.Contains("Lower"))
-            {
-                x = -x;
-            }
+            float z = _chainSpacing.floatValue / 2;
+            // if (link.name.Contains("Lower"))
+            // {
+            //     z = -z;
+            // }
         
-            Vector3 anchor = new Vector3(x, 0, 0);
+            Vector3 anchor = new Vector3(0, 0, z);
         
             HingeJoint hingeJoint = link.AddComponent<HingeJoint>();
             hingeJoint.anchor = anchor;
-            hingeJoint.axis = Vector3.forward;
+            hingeJoint.axis = Vector3.right;
             hingeJoint.connectedBody = prevLink.GetComponent<Rigidbody>();
         }
 
@@ -308,7 +321,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             chainLink.AddComponent<ChainLinkBalancer>();
         }
 
-        private void OnSceneGUI()
+        protected override void OnSceneGUI()
         {
             if (!_showConnectionsProp.boolValue) return;
             
@@ -316,7 +329,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             {
                 GameObject chainLink = Transform.GetChild(i).gameObject;
                 
-                WheelsUtils.DrawLine(
+                Utils.DrawLine(
                     Transform.position,
                     Transform.position + chainLink.transform.localPosition,
                     Color.green

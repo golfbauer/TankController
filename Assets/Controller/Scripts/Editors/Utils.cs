@@ -35,4 +35,21 @@ namespace Controller.Scripts.Editors
             EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
         }
     }
+
+    public static class LayersUtils
+    {
+        public const string WheelLayer = "TankWheel";
+        public const string HullLayer = "TankHull";
+        
+        
+        public static void SetLayer(GameObject gameObject, string layerName)
+        {
+            gameObject.layer = LayerMask.NameToLayer(layerName);
+        }
+    }
+
+    public static class GeneralMessages
+    {
+        public const string UpdateAll = "Update All";
+    }
 }
