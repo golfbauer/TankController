@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controller.Scripts.Managers.PlayerCamera.CameraController;
-using Controller.Scripts.Managers.PlayerCamera.UIController;
+using Controller.Scripts.Managers.PlayerCamera.CameraMovement;
+using Controller.Scripts.Managers.PlayerCamera.CameraUI;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -9,11 +9,11 @@ namespace Controller.Scripts.Managers.PlayerCamera
 {
     public class CameraManager : MonoBehaviour
     {
-        [SerializeField] private List<CameraController.CameraController> cameraControllers = new();
+        [SerializeField] private List<CameraMovementController> cameraControllers = new();
 
         private GameObject _camera;
-        private CameraController.CameraController _activeCameraController;
-        private CameraController.CameraController _switchToCameraController;
+        private CameraMovementController _activeCameraMovementController;
+        private CameraMovementController _switchToCameraMovementController;
         private bool _isSwitchingCameras;
 
         public bool TransitioningIn { get; set; }
@@ -24,30 +24,37 @@ namespace Controller.Scripts.Managers.PlayerCamera
         {
             SetUpCamera();
             SetUpCameraControllers();
+            _activeCameraMovementController.ToggleUI(true);
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
         
-        private void SetUpCamera()
+        public void SetUpCamera()
         {
-            _camera = new GameObject("Main Camera");
-            _camera.AddComponent<Camera>();
-            _camera.transform.SetParent(transform);
-
-            _camera.transform.position = cameraControllers[0].transform.position;
+            try
+            {
+                _camera = gameObject.transform.Find("Main Camera").gameObject;
+            }
+            catch (NullReferenceException)
+            {
+                _camera = new GameObject("Main Camera");
+                _camera.AddComponent<Camera>();
+                _camera.transform.SetParent(transform);
+                _camera.transform.position = cameraControllers[0].transform.position;
+            }
         }
         
         private void SetUpCameraControllers()
         {
             ClearCameraControllers();
-            foreach(CameraController.CameraController cameraPosition in cameraControllers)
+            foreach(CameraMovementController cameraPosition in cameraControllers)
             {
                 cameraPosition.SetUpCameraController(_camera, this);
             }
             
-            _activeCameraController = cameraControllers[0];
-            _switchToCameraController = cameraControllers[0];
+            _activeCameraMovementController = cameraControllers[0];
+            _switchToCameraMovementController = cameraControllers[0];
         }
 
 
@@ -56,46 +63,46 @@ namespace Controller.Scripts.Managers.PlayerCamera
         {
             if (TransitioningOut)
             {
-                _activeCameraController.TransitionOut();
+                _activeCameraMovementController.TransitionOut();
                 return;
             }
             
             if (TransitioningIn)
             {
-                _switchToCameraController.TransitionIn();
+                _switchToCameraMovementController.TransitionIn();
                 return;
             }
 
             if (_isSwitchingCameras)
             {
-                _activeCameraController = _switchToCameraController;
+                _activeCameraMovementController = _switchToCameraMovementController;
                 _isSwitchingCameras = false;
             }
             
-            _activeCameraController.ActiveCameraMovement();
+            _activeCameraMovementController.ActiveCameraMovement();
             
             CheckCameraControllers();
         }
 
         private void CheckCameraControllers()
         {
-            foreach(CameraController.CameraController cameraController in cameraControllers)
+            foreach(CameraMovementController cameraController in cameraControllers)
             {
-                if (cameraController == _activeCameraController)
+                if (cameraController == _activeCameraMovementController)
                     continue;
                 
                 CheckCameraController(cameraController);
             }
         }
 
-        private void CheckCameraController(CameraController.CameraController cameraController)
+        private void CheckCameraController(CameraMovementController cameraMovementController)
         {
-            if (cameraController.CameraKeyIsPressed())
+            if (cameraMovementController.CameraKeyIsPressed())
             {
                 _isSwitchingCameras = true;
-                _switchToCameraController = cameraController;
-                _switchToCameraController.SetTransitionInConditions(_activeCameraController);
-                _activeCameraController.SetTransitionOutConditions(_switchToCameraController);
+                _switchToCameraMovementController = cameraMovementController;
+                _switchToCameraMovementController.SetTransitionInConditions(_activeCameraMovementController);
+                _activeCameraMovementController.SetTransitionOutConditions(_switchToCameraMovementController);
                 
                 TransitioningOut = true;
             }
@@ -128,31 +135,31 @@ namespace Controller.Scripts.Managers.PlayerCamera
 
         public void ReplaceCameraController(GameObject cameraPosition, CameraType cameraType)
         {
-            int index = cameraControllers.IndexOf(cameraPosition.GetComponent<CameraController.CameraController>());
+            int index = cameraControllers.IndexOf(cameraPosition.GetComponent<CameraMovementController>());
             
-            DestroyImmediate(cameraPosition.GetComponent<CameraController.CameraController>());
+            DestroyImmediate(cameraPosition.GetComponent<CameraMovementController>());
             cameraControllers.RemoveAt(index);
             
             cameraControllers.Insert(index, GetCameraController(cameraPosition, cameraType));
             ClearCameraControllers();
         }
 
-        private CameraController.CameraController GetCameraController(GameObject cameraPosition, CameraType cameraType)
+        private CameraMovementController GetCameraController(GameObject cameraPosition, CameraType cameraType)
         {
-            CameraController.CameraController cameraController;
+            CameraMovementController cameraMovementController;
             switch (cameraType)
             {
                 case (CameraType.ThirdPerson):
-                    cameraController = cameraPosition.AddComponent<CameraController.CameraController>();
+                    cameraMovementController = cameraPosition.AddComponent<CameraMovementController>();
                     break;
                 case CameraType.Scoped:
-                    cameraController = cameraPosition.AddComponent<ScopedCameraController>();
+                    cameraMovementController = cameraPosition.AddComponent<ScopedCameraMovementController>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cameraType), cameraType, null); 
             }
             
-            return cameraController;
+            return cameraMovementController;
         }
         
         private void ClearCameraControllers()
@@ -171,7 +178,7 @@ namespace Controller.Scripts.Managers.PlayerCamera
         }
 
         [ItemCanBeNull]
-        public List<CameraController.CameraController> GetCameraControllers()
+        public List<CameraMovementController> GetCameraControllers()
         {
             return cameraControllers;
         }

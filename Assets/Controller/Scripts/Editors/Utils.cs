@@ -24,15 +24,20 @@ namespace Controller.Scripts.Editors
             EditorGUILayout.IntSlider(property, leftVal, rightVal, label);
         }
 
-        public static void DenyAccessGUI()
+        public static void DenyAccessGUI(string forbiddenResponse = GeneralMessages.NotPrefabModeWarning)
         {
-            EditorGUILayout.HelpBox(WheelUtilsMessages.NotPrefabModeWarning, MessageType.Info);
+            EditorGUILayout.HelpBox(forbiddenResponse, MessageType.Info);
         }
 
         public static void HeaderGUI(string header)
         {
             EditorGUILayout.Space();
             EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
+        }
+        
+        public static bool UpdateAllGUI()
+        {
+            return GUILayout.Button(GeneralMessages.UpdateAll);
         }
     }
 
@@ -51,5 +56,7 @@ namespace Controller.Scripts.Editors
     public static class GeneralMessages
     {
         public const string UpdateAll = "Update All";
+        public const string NotPrefabModeWarning = "You must be in prefab mode to use this tool.";
+        public const string PrefabModeWarning = "You must exit prefab mode to use this tool.";
     }
 }

@@ -6,7 +6,7 @@ using Controller.Scripts.Editors.Wheels.SupportWheel;
 using Controller.Scripts.Editors.Wheels.SuspensionWheel;
 using Controller.Scripts.Managers.Movement;
 using Controller.Scripts.Managers.PlayerCamera;
-using Controller.Scripts.Managers.PlayerCamera.CameraController;
+using Controller.Scripts.Managers.PlayerCamera.CameraMovement;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -62,6 +62,13 @@ namespace Controller.Scripts.Editors.Tank
             
             if (_transform.GetComponent<MovementManager>() == null)
                 _transform.gameObject.AddComponent<MovementManager>();
+
+            if (_transform.GetComponent<CameraManager>() == null)
+            {
+                _cameraManager = _transform.gameObject.AddComponent<CameraManager>();
+                _cameraManager.SetUpCamera();
+            }
+                
         }
 
         private void SetUpGUI()
@@ -138,6 +145,8 @@ namespace Controller.Scripts.Editors.Tank
             if(_cameraManager == null)
                 _cameraManager = _transform.GetComponent<CameraManager>();
             
+            _cameraManager.SetUpCamera();
+            
             GUIUtils.HeaderGUI(TankUtilsMessages.Camera);
             
             if (_cameraManager != null)
@@ -156,16 +165,14 @@ namespace Controller.Scripts.Editors.Tank
             
             if (GUILayout.Button(TankUtilsMessages.Create))
             {
-                if (_transform.GetComponent<CameraManager>() == null)
-                    _cameraManager = _transform.gameObject.AddComponent<CameraManager>();
                 CameraType cameraType = (CameraType) _cameraType.intValue;
                 _cameraManager.AddNewCameraPosition(_transform, cameraType);
             }
         }
 
-        private void CameraControllerGUI(CameraController controller, int index)
+        private void CameraControllerGUI(CameraMovementController movementController, int index)
         {
-            GameObject cameraPosition = controller.gameObject;
+            GameObject cameraPosition = movementController.gameObject;
             bool foldout = EditorPrefs.GetBool("CameraControllerFoldout" + index, false);
             foldout = EditorGUILayout.Foldout(foldout, cameraPosition.name);
             EditorPrefs.SetBool("CameraControllerFoldout" + index, foldout);
@@ -173,7 +180,7 @@ namespace Controller.Scripts.Editors.Tank
             if (foldout)
             {
                 EditorGUI.indentLevel++;
-                CameraType currentType = controller.GetCameraType();
+                CameraType currentType = movementController.GetCameraType();
                 CameraType newType = (CameraType)EditorGUILayout.EnumPopup(TankUtilsMessages.CameraType, currentType);
                 if (newType != currentType)
                     _cameraManager.ReplaceCameraController(cameraPosition, newType);

@@ -5,4 +5,10 @@
         ThirdPerson,
         Scoped
     }
+    
+    public enum UIElementType
+    {
+        Basic,
+        StaticSprite,
+    }
 }
