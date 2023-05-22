@@ -41,7 +41,7 @@ namespace Controller.Scripts.Editors
         }
     }
 
-    public static class LayersUtils
+    public static class LayerUtils
     {
         public const string WheelLayer = "TankWheel";
         public const string HullLayer = "TankHull";

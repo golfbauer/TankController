@@ -1,4 +1,5 @@
 ﻿using System;
+using Controller.Scripts.Editors.Turret.Base;
 using Controller.Scripts.Editors.Wheels;
 using Controller.Scripts.Editors.Wheels.CreateRearWheel;
 using Controller.Scripts.Editors.Wheels.DriveWheel;
@@ -57,7 +58,11 @@ namespace Controller.Scripts.Editors.Tank
             _hullColliderCenter = serializedObject.FindProperty("hullColliderCenter");
             _hullColliderSize = serializedObject.FindProperty("hullColliderSize");
 
-            
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             _transform = ((CreateTank) target).gameObject.transform;
             
             if (_transform.GetComponent<MovementManager>() == null)
@@ -68,7 +73,15 @@ namespace Controller.Scripts.Editors.Tank
                 _cameraManager = _transform.gameObject.AddComponent<CameraManager>();
                 _cameraManager.SetUpCamera();
             }
-                
+        }
+
+        private void CreateTurret()
+        {
+            GameObject turret = new GameObject("Turret");
+            turret.transform.parent = _transform;
+            turret.transform.localPosition = Vector3.zero;
+            turret.transform.localRotation = Quaternion.identity;
+            turret.AddComponent<CreateTurret>();
         }
 
         private void SetUpGUI()
@@ -215,7 +228,7 @@ namespace Controller.Scripts.Editors.Tank
             UpdateCollider();
             RefreshParentSelection(_transform.gameObject);
             
-            LayersUtils.SetLayer(_transform.gameObject, LayersUtils.HullLayer);
+            LayerUtils.SetLayer(_transform.gameObject, LayerUtils.HullLayer);
         }
 
         private void UpdateRigidbody()
