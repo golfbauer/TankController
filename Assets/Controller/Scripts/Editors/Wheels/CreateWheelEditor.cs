@@ -149,7 +149,7 @@ namespace Controller.Scripts.Editors.Wheels
             {
                 Transform components = Transform.GetChild(i);
                 if (components.name.Contains("Wheel"))
-                    LayersUtils.SetLayer(components.gameObject, LayersUtils.WheelLayer);
+                    LayerUtils.SetLayer(components.gameObject, LayerUtils.WheelLayer);
             }
         }
     }

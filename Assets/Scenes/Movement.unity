@@ -129,7 +129,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh187592
+  m_Name: pb_Mesh23302
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -293,7 +293,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh187536
+  m_Name: pb_Mesh23270
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -807,41 +807,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1874587317}
     - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: isActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: uiElements.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
       propertyPath: uiElements.Array.data[0]
       value: 
       objectReference: {fileID: 1842102938}
     - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: uiElements.Array.data[1]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: uiElements.Array.data[2]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: uiElementsData.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
       propertyPath: uiElementsData.Array.data[0]
       value: 
       objectReference: {fileID: 2084167152}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: uiElementsData.Array.data[1]
-      value: 
-      objectReference: {fileID: 1517889148}
-    - target: {fileID: 2484931636118259329, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
-      propertyPath: uiElementsData.Array.data[2]
-      value: 
-      objectReference: {fileID: 1517889148}
+    - target: {fileID: 6880005430711561869, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
+      propertyPath: cameraSwitchKey
+      value: 282
+      objectReference: {fileID: 0}
     - target: {fileID: 7428994964821296352, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -906,6 +882,22 @@ PrefabInstance:
       propertyPath: uiElementsData.Array.data[1]
       value: 
       objectReference: {fileID: 1604878306}
+    - target: {fileID: 8938340392112237398, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
+      propertyPath: maxAngle
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8938340392112237398, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
+      propertyPath: minAngle
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8938340392112237398, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
+      propertyPath: minMovement
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8938340392112237398, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
+      propertyPath: decelerationTime
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8986809591623966956, guid: c48036d35a3648144895031b9eeabbc8, type: 3}
       propertyPath: m_Name
       value: P4
@@ -1446,7 +1438,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh187788
+  m_Name: pb_Mesh23330
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1734,20 +1726,6 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaIndirect: 2
   m_PVRFilteringAtrousPositionSigmaAO: 1
   m_PVRTiledBaking: 0
---- !u!114 &1517889148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50d76ba5716846caafad7289f3e2319e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 1
-  Sprite: {fileID: 0}
 --- !u!1 &1526407985
 GameObject:
   m_ObjectHideFlags: 0
