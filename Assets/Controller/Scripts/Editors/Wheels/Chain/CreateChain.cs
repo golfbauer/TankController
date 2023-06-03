@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Controller.Scripts.Editors.Wheels.Chain
 {
@@ -39,5 +40,10 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         public Vector3 boxColliderCenter;
         public Vector3 boxColliderSize;
         public PhysicMaterial boxColliderMaterial;
+
+        private void Start()
+        {
+            Destroy(this);
+        }
     }
 }

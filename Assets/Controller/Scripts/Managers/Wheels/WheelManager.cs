@@ -7,13 +7,15 @@ namespace Controller.Scripts.Managers.Wheels
 {
     public class WheelManager: MonoBehaviour
     {
+        public float wheelRadius;
+        
         public float leftTorque;
         public float rightTorque;
         
         public float leftDrag;
         public float rightDrag;
         
-        public float maxSpeed;
+        public float targetAngularSpeed;
         
         private MovementManager _movementManager;
 
@@ -29,11 +31,11 @@ namespace Controller.Scripts.Managers.Wheels
 
         private void FixedUpdate()
         {
-            leftTorque = _movementManager.leftTorque;
-            rightTorque = _movementManager.rightTorque;
-            leftDrag = _movementManager.angularDrag;
-            rightDrag = _movementManager.angularDrag;
-            maxSpeed = _movementManager.maxSpeed;
+            targetAngularSpeed = _movementManager.GetCurrentSpeed() / (2.0f * wheelRadius * Mathf.PI) * 360.0f * Mathf.Deg2Rad;
+            leftTorque = _movementManager.GetLeftTorque();
+            rightTorque = _movementManager.GetRightTorque();
+            leftDrag = _movementManager.GetLeftDrag();
+            rightDrag = _movementManager.GetRightDrag();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Controller.Scripts.Editors.Tank
     public class CreateTank: MonoBehaviour
     {
         // Wheels
-        public WheelType wheelType;
+        public ComponentType wheelType;
         
         // Cameras
         public CameraType cameraType;
@@ -23,9 +23,11 @@ namespace Controller.Scripts.Editors.Tank
 
         // Mesh
         public Mesh hullMesh = null;
-        public List<Material> hullMaterial = null;
+        public List<Material> hullMaterials = null;
         
         // Collider
+        public bool useBoxCollider = false;
+        public List<Mesh> hullMeshColliders = null;
         public Vector3 hullColliderCenter = Vector3.zero;
         public Vector3 hullColliderSize = Vector3.one;
 

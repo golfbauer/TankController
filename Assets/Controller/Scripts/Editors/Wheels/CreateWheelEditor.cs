@@ -1,4 +1,5 @@
 ﻿using System;
+using Controller.Scripts.Editors.Utils;
 using Controller.Scripts.Managers.Wheels;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -6,51 +7,13 @@ using UnityEngine;
 
 namespace Controller.Scripts.Editors.Wheels
 {
-    public class CreateWheelEditor: Editor
+    public class CreateWheelEditor: TankComponentEditor
     {
-        protected bool UpdateAll;
-        protected Transform Transform;
-
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update ();
-
-            if (PrefabStageUtility.GetCurrentPrefabStage() == null)
-            {
-                GUIUtils.DenyAccessGUI();
-                return;
-            }
-
-            SetUpGUI();
-
-            if (GUI.changed || Event.current.commandName == "UndoRedoPerformed")
-            {
-                UpdateAll = true;
-            }
-
-            if (UpdateAll)
-            {
-                BulkUpdateComponents();
-                serializedObject.ApplyModifiedProperties();
-                RefreshParentSelection(Transform.gameObject);
-            }
-        }
-
-        protected virtual void SetUpGUI()
-        {
-            throw new NotImplementedException();
-        }
-        
-        protected virtual void BulkUpdateComponents()
-        {
-            throw new NotImplementedException();
-        }
-        
         protected void BulkDestroyComponents()
         {
-            var childCount = Transform.childCount;
+            var childCount = transform.childCount;
             for (var i = 0; i < childCount; i++)
-                DestroyImmediate (Transform.GetChild(0).gameObject);
+                DestroyImmediate (transform.GetChild(0).gameObject);
         }
         
         protected void AttachCollider(GameObject gameObject, SerializedProperty radiusProp, SerializedProperty materialProp)
@@ -104,50 +67,46 @@ namespace Controller.Scripts.Editors.Wheels
         {
             Wheel wheelController = wheel.AddComponent<Wheel>();
             
-            wheelController.WheelManager = Transform.parent.GetComponent<WheelManager>();
+            wheelController.WheelManager = transform.parent.GetComponent<WheelManager>();
             wheelController.isLeftWheel = isLeft;
             wheelController.torqueDirection = torqueDirection;
         }
         
-        protected void AttachWheelManager()
+        protected void AttachWheelManager(float wheelRadius)
         {
-            WheelManager wheelManager = Transform.GetComponent<WheelManager>();
+            WheelManager wheelManager = transform.GetComponent<WheelManager>();
             if (wheelManager == null)
-                Transform.gameObject.AddComponent<WheelManager>();
+                wheelManager = transform.gameObject.AddComponent<WheelManager>();
+            
+            wheelManager.wheelRadius = wheelRadius;
         }
 
         protected void UpdateAllGUI()
         {
             if(GUILayout.Button(WheelUtilsMessages.UpdateAll))
-                UpdateAll = true;
-        }
-        
-        private void RefreshParentSelection(GameObject parent)
-        {
-            Selection.activeGameObject = null;
-            Selection.activeGameObject = parent;
+                updateAll = true;
         }
 
         protected virtual void OnSceneGUI()
         {
-            for (int i = 0; i < Transform.childCount; i++)
+            for (int i = 0; i < transform.childCount; i++)
             {
-                Transform wheel = Transform.GetChild(i);
+                Transform wheel = transform.GetChild(i);
                 
                 if (!wheel.name.Contains("Wheel"))
                     continue;
                 
                 Vector3 hingeAxis = wheel.GetComponent<HingeJoint>().axis;
                 Vector3 torqueDir = wheel.GetComponent<Wheel>().torqueDirection;
-                Utils.DrawCircleWithDirection(wheel,hingeAxis, torqueDir, 0.1f);
+                DrawUtils.DrawCircleWithDirection(wheel,hingeAxis, torqueDir, 0.1f);
             }
         }
 
         protected virtual void SetLayers()
         {
-            for (int i = 0; i < Transform.childCount; i++)
+            for (int i = 0; i < transform.childCount; i++)
             {
-                Transform components = Transform.GetChild(i);
+                Transform components = transform.GetChild(i);
                 if (components.name.Contains("Wheel"))
                     LayerUtils.SetLayer(components.gameObject, LayerUtils.WheelLayer);
             }

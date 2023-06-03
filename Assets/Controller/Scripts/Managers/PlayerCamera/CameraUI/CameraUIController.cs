@@ -13,7 +13,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
         // I doubt that I need this, but this took me an entire day to get this to work, so I'm keeping it
         public List<UIElementData.UIElementData> uiElementsData = new List<UIElementData.UIElementData>();
         
-        public GameObject canvas;
+        [SerializeField] public GameObject canvas;
         public bool isActive;
 
         public void ActivateUIElement(int index)

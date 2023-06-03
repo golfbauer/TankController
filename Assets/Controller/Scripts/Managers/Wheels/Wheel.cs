@@ -25,7 +25,7 @@ namespace Controller.Scripts.Managers.Wheels
             
             float torque = isLeftWheel ? WheelManager.leftTorque : WheelManager.rightTorque;
             float drag = isLeftWheel ? WheelManager.leftDrag : WheelManager.rightDrag;
-            WheelRigidbody.maxAngularVelocity = WheelManager.maxSpeed;
+            WheelRigidbody.maxAngularVelocity = WheelManager.targetAngularSpeed;
             WheelRigidbody.AddRelativeTorque(torqueDirection * torque);
             WheelRigidbody.angularDrag = drag;
         }
