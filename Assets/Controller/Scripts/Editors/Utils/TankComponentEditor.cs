@@ -32,6 +32,7 @@ namespace Controller.Scripts.Editors.Utils
                 serializedObject.ApplyModifiedProperties();
                 RefreshParentSelection(transform.gameObject);
                 EditorUtility.SetDirty(transform.gameObject);
+                updateAll = false;
             }
         }
 
@@ -90,6 +91,7 @@ namespace Controller.Scripts.Editors.Utils
             {
                 MeshCollider meshCollider = thisTransform.gameObject.AddComponent<MeshCollider>();
                 meshCollider.sharedMesh = newMeshColliders.GetArrayElementAtIndex(i).objectReferenceValue as Mesh;
+                meshCollider.convex = true;
                 
                 if (colliderMaterial != null)
                     meshCollider.material = colliderMaterial.objectReferenceValue as PhysicMaterial;
@@ -163,6 +165,15 @@ namespace Controller.Scripts.Editors.Utils
 
             if (boxCollider)
                 DestroyImmediate(boxCollider);
+        }
+
+        public virtual void UpdateRigidbody(Transform thisTransform, SerializedProperty hullMass)
+        {
+            Rigidbody rigidbody = thisTransform.GetComponent<Rigidbody>();
+            if (rigidbody == null)
+                rigidbody = thisTransform.gameObject.AddComponent<Rigidbody>();
+            
+            rigidbody.mass = hullMass.floatValue;
         }
     }
 }

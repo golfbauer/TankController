@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using Controller.Scripts.Editors.Utils;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -130,12 +131,12 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             _springMinLimitAngleProp = serializedObject.FindProperty("MinLimitAngle");
             _springMaxLimitAngleProp = serializedObject.FindProperty("MaxLimitAngle");
 
-            Transform = ((CreateSuspensionWheel)target).gameObject.transform;
+            transform = ((CreateSuspensionWheel)target).gameObject.transform;
 
-            AttachWheelManager();
+            AttachWheelManager(_wheelColliderRadiusProp.floatValue);
         }
         
-        protected override void SetUpGUI()
+        public override void SetUpGUI()
         {
             GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralSettings);
             GUIUtils.PropFieldGUI(_showLabelsProp);
@@ -215,9 +216,9 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         {
             base.OnSceneGUI();
             
-            for (int i = 0 ; i < Transform.childCount ; i++)
+            for (int i = 0 ; i < transform.childCount ; i++)
             {
-                GameObject suspension = Transform.GetChild(i).gameObject;
+                GameObject suspension = transform.GetChild(i).gameObject;
                 if (!suspension.name.Contains(WheelUtilsMessages.LeftSuspension) 
                     && !suspension.name.Contains(WheelUtilsMessages.RightSuspension))
                     continue;
@@ -235,39 +236,38 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
                 
                 float springAngle = hingeJoint.spring.targetPosition * Mathf.Deg2Rad;
                 Vector3 targetPosition = new Vector3(0, Mathf.Sin(springAngle), Mathf.Cos(springAngle)).normalized;
+                targetPosition.y *= -1;
                 
                 float radius = 0.1f;
                 
-                Utils.DrawArc(
+                DrawUtils.DrawArc(
                     center,
                     normal,
                     from,
                     angle,
                     radius,
-                    WheelUtilsMessages.LightRed
+                    GeneralMessages.LightRed
                 );
                 
-                Utils.DrawLine(
+                DrawUtils.DrawLine(
                     center,
                     center + targetPosition * radius,
                     WheelUtilsMessages.Green
                 );
                 
-                Utils.DrawLine(
+                DrawUtils.DrawLine(
                     center,
                     center + normal * radius,
-                    WheelUtilsMessages.Orange,
+                    GeneralMessages.Orange,
                     3
                 );
             }
         }
 
-        protected override void BulkUpdateComponents()
+        public override void BulkUpdateComponents()
         {
             BulkDestroyComponents();
             BulkCreateComponents();
-            
-            UpdateAll = false;
         }
 
         private void BulkCreateComponents()
@@ -297,13 +297,13 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             {
                 transform =
                 {
-                    parent = Transform,
+                    parent = transform,
                     localPosition = new Vector3(wheelDistance, 0, wheelSpacing),
                     localRotation = Quaternion.Euler(eulerRotation)
                 },
             };
             
-            Utils.ShowLabel(wheel, _showLabelsProp);
+            DrawUtils.ShowLabel(wheel, _showLabelsProp);
             
             Vector3 torqueDirection = isLeft ? _leftTorqueDirectionProp.vector3Value : _rightTorqueDirectionProp.vector3Value;
             Vector3 hingeAxis = isLeft ? _leftWheelAxisProp.vector3Value : _rightWheelAxisProp.vector3Value;
@@ -330,14 +330,14 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             {
                 transform =
                 {
-                    parent = Transform,
+                    parent = transform,
                     localPosition = new Vector3(suspensionDistance, 0, i * suspensionSpacing),
                 },
             };
             
-            Utils.ShowLabel(suspension, _showLabelsProp);
+            DrawUtils.ShowLabel(suspension, _showLabelsProp);
             
-            AttachRigidbody(suspension, _suspensionMassProp);
+            AttachFixedRigidbody(suspension, _suspensionMassProp);
             AttachSuspensionHingeJoint(suspension);
             AttachMesh(suspension, isLeft ? _leftSuspensionMeshProp : _rightSuspensionMeshProp, isLeft ? _leftSuspensionMaterialProp : _rightSuspensionMaterialProp);
 
@@ -348,7 +348,7 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         {
             Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
             wheelRigidbody.mass = massProp.floatValue;
-            wheelRigidbody.constraints = RigidbodyConstraints.FreezePositionZ;
+            wheelRigidbody.constraints = RigidbodyConstraints.FreezePositionX;
         }
 
         private void AttachSuspensionHingeJoint(GameObject suspension)
@@ -369,18 +369,19 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
                 min = _springMinLimitAngleProp.floatValue,
                 max = _springMaxLimitAngleProp.floatValue
             };
-            suspensionHingeJoint.connectedBody = Transform.parent.GetComponent<Rigidbody>();
+            suspensionHingeJoint.connectedBody = transform.parent.GetComponent<Rigidbody>();
         }
         
         public static void RotateObjectsAroundPivot(Transform pivot, Transform objectToRotate, Vector3 rotationAxis, float rotationAngle)
         {
-            var position = objectToRotate.position;
-            
-            pivot.Rotate(rotationAxis, rotationAngle, Space.World);
-            position -= pivot.position;
-            objectToRotate.RotateAround(Vector3.zero, rotationAxis, rotationAngle);
-            position += pivot.position;
-            objectToRotate.position = position;
+            Quaternion pivotRotation = Quaternion.AngleAxis(rotationAngle, rotationAxis);
+            Vector3 pivotToWheel = objectToRotate.position - pivot.position;
+    
+            pivot.rotation *= pivotRotation;
+            objectToRotate.rotation *= pivotRotation;
+
+            Vector3 newPivotToWheel = pivotRotation * pivotToWheel;
+            objectToRotate.position = pivot.position + newPivotToWheel;
         }
     }
 }

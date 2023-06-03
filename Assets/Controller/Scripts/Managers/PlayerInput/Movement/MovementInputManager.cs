@@ -7,10 +7,9 @@ namespace Controller.Scripts.Managers.PlayerInput.Movement
     {
         public MovementManager MovementManager { get; set; }
         
-        protected float VerticalInput;
-        protected float HorizontalInput;
+        public float verticalInput;
+        public float horizontalInput;
 
         public abstract void MovementInput();
-        public abstract void PassDownMovementInput();
     }
 }

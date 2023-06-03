@@ -1,4 +1,5 @@
-﻿using Controller.Scripts.Editors.Wheels.DriveWheel;
+﻿using Controller.Scripts.Editors.Utils;
+using Controller.Scripts.Editors.Wheels.DriveWheel;
 using Controller.Scripts.Managers.Wheels;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -60,12 +61,12 @@ namespace Controller.Scripts.Editors.Wheels.CreateRearWheel
             _wheelDistanceProp = serializedObject.FindProperty("wheelDistance");
             _wheelSpacingProp = serializedObject.FindProperty("wheelSpacing");
 
-            Transform = ((CreateRearWheel)target).gameObject.transform;
+            transform = ((CreateRearWheel)target).gameObject.transform;
             
-            AttachWheelManager();
+            AttachWheelManager(_wheelColliderRadiusProp.floatValue);
         }
         
-        protected override void SetUpGUI()
+        public override void SetUpGUI()
         {
             GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralSettings);
             GUIUtils.PropFieldGUI(_showLabels);
@@ -96,12 +97,10 @@ namespace Controller.Scripts.Editors.Wheels.CreateRearWheel
             UpdateAllGUI();
         }
 
-        protected override void BulkUpdateComponents()
+        public override void BulkUpdateComponents()
         {
             BulkDestroyComponents();
             BulkCreateWheels();
-
-            UpdateAll = false;
         }
 
         private void BulkCreateWheels()
@@ -120,13 +119,13 @@ namespace Controller.Scripts.Editors.Wheels.CreateRearWheel
             {
                 transform =
                 {
-                    parent = Transform,
+                    parent = transform,
                     localPosition = new Vector3(wheelDistance, 0, _wheelSpacingProp.floatValue),
                     localRotation = Quaternion.Euler(eulerRotation)
                 },
             };
 
-            Utils.ShowLabel(wheel, _showLabels);
+            DrawUtils.ShowLabel(wheel, _showLabels);
             AttachComponents(wheel, isLeft);
         }
 
@@ -138,7 +137,7 @@ namespace Controller.Scripts.Editors.Wheels.CreateRearWheel
             AttachCollider(wheel, _wheelColliderRadiusProp, _wheelColliderMaterialProp);
             AttachWheelScript(wheel, isLeft, torqueDirection);
             AttachFixedRigidbody(wheel, _wheelMassProp);
-            AttachWheelHingeJoint(wheel, Transform.parent, hingeAxis);
+            AttachWheelHingeJoint(wheel, transform.parent, hingeAxis);
             AttachMesh(wheel, isLeft ? _leftWheelMeshProp : _rightWheelMeshProp, isLeft ? _leftWheelMaterialProp : _rightWheelMaterialProp);
             SetLayers();
         }
