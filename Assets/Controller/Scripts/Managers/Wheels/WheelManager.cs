@@ -15,7 +15,8 @@ namespace Controller.Scripts.Managers.Wheels
         public float leftDrag;
         public float rightDrag;
         
-        public float targetAngularSpeed;
+        public float leftTargetSpeed;
+        public float rightTargetSpeed;
         
         private MovementManager _movementManager;
 
@@ -31,7 +32,8 @@ namespace Controller.Scripts.Managers.Wheels
 
         private void FixedUpdate()
         {
-            targetAngularSpeed = _movementManager.GetCurrentSpeed() / (2.0f * wheelRadius * Mathf.PI) * 360.0f * Mathf.Deg2Rad;
+            leftTargetSpeed = _movementManager.GetLeftTrackSpeed() / (2.0f * wheelRadius * Mathf.PI) * 360.0f * Mathf.Deg2Rad;
+            rightTargetSpeed = _movementManager.GetRightTrackSpeed() / (2.0f * wheelRadius * Mathf.PI) * 360.0f * Mathf.Deg2Rad;
             leftTorque = _movementManager.GetLeftTorque();
             rightTorque = _movementManager.GetRightTorque();
             leftDrag = _movementManager.GetLeftDrag();

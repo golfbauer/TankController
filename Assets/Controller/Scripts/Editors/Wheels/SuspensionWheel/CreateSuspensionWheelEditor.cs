@@ -348,7 +348,6 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         {
             Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
             wheelRigidbody.mass = massProp.floatValue;
-            wheelRigidbody.constraints = RigidbodyConstraints.FreezePositionX;
         }
 
         private void AttachSuspensionHingeJoint(GameObject suspension)
