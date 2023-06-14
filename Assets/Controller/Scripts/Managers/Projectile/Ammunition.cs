@@ -92,7 +92,6 @@ namespace Controller.Scripts.Managers.Projectile
         {
             if(Input.GetKeyDown(fireKey))
             {
-                Debug.Log("Fired");
                 ShotFired();
             }
         }

@@ -49,7 +49,6 @@ namespace Controller.Scripts.Editors.Wheels
         {
             Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
             wheelRigidbody.mass = massProp.floatValue;
-            wheelRigidbody.constraints = RigidbodyConstraints.FreezePosition;
         }
         
         protected void AttachWheelHingeJoint(GameObject wheel, Transform connectedTo, Vector3 axis)
