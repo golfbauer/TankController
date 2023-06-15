@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.Projectile
+namespace Controller.Scripts.Managers.Ammunition
 {
     public class Ammunition : MonoBehaviour
     {
-        public List<AmmunitionType.AmmunitionType> ammunitionTypes = new ();
+        public List<AmmunitionType> ammunitionTypes = new ();
         public GameObject spawnPoint;
         public Vector3 direction;
         public KeyCode fireKey;
@@ -44,7 +43,7 @@ namespace Controller.Scripts.Managers.Projectile
 
         private void UseShortcut()
         {
-            foreach(AmmunitionType.AmmunitionType ammunitionType in ammunitionTypes)
+            foreach(AmmunitionType ammunitionType in ammunitionTypes)
             {
                 if (Input.GetKeyDown(ammunitionType.shortCutKey))
                 {
@@ -99,7 +98,7 @@ namespace Controller.Scripts.Managers.Projectile
 
         private void ShotFired()
         {
-            AmmunitionType.AmmunitionType ammunitionType = ammunitionTypes[_currentAmmunitionTypeIndex];
+            AmmunitionType ammunitionType = ammunitionTypes[_currentAmmunitionTypeIndex];
             direction = spawnPoint.transform.forward;
             
             GameObject ammunition = ammunitionType.FireShot();

@@ -1,14 +1,11 @@
-﻿using System;
-using System.IO;
-using Controller.Scripts.Editors.Utils;
-using Controller.Scripts.Managers.Projectile;
-using Controller.Scripts.Managers.Projectile.AmmunitionType;
+﻿using Controller.Scripts.Editors.Utils;
+using Controller.Scripts.Managers.Ammunition;
 using UnityEditor;
 using UnityEngine;
 
-namespace Controller.Scripts.Editors.Turret.CreateAmmunition
+namespace Controller.Scripts.Editors.Ammunition
 {
-    [CustomEditor(typeof(Ammunition))]
+    [CustomEditor(typeof(Managers.Ammunition.Ammunition))]
     [CanEditMultipleObjects]
     public class CreateAmmunitionEditor : TankComponentEditor
     {
@@ -29,7 +26,7 @@ namespace Controller.Scripts.Editors.Turret.CreateAmmunition
             _switchToPreviousKey = serializedObject.FindProperty("switchToPreviousKey");
             _allowNumbers = serializedObject.FindProperty("allowNumbers");
             
-            transform = ((Ammunition) target).gameObject.transform;
+            transform = ((Managers.Ammunition.Ammunition) target).gameObject.transform;
         }
 
         public override void SetUpGUI()

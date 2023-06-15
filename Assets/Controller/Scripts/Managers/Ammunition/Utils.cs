@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Managers.Projectile
+namespace Controller.Scripts.Managers.Ammunition
 {
-    public class ProjectileUtils
+    public static class ProjectileUtils
     {
         public static KeyCode[] KeyCodes = {
             KeyCode.Alpha1,
@@ -16,4 +16,15 @@ namespace Controller.Scripts.Managers.Projectile
             KeyCode.Alpha9,
         };
     }
+
+    public enum ProjectileType
+    {
+        
+    }
+
+    public enum ProjectileBody
+    {
+        
+    }
+    
 }
