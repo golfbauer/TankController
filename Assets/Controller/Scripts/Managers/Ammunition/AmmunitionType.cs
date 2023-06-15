@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Managers.Projectile.AmmunitionType
+namespace Controller.Scripts.Managers.Ammunition
 {
     [CreateAssetMenu(fileName = "AmmunitionType", menuName = "ScriptableObjects/AmmunitionType", order = 1)]
     public class AmmunitionType : ScriptableObject

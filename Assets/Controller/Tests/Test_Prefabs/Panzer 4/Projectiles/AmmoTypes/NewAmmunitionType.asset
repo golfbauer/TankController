@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: NewAmmunitionType
   m_EditorClassIdentifier: 
   ammunition: {fileID: 3465617431648377259, guid: 44e635f665931bf41bfeee418376b4ce, type: 3}
-  ammunitionCount: 4
+  ammunitionCount: 0
   shortCutKey: 0
