@@ -110,6 +110,8 @@ namespace Controller.Scripts.Managers.Ammunition
             
             Quaternion rotation = Quaternion.LookRotation(direction.normalized);
             Instantiate(ammunition, spawnPoint.transform.position, rotation);
+
+            Debug.Log("Fired");
         }
     }
 }

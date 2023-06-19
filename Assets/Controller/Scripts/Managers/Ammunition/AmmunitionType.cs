@@ -6,6 +6,7 @@ namespace Controller.Scripts.Managers.Ammunition
     public class AmmunitionType : ScriptableObject
     {
         public GameObject ammunition;
+        // This is reduced in the manager during runtime and will be kept as well after.
         public int ammunitionCount;
         public KeyCode shortCutKey;
 
