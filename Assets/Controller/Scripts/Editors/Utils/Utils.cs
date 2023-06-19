@@ -39,6 +39,14 @@ namespace Controller.Scripts.Editors.Utils
         {
             return GUILayout.Button(GeneralMessages.UpdateAll);
         }
+
+        public static void RemoveButton(SerializedProperty property, int index)
+        {
+            if (GUILayout.Button(GeneralMessages.Remove))
+            {
+                property.DeleteArrayElementAtIndex(index);
+            }
+        }
     }
     
         public static class DrawUtils
@@ -118,8 +126,10 @@ namespace Controller.Scripts.Editors.Utils
     public static class GeneralMessages
     {
         public const string UpdateAll = "Update All";
+        public const string Remove = "Remove";
         public const string NotPrefabModeWarning = "You must be in prefab mode to use this tool.";
         public const string PrefabModeWarning = "You must exit prefab mode to use this tool.";
+        public const string TargetNotAssigned = "It seems like the target is not assigned. Try to restart prefab mode. If that does not work restart Unity.";
         
         public static readonly Color LightRed = new Color(1f, 0.5f, 0.5f, 0.3f);
         public static readonly Color Orange = new Color(1f, 0.3f, 0f, 0.3f);

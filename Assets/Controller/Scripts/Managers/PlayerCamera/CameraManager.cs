@@ -41,7 +41,10 @@ namespace Controller.Scripts.Managers.PlayerCamera
                 _camera = new GameObject("Main Camera");
                 _camera.AddComponent<Camera>();
                 _camera.transform.SetParent(transform);
-                _camera.transform.position = cameraControllers[0].transform.position;
+                if (cameraControllers.Count > 0)
+                    _camera.transform.position = cameraControllers[0].transform.position;
+                else
+                    _camera.transform.position = transform.position;
             }
         }
         
@@ -175,6 +178,13 @@ namespace Controller.Scripts.Managers.PlayerCamera
                 
                 cameraControllers[i].transform.name = "Camera Position " + (i + 1);
             }
+        }
+        
+        public void RemoveCameraPosition(GameObject cameraPosition)
+        {
+            cameraControllers.Remove(cameraPosition.GetComponent<CameraMovementController>());
+            DestroyImmediate(cameraPosition);
+            ClearCameraControllers();
         }
 
         [ItemCanBeNull]

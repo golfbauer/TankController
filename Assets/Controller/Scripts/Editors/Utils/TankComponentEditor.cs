@@ -45,6 +45,14 @@ namespace Controller.Scripts.Editors.Utils
         {
             GUIUtils.DenyAccessGUI();
         }
+
+        public virtual void CheckTarget()
+        {
+            if (target == null)
+            {
+                Debug.LogError(GeneralMessages.TargetNotAssigned);
+            }
+        }
         
         public virtual void SetUpGUI()
         {
@@ -109,16 +117,6 @@ namespace Controller.Scripts.Editors.Utils
                     DestroyImmediate(oldMeshCollidersArray[i]);
                 }
             }
-        }
-        
-        public virtual void UpdateMeshCollider(Transform thisTransform, SerializedProperty newMeshCollider, SerializedProperty colliderMaterial = null)
-        {
-            RemoveMeshColliders(thisTransform);
-            
-            MeshCollider meshCollider = thisTransform.gameObject.AddComponent<MeshCollider>();
-            
-            if (colliderMaterial != null)
-                meshCollider.material = colliderMaterial.objectReferenceValue as PhysicMaterial;
         }
 
         public virtual BoxCollider UpdateBoxCollider(Transform thisTransform)

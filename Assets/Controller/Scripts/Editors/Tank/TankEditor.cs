@@ -1,29 +1,26 @@
 ﻿using System;
 using Controller.Scripts.Editors.Turret.Base;
 using Controller.Scripts.Editors.Utils;
-using Controller.Scripts.Editors.Wheels;
 using Controller.Scripts.Editors.Wheels.Chain;
 using Controller.Scripts.Editors.Wheels.CreateRearWheel;
 using Controller.Scripts.Editors.Wheels.DriveWheel;
 using Controller.Scripts.Editors.Wheels.SupportWheel;
 using Controller.Scripts.Editors.Wheels.SuspensionWheel;
+using Controller.Scripts.Managers.ImpactCollision;
 using Controller.Scripts.Managers.Movement;
 using Controller.Scripts.Managers.PlayerCamera;
 using Controller.Scripts.Managers.PlayerCamera.CameraMovement;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using CameraType = Controller.Scripts.Managers.PlayerCamera.CameraType;
 
 namespace Controller.Scripts.Editors.Tank
 {
-    [CustomEditor(typeof(CreateTank))]
-    [CanEditMultipleObjects]
-    public class CreateTankEditor: TankComponentEditor
+    [CustomEditor(typeof(Tank))]
+    public class TankEditor: TankComponentEditor
     {
         // Components
-        private SerializedProperty _wheelType;
-        private SerializedProperty _cameraType;
+        private SerializedProperty _componentType;
         
         // Hull
         // Rigidbody
@@ -46,8 +43,9 @@ namespace Controller.Scripts.Editors.Tank
         
         private void OnEnable()
         {
-            _wheelType = serializedObject.FindProperty("wheelType");
-            _cameraType = serializedObject.FindProperty("cameraType");
+            CheckTarget();
+            
+            _componentType = serializedObject.FindProperty("componentType");
             
             _hullMass = serializedObject.FindProperty("hullMass");
             _hullCenterOfMass = serializedObject.FindProperty("hullCenterOfMass");
@@ -66,7 +64,7 @@ namespace Controller.Scripts.Editors.Tank
 
         private void Initialize()
         {
-            transform = ((CreateTank) target).gameObject.transform;
+            transform = ((Tank) target).gameObject.transform;
             
             if (transform.GetComponent<MovementManager>() == null)
                 transform.gameObject.AddComponent<MovementManager>();
@@ -76,40 +74,46 @@ namespace Controller.Scripts.Editors.Tank
                 _cameraManager = transform.gameObject.AddComponent<CameraManager>();
                 _cameraManager.SetUpCamera();
             }
+
+            if (transform.GetComponent<CollisionManager>() == null)
+            {
+                transform.gameObject.AddComponent<CollisionManager>();
+            }
         }
 
         public override void SetUpGUI()
         {
             CreateComponentGUI();
-            CreateCameraGUI();
+            CameraPositionsGUI();
             
-            GUIUtils.HeaderGUI(TankUtilsMessages.Hull);
-            GUIUtils.PropFieldGUI(_hullMesh, TankUtilsMessages.Mesh);
-            GUIUtils.PropFieldGUI(_hullMaterials, TankUtilsMessages.Material);
+            GUIUtils.HeaderGUI(CreateTankMessages.Hull);
+            GUIUtils.PropFieldGUI(_hullMesh, CreateTankMessages.Mesh);
+            GUIUtils.PropFieldGUI(_hullMaterials, CreateTankMessages.Material);
             
-            GUIUtils.HeaderGUI(TankUtilsMessages.Collider);
-            GUIUtils.PropFieldGUI(_useBoxCollider, TankUtilsMessages.UseBoxCollider);
+            GUIUtils.HeaderGUI(CreateTankMessages.Collider);
+            GUIUtils.PropFieldGUI(_useBoxCollider, CreateTankMessages.UseBoxCollider);
             if (_useBoxCollider.boolValue)
             {
-                GUIUtils.PropFieldGUI(_hullColliderCenter, TankUtilsMessages.ColliderCenter);
-                GUIUtils.PropFieldGUI(_hullColliderSize, TankUtilsMessages.ColliderSize);
+                GUIUtils.PropFieldGUI(_hullColliderCenter, CreateTankMessages.ColliderCenter);
+                GUIUtils.PropFieldGUI(_hullColliderSize, CreateTankMessages.ColliderSize);
             }
             else
             {                
-                GUIUtils.PropFieldGUI(_hullMeshColliders, TankUtilsMessages.MeshCollider);
+                GUIUtils.PropFieldGUI(_hullMeshColliders, CreateTankMessages.MeshCollider);
             }
-            GUIUtils.HeaderGUI(TankUtilsMessages.Rigidbody);
-            GUIUtils.PropFieldGUI(_hullMass, TankUtilsMessages.Mass);
-            GUIUtils.PropFieldGUI(_hullCenterOfMass, TankUtilsMessages.CenterOfMass);
-            GUIUtils.PropFieldGUI(_physicsIterations, TankUtilsMessages.PhysicsIterations);
+            
+            GUIUtils.HeaderGUI(CreateTankMessages.Rigidbody);
+            GUIUtils.PropFieldGUI(_hullMass, CreateTankMessages.Mass);
+            GUIUtils.PropFieldGUI(_hullCenterOfMass, CreateTankMessages.CenterOfMass);
+            GUIUtils.PropFieldGUI(_physicsIterations, CreateTankMessages.PhysicsIterations);
         }
         
         private void CreateComponentGUI()
         {
-            GUIUtils.HeaderGUI(TankUtilsMessages.Components);
-            GUIUtils.PropFieldGUI(_wheelType, TankUtilsMessages.Component);
+            GUIUtils.HeaderGUI(CreateTankMessages.Components);
+            GUIUtils.PropFieldGUI(_componentType, CreateTankMessages.Component);
             
-            if (GUILayout.Button(TankUtilsMessages.Create))
+            if (GUILayout.Button(CreateTankMessages.Create))
             {
                 CreateComponent();
             }
@@ -117,7 +121,7 @@ namespace Controller.Scripts.Editors.Tank
         
         private void CreateComponent()
         {
-            var createComponent = (ComponentType) _wheelType.enumValueFlag;
+            var createComponent = (ComponentType) _componentType.enumValueFlag;
 
             switch (createComponent)
             {
@@ -144,12 +148,16 @@ namespace Controller.Scripts.Editors.Tank
                 case ComponentType.Turret:
                     CreateComponent("Turret", typeof(CreateTurret));
                     break;
+                
+                case ComponentType.Camera:
+                    _cameraManager.AddNewCameraPosition(transform, CameraType.ThirdPerson);
+                    break;
             }
         }
 
         private void CreateComponent(string componentName, Type componentType)
         {
-            GameObject wheel = new GameObject(componentName)
+            GameObject component = new GameObject(componentName)
             {
                 transform =
                 {
@@ -159,17 +167,17 @@ namespace Controller.Scripts.Editors.Tank
                     localScale = Vector3.one
                 }
             };
-            wheel.AddComponent(componentType);
+            component.AddComponent(componentType);
         }
 
-        private void CreateCameraGUI()
+        private void CameraPositionsGUI()
         {
             if(_cameraManager == null)
                 _cameraManager = transform.GetComponent<CameraManager>();
             
             _cameraManager.SetUpCamera();
             
-            GUIUtils.HeaderGUI(TankUtilsMessages.Camera);
+            GUIUtils.HeaderGUI(CreateTankMessages.Camera);
             
             if (_cameraManager != null)
             {
@@ -181,32 +189,25 @@ namespace Controller.Scripts.Editors.Tank
                     CameraControllerGUI(cameraController, i);
                 }
             }
-            EditorGUILayout.Space();
-            
-            GUIUtils.PropFieldGUI(_cameraType, TankUtilsMessages.CameraType);
-            
-            if (GUILayout.Button(TankUtilsMessages.Create))
-            {
-                CameraType cameraType = (CameraType) _cameraType.intValue;
-                _cameraManager.AddNewCameraPosition(transform, cameraType);
-            }
         }
 
         private void CameraControllerGUI(CameraMovementController movementController, int index)
         {
             GameObject cameraPosition = movementController.gameObject;
-            bool foldout = EditorPrefs.GetBool("CameraControllerFoldout" + index, false);
+            bool foldout = EditorPrefs.GetBool("CameraPositionFoldout" + index, false);
             foldout = EditorGUILayout.Foldout(foldout, cameraPosition.name);
-            EditorPrefs.SetBool("CameraControllerFoldout" + index, foldout);
+            EditorPrefs.SetBool("CameraPositionFoldout" + index, foldout);
 
             if (foldout)
             {
                 EditorGUI.indentLevel++;
                 CameraType currentType = movementController.GetCameraType();
-                CameraType newType = (CameraType)EditorGUILayout.EnumPopup(TankUtilsMessages.CameraType, currentType);
+                CameraType newType = (CameraType)EditorGUILayout.EnumPopup(CreateTankMessages.CameraType, currentType);
                 if (newType != currentType)
                     _cameraManager.ReplaceCameraController(cameraPosition, newType);
-                EditorGUILayout.ObjectField(TankUtilsMessages.Transform, cameraPosition.transform, typeof(Transform), true);
+                EditorGUILayout.ObjectField(CreateTankMessages.Transform, cameraPosition.transform, typeof(Transform), true);
+                if (GUILayout.Button(GeneralMessages.Remove))
+                    _cameraManager.RemoveCameraPosition(cameraPosition);
                 EditorGUI.indentLevel--;
             }
         }
