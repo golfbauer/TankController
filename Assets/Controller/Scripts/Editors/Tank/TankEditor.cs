@@ -106,6 +106,8 @@ namespace Controller.Scripts.Editors.Tank
             GUIUtils.PropFieldGUI(_hullMass, CreateTankMessages.Mass);
             GUIUtils.PropFieldGUI(_hullCenterOfMass, CreateTankMessages.CenterOfMass);
             GUIUtils.PropFieldGUI(_physicsIterations, CreateTankMessages.PhysicsIterations);
+            
+            UpdateAllGUI();
         }
         
         private void CreateComponentGUI()

@@ -55,7 +55,7 @@ namespace Controller.Scripts.Editors.Utils
         {
             if (!showLabel.boolValue) return;
             
-            var iconContent = EditorGUIUtility.IconContent(WheelUtilsMessages.ShowLabelType);
+            var iconContent = EditorGUIUtility.IconContent(WheelMessages.ShowLabelType);
             EditorGUIUtility.SetIconForObject(gameObject, (Texture2D) iconContent.image);
         }
         

@@ -58,6 +58,13 @@ namespace Controller.Scripts.Editors.Utils
         {
             throw new NotImplementedException();
         }
+
+        public virtual void UpdateAllGUI()
+        {
+            EditorGUILayout.Space();
+            if(GUILayout.Button(GeneralMessages.UpdateAll))
+                updateAll = true;
+        }
         
         public virtual void BulkUpdateComponents()
         {
@@ -91,7 +98,11 @@ namespace Controller.Scripts.Editors.Utils
             meshRenderer.sharedMaterials = meshRendererMaterials;
         }
 
-        public virtual void UpdateMeshColliders(Transform thisTransform, SerializedProperty newMeshColliders, SerializedProperty colliderMaterial = null)
+        public virtual void UpdateMeshColliders(
+            Transform thisTransform, 
+            SerializedProperty newMeshColliders, 
+            SerializedProperty colliderMaterial = null
+            )
         {
             RemoveMeshColliders(thisTransform);
             
@@ -137,7 +148,10 @@ namespace Controller.Scripts.Editors.Utils
             return boxCollider;
         }
 
-        public virtual BoxCollider UpdateBoxCollider(Transform thisTransform, SerializedProperty colliderCenter, SerializedProperty colliderSize)
+        public virtual BoxCollider UpdateBoxCollider(Transform thisTransform, 
+            SerializedProperty colliderCenter, 
+            SerializedProperty colliderSize
+            )
         {
             BoxCollider boxCollider = UpdateBoxCollider(thisTransform, colliderCenter);
             boxCollider.size = colliderSize.vector3Value;
@@ -149,7 +163,8 @@ namespace Controller.Scripts.Editors.Utils
             Transform thisTransform, 
             SerializedProperty colliderCenter, 
             SerializedProperty colliderSize, 
-            SerializedProperty colliderMaterial)
+            SerializedProperty colliderMaterial
+            )
         {
             BoxCollider boxCollider = UpdateBoxCollider(thisTransform, colliderCenter, colliderSize);
             boxCollider.material = colliderMaterial.objectReferenceValue as PhysicMaterial;
@@ -164,14 +179,80 @@ namespace Controller.Scripts.Editors.Utils
             if (boxCollider)
                 DestroyImmediate(boxCollider);
         }
+        
+        public virtual SphereCollider UpdateSphereCollider(Transform thisTransform)
+        {
+            SphereCollider sphereCollider = thisTransform.GetComponent<SphereCollider>();
 
-        public virtual void UpdateRigidbody(Transform thisTransform, SerializedProperty hullMass)
+            if (!sphereCollider)
+                sphereCollider = thisTransform.gameObject.AddComponent<SphereCollider>();
+            
+            return sphereCollider;
+        }
+        
+        public virtual SphereCollider UpdateSphereCollider(Transform thisTransform, SerializedProperty radius)
+        {
+            SphereCollider sphereCollider = UpdateSphereCollider(thisTransform);
+            sphereCollider.radius = radius.floatValue;
+            
+            return sphereCollider;
+        }
+
+        public virtual SphereCollider UpdateSphereCollider(
+            Transform thisTransform, 
+            SerializedProperty radius,
+            SerializedProperty material
+            )
+        {
+            SphereCollider sphereCollider = UpdateSphereCollider(thisTransform, radius);
+            sphereCollider.material = material.objectReferenceValue as PhysicMaterial;
+            
+            return sphereCollider;
+        }
+        
+        public virtual Rigidbody UpdateRigidbody(
+            Transform thisTransform,
+            bool isKinematic = false,
+            bool useGravity = true
+            )
         {
             Rigidbody rigidbody = thisTransform.GetComponent<Rigidbody>();
             if (rigidbody == null)
                 rigidbody = thisTransform.gameObject.AddComponent<Rigidbody>();
             
+            rigidbody.isKinematic = isKinematic;
+            rigidbody.useGravity = useGravity;
+            
+            return rigidbody;
+        }
+
+        public virtual Rigidbody UpdateRigidbody(
+            Transform thisTransform, 
+            SerializedProperty hullMass,
+            bool isKinematic = false,
+            bool useGravity = true
+        )
+        {
+            Rigidbody rigidbody = UpdateRigidbody(thisTransform, isKinematic, useGravity);
+            
             rigidbody.mass = hullMass.floatValue;
+
+            return rigidbody;
+        }
+        
+        public virtual Rigidbody UpdateRigidbody(
+            Transform thisTransform, 
+            SerializedProperty hullMass,
+            SerializedProperty angularDrag,
+            bool isKinematic = false,
+            bool useGravity = true
+            )
+        {
+            Rigidbody rigidbody = UpdateRigidbody(thisTransform, hullMass, isKinematic, useGravity);
+            
+            rigidbody.angularDrag = angularDrag.floatValue;
+
+            return rigidbody;
         }
     }
 }

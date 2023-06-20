@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Controller.Scripts.Editors.Wheels
 {
-    public static class WheelUtilsMessages 
+    public static class WheelMessages 
     {
         public const string GeneralSettings = "General Settings";
         public const string GeneralWheelSettings = "General Wheel Settings";
@@ -34,13 +34,16 @@ namespace Controller.Scripts.Editors.Wheels
         public const string Mesh = "Mesh";
         public const string Material = "Material";
 
-        public const string UpdateAll = "Update All";
         public const string ShowLabelType = "sv_label_1";
         
         public const string LeftWheel = "L Wheel ";
         public const string RightWheel = "R Wheel ";
         public const string LeftSuspension = "L Suspension ";
         public const string RightSuspension = "R Suspension ";
+        
+        public const string Resize = "Use Resize Script";
+        public const string ResizeScale = "Resize Scale";
+        public const string ResizeSpeed = "Resize Speed";
         
         public static readonly Color Green = Color.green;
     }

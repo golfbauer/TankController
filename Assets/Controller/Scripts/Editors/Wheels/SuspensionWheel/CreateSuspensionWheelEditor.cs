@@ -1,5 +1,5 @@
 ﻿using Controller.Scripts.Editors.Utils;
-using Unity.VisualScripting;
+using Controller.Scripts.Managers.Wheels;
 using UnityEditor;
 using UnityEngine;
 
@@ -76,6 +76,10 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         private SerializedProperty _springTargetPositionProp;
         private SerializedProperty _springMinLimitAngleProp;
         private SerializedProperty _springMaxLimitAngleProp;
+        
+        private SerializedProperty _resizeWheelProp;
+        private SerializedProperty _wheelResizeScaleProp;
+        private SerializedProperty _wheelResizeSpeedProp;
 
         private void OnEnable()
         {
@@ -96,10 +100,10 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             _rightWheelAxisProp = serializedObject.FindProperty("rightWheelHingeAxis");
             
             _leftWheelMeshProp = serializedObject.FindProperty("leftWheelMesh");
-            _leftWheelMaterialProp = serializedObject.FindProperty("leftWheelMaterial");
+            _leftWheelMaterialProp = serializedObject.FindProperty("leftWheelMaterials");
             
             _rightWheelMeshProp = serializedObject.FindProperty("rightWheelMesh");
-            _rightWheelMaterialProp = serializedObject.FindProperty("rightWheelMaterial");
+            _rightWheelMaterialProp = serializedObject.FindProperty("rightWheelMaterials");
 
             _wheelColliderRadiusProp = serializedObject.FindProperty("wheelColliderRadius");
             _wheelColliderMaterialProp = serializedObject.FindProperty("wheelColliderMaterial");
@@ -114,22 +118,26 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             _suspensionRotationProp = serializedObject.FindProperty("suspensionRotation");
             
             _leftSuspensionMeshProp = serializedObject.FindProperty("leftSuspensionMesh");
-            _leftSuspensionMaterialProp = serializedObject.FindProperty("leftSuspensionMaterial");
+            _leftSuspensionMaterialProp = serializedObject.FindProperty("leftSuspensionMaterials");
             
             _rightSuspensionMeshProp = serializedObject.FindProperty("rightSuspensionMesh");
-            _rightSuspensionMaterialProp = serializedObject.FindProperty("rightSuspensionMaterial");
+            _rightSuspensionMaterialProp = serializedObject.FindProperty("rightSuspensionMaterials");
 
             _suspensionDistanceProp = serializedObject.FindProperty("suspensionDistance");
             _suspensionSpacingProp = serializedObject.FindProperty("suspensionSpacing");
             
             _suspensionMassProp = serializedObject.FindProperty("suspensionMass");
             
-            _anchorOffsetProp = serializedObject.FindProperty("AnchorOffset");
-            _springForceProp = serializedObject.FindProperty("SpringForce");
-            _springDamperProp = serializedObject.FindProperty("DamperForce");
-            _springTargetPositionProp = serializedObject.FindProperty("SpringTargetPosition");
-            _springMinLimitAngleProp = serializedObject.FindProperty("MinLimitAngle");
-            _springMaxLimitAngleProp = serializedObject.FindProperty("MaxLimitAngle");
+            _anchorOffsetProp = serializedObject.FindProperty("anchorOffset");
+            _springForceProp = serializedObject.FindProperty("springForce");
+            _springDamperProp = serializedObject.FindProperty("damperForce");
+            _springTargetPositionProp = serializedObject.FindProperty("springTargetPosition");
+            _springMinLimitAngleProp = serializedObject.FindProperty("minLimitAngle");
+            _springMaxLimitAngleProp = serializedObject.FindProperty("maxLimitAngle");
+            
+            _resizeWheelProp = serializedObject.FindProperty("resizeWheel");
+            _wheelResizeScaleProp = serializedObject.FindProperty("wheelResizeScale");
+            _wheelResizeSpeedProp = serializedObject.FindProperty("wheelResizeSpeed");
 
             transform = ((CreateSuspensionWheel)target).gameObject.transform;
 
@@ -138,60 +146,67 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         
         public override void SetUpGUI()
         {
-            GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralSettings);
+            GUIUtils.HeaderGUI(WheelMessages.GeneralSettings);
             GUIUtils.PropFieldGUI(_showLabelsProp);
             
             
-            GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralSettings);
-            GUIUtils.PropFieldGUI(_componentCountProp, WheelUtilsMessages.Count);
-            GUIUtils.SliderGUI(_componentSpacingProp, 0.1f, 5f, WheelUtilsMessages.Spacing);
-            GUIUtils.SliderGUI(_componentDistanceProp, 0.1f, 5f, WheelUtilsMessages.Distance);
+            GUIUtils.HeaderGUI(WheelMessages.GeneralSettings);
+            GUIUtils.PropFieldGUI(_componentCountProp, WheelMessages.Count);
+            GUIUtils.SliderGUI(_componentSpacingProp, 0.1f, 5f, WheelMessages.Spacing);
+            GUIUtils.SliderGUI(_componentDistanceProp, 0.1f, 5f, WheelMessages.Distance);
             
             
-            GUIUtils.HeaderGUI(WheelUtilsMessages.RightWheelSettings);
-            GUIUtils.PropFieldGUI(_rightWheelRotationProp, WheelUtilsMessages.EulerRotation);
-            GUIUtils.PropFieldGUI(_rightTorqueDirectionProp, WheelUtilsMessages.TorqueDirection);
-            GUIUtils.PropFieldGUI(_rightWheelAxisProp, WheelUtilsMessages.HingeAxis);
-            GUIUtils.PropFieldGUI(_rightWheelMeshProp, WheelUtilsMessages.Mesh);
-            GUIUtils.PropFieldGUI(_rightWheelMaterialProp, WheelUtilsMessages.Material);
+            GUIUtils.HeaderGUI(WheelMessages.RightWheelSettings);
+            GUIUtils.PropFieldGUI(_rightWheelRotationProp, WheelMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_rightTorqueDirectionProp, WheelMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_rightWheelAxisProp, WheelMessages.HingeAxis);
+            GUIUtils.PropFieldGUI(_rightWheelMeshProp, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_rightWheelMaterialProp, WheelMessages.Material);
             
-            GUIUtils.HeaderGUI(WheelUtilsMessages.LeftWheelSettings);
-            GUIUtils.PropFieldGUI(_leftWheelRotationProp, WheelUtilsMessages.EulerRotation);
-            GUIUtils.PropFieldGUI(_leftTorqueDirectionProp, WheelUtilsMessages.TorqueDirection);
-            GUIUtils.PropFieldGUI(_leftWheelAxisProp, WheelUtilsMessages.HingeAxis);
-            GUIUtils.PropFieldGUI(_leftWheelMeshProp, WheelUtilsMessages.Mesh);
-            GUIUtils.PropFieldGUI(_leftWheelMaterialProp, WheelUtilsMessages.Material);
+            GUIUtils.HeaderGUI(WheelMessages.LeftWheelSettings);
+            GUIUtils.PropFieldGUI(_leftWheelRotationProp, WheelMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_leftTorqueDirectionProp, WheelMessages.TorqueDirection);
+            GUIUtils.PropFieldGUI(_leftWheelAxisProp, WheelMessages.HingeAxis);
+            GUIUtils.PropFieldGUI(_leftWheelMeshProp, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_leftWheelMaterialProp, WheelMessages.Material);
 
-            GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralWheelSettings);
-            GUIUtils.PropFieldGUI(_wheelMassProp, WheelUtilsMessages.Mass);
+            GUIUtils.HeaderGUI(WheelMessages.GeneralWheelSettings);
+            GUIUtils.PropFieldGUI(_wheelMassProp, WheelMessages.Mass);
             
-            GUIUtils.SliderGUI(_wheelOffsetProp, -1f, 1f, WheelUtilsMessages.Offset);
-            GUIUtils.SliderGUI(_wheelDistanceProp, 0f, 5f, WheelUtilsMessages.Distance);
-            GUIUtils.SliderGUI(_wheelSpacingProp, 0f, 5f, WheelUtilsMessages.Spacing);
+            GUIUtils.SliderGUI(_wheelOffsetProp, -1f, 1f, WheelMessages.Offset);
+            GUIUtils.SliderGUI(_wheelDistanceProp, 0f, 5f, WheelMessages.Distance);
+            GUIUtils.SliderGUI(_wheelSpacingProp, 0f, 5f, WheelMessages.Spacing);
             
-            GUIUtils.PropFieldGUI(_wheelColliderMaterialProp, WheelUtilsMessages.ColliderMaterial);
-            GUIUtils.SliderGUI(_wheelColliderRadiusProp, 0.1f, 5f, WheelUtilsMessages.ColliderRadius);
+            GUIUtils.PropFieldGUI(_wheelColliderMaterialProp, WheelMessages.ColliderMaterial);
+            GUIUtils.SliderGUI(_wheelColliderRadiusProp, 0.1f, 5f, WheelMessages.ColliderRadius);
             
 
-            GUIUtils.HeaderGUI(WheelUtilsMessages.LeftSuspensionSettings);
-            GUIUtils.PropFieldGUI(_leftSuspensionMeshProp, WheelUtilsMessages.Mesh);
-            GUIUtils.PropFieldGUI(_leftSuspensionMaterialProp, WheelUtilsMessages.Material);
+            GUIUtils.HeaderGUI(WheelMessages.LeftSuspensionSettings);
+            GUIUtils.PropFieldGUI(_leftSuspensionMeshProp, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_leftSuspensionMaterialProp, WheelMessages.Material);
             
-            GUIUtils.HeaderGUI(WheelUtilsMessages.RightSuspensionSettings);
-            GUIUtils.PropFieldGUI(_rightSuspensionMeshProp, WheelUtilsMessages.Mesh);
-            GUIUtils.PropFieldGUI(_rightSuspensionMaterialProp, WheelUtilsMessages.Material);
+            GUIUtils.HeaderGUI(WheelMessages.RightSuspensionSettings);
+            GUIUtils.PropFieldGUI(_rightSuspensionMeshProp, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_rightSuspensionMaterialProp, WheelMessages.Material);
             
-            GUIUtils.HeaderGUI(WheelUtilsMessages.GeneralSuspensionSettings);
-            GUIUtils.SliderGUI(_suspensionRotationProp, -180, 180, WheelUtilsMessages.EulerRotation);
-            GUIUtils.SliderGUI(_suspensionDistanceProp, 0f, 5f, WheelUtilsMessages.Distance);
-            GUIUtils.SliderGUI(_suspensionSpacingProp, 0f, 5f, WheelUtilsMessages.Spacing);
-            GUIUtils.PropFieldGUI(_suspensionMassProp, WheelUtilsMessages.Mass);
+            GUIUtils.HeaderGUI(WheelMessages.GeneralSuspensionSettings);
+            GUIUtils.SliderGUI(_suspensionRotationProp, -180, 180, WheelMessages.EulerRotation);
+            GUIUtils.SliderGUI(_suspensionDistanceProp, 0f, 5f, WheelMessages.Distance);
+            GUIUtils.SliderGUI(_suspensionSpacingProp, 0f, 5f, WheelMessages.Spacing);
+            GUIUtils.PropFieldGUI(_suspensionMassProp, WheelMessages.Mass);
             GUIUtils.PropFieldGUI(_anchorOffsetProp);
             GUIUtils.PropFieldGUI(_springForceProp);
             GUIUtils.PropFieldGUI(_springDamperProp);
-            GUIUtils.SliderGUI(_springTargetPositionProp, -90, 90, WheelUtilsMessages.SpringTargetPosition);
-            MaxAngelSliderGUI(_springMaxLimitAngleProp, -90, 90, WheelUtilsMessages.SpringMaxAngle);
-            MinAngleSliderGUI(_springMinLimitAngleProp, -90, 90, WheelUtilsMessages.SpringMinAngle);
+            GUIUtils.SliderGUI(_springTargetPositionProp, -90, 90, WheelMessages.SpringTargetPosition);
+            MaxAngelSliderGUI(_springMaxLimitAngleProp, -90, 90, WheelMessages.SpringMaxAngle);
+            MinAngleSliderGUI(_springMinLimitAngleProp, -90, 90, WheelMessages.SpringMinAngle);
+            
+            GUIUtils.PropFieldGUI(_resizeWheelProp, WheelMessages.Resize);
+            if (_resizeWheelProp.boolValue)
+            {
+                GUIUtils.SliderGUI(_wheelResizeScaleProp, 0.1f, 1f, WheelMessages.ResizeScale);
+                GUIUtils.PropFieldGUI(_wheelResizeSpeedProp, WheelMessages.ResizeSpeed);
+            }
 
             UpdateAllGUI();
         }
@@ -219,8 +234,8 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             for (int i = 0 ; i < transform.childCount ; i++)
             {
                 GameObject suspension = transform.GetChild(i).gameObject;
-                if (!suspension.name.Contains(WheelUtilsMessages.LeftSuspension) 
-                    && !suspension.name.Contains(WheelUtilsMessages.RightSuspension))
+                if (!suspension.name.Contains(WheelMessages.LeftSuspension) 
+                    && !suspension.name.Contains(WheelMessages.RightSuspension))
                     continue;
                 
                 HingeJoint hingeJoint = suspension.GetComponent<HingeJoint>();
@@ -252,7 +267,7 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
                 DrawUtils.DrawLine(
                     center,
                     center + targetPosition * radius,
-                    WheelUtilsMessages.Green
+                    WheelMessages.Green
                 );
                 
                 DrawUtils.DrawLine(
@@ -288,7 +303,7 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         
         private GameObject CreateWheel(bool isLeft, int i, GameObject suspension)
         {
-            string wheelName = isLeft ? WheelUtilsMessages.LeftWheel : WheelUtilsMessages.RightWheel;
+            string wheelName = isLeft ? WheelMessages.LeftWheel : WheelMessages.RightWheel;
             float wheelDistance = _wheelDistanceProp.floatValue + _componentDistanceProp.floatValue;
             wheelDistance = isLeft ? -wheelDistance : wheelDistance;
             float wheelSpacing = i * (_wheelSpacingProp.floatValue + _componentSpacingProp.floatValue) + _wheelOffsetProp.floatValue;
@@ -308,11 +323,17 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             Vector3 torqueDirection = isLeft ? _leftTorqueDirectionProp.vector3Value : _rightTorqueDirectionProp.vector3Value;
             Vector3 hingeAxis = isLeft ? _leftWheelAxisProp.vector3Value : _rightWheelAxisProp.vector3Value;
             
-            AttachCollider(wheel, _wheelColliderRadiusProp, _wheelColliderMaterialProp);
-            AttachRigidbody(wheel, _wheelMassProp);
+            UpdateSphereCollider(wheel.transform, _wheelColliderRadiusProp, _wheelColliderMaterialProp);
+            UpdateRigidbody(wheel.transform, _wheelMassProp);
             AttachWheelHingeJoint(wheel, suspension.transform, hingeAxis);
             AttachWheelScript(wheel, isLeft, torqueDirection);
-            AttachMesh(wheel, isLeft ? _leftWheelMeshProp : _rightWheelMeshProp, isLeft ? _leftWheelMaterialProp : _rightWheelMaterialProp);
+            UpdateMesh(
+                wheel.transform, 
+                isLeft ? _leftWheelMeshProp : _rightWheelMeshProp, 
+                isLeft ? _leftWheelMaterialProp : _rightWheelMaterialProp
+                );
+            AttachWheelResizeScript(wheel, _resizeWheelProp.boolValue, _wheelResizeScaleProp.floatValue, _wheelResizeSpeedProp.floatValue);
+            
             SetLayers();
 
             return wheel;
@@ -321,7 +342,7 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
 
         private GameObject CreateSuspension(bool isLeft, int i)
         {
-            string suspensionName = isLeft ? WheelUtilsMessages.LeftSuspension : WheelUtilsMessages.RightSuspension;
+            string suspensionName = isLeft ? WheelMessages.LeftSuspension : WheelMessages.RightSuspension;
             float suspensionDistance = _suspensionDistanceProp.floatValue + _componentDistanceProp.floatValue;
             suspensionDistance = isLeft ? -suspensionDistance : suspensionDistance;
             float suspensionSpacing = _suspensionSpacingProp.floatValue + _componentSpacingProp.floatValue;
@@ -337,17 +358,15 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
             
             DrawUtils.ShowLabel(suspension, _showLabelsProp);
             
-            AttachFixedRigidbody(suspension, _suspensionMassProp);
+            UpdateRigidbody(suspension.transform, _suspensionMassProp);
             AttachSuspensionHingeJoint(suspension);
-            AttachMesh(suspension, isLeft ? _leftSuspensionMeshProp : _rightSuspensionMeshProp, isLeft ? _leftSuspensionMaterialProp : _rightSuspensionMaterialProp);
+            UpdateMesh(
+                suspension.transform, 
+                isLeft ? _leftSuspensionMeshProp : _rightSuspensionMeshProp, 
+                isLeft ? _leftSuspensionMaterialProp : _rightSuspensionMaterialProp
+                );
 
             return suspension;
-        }
-        
-        protected override void AttachRigidbody(GameObject gameObject, SerializedProperty massProp, SerializedProperty angularDragProp = null)
-        {
-            Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
-            wheelRigidbody.mass = massProp.floatValue;
         }
 
         private void AttachSuspensionHingeJoint(GameObject suspension)

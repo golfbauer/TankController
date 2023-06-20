@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
 {
     public class CreateSuspensionWheel: CreateWheel
@@ -13,7 +14,7 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         public float wheelOffset = 0f;
 
         // Rigidbody settings
-        public float wheelMass = 1f;
+        public float wheelMass = 50f;
 
         // Suspension
         //Rotation
@@ -21,23 +22,23 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         
         // Right Mesh settings
         public Mesh rightSuspensionMesh = null;
-        public Material rightSuspensionMaterial = null;
+        public List<Material> rightSuspensionMaterials = null;
         
         // Left Mesh settings
         public Mesh leftSuspensionMesh = null;
-        public Material leftSuspensionMaterial = null;
+        public List<Material> leftSuspensionMaterials = null;
         
         // Rigidbody settings
-        public float suspensionMass = 1f;
+        public float suspensionMass = 30f;
         
         // HingeJoint settings
-        public Vector3 AnchorOffset = Vector3.zero;
-        public float SpringForce = 0f;
-        public float DamperForce = 0f;
-        public float SpringTargetPosition = 0f;
+        public Vector3 anchorOffset = Vector3.zero;
+        public float springForce = 0f;
+        public float damperForce = 0f;
+        public float springTargetPosition = 0f;
         
-        public float MinLimitAngle = 0f;
-        public float MaxLimitAngle = 0f;
+        public float minLimitAngle = 0f;
+        public float maxLimitAngle = 0f;
         
         // Relation
         public float suspensionDistance = 0f;

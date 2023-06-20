@@ -13,13 +13,13 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private SerializedProperty _showLabelsProp;
         private SerializedProperty _showConnectionsProp;
         
-        private SerializedProperty _rotationProp;
+        private SerializedProperty _leftRotationProp;
         private SerializedProperty _leftMesh;
-        private SerializedProperty _leftMaterial;
+        private SerializedProperty _leftMaterials;
         
         private SerializedProperty _rightRotationProp;
         private SerializedProperty _rightMesh;
-        private SerializedProperty _rightMaterial;
+        private SerializedProperty _rightMaterials;
         
         private SerializedProperty _boxColliderCenter;
         private SerializedProperty _boxColliderSize;
@@ -68,13 +68,13 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             _showLabelsProp = serializedObject.FindProperty("showLabels");
             _showConnectionsProp = serializedObject.FindProperty("showConnections");
             
-            _rotationProp = serializedObject.FindProperty("Rotation");
-            
+            _leftRotationProp = serializedObject.FindProperty("leftRotation");
             _leftMesh = serializedObject.FindProperty("leftMesh");
-            _leftMaterial = serializedObject.FindProperty("leftMaterial");
+            _leftMaterials = serializedObject.FindProperty("leftMaterials");
             
+            _rightRotationProp = serializedObject.FindProperty("rightRotation");
             _rightMesh = serializedObject.FindProperty("rightMesh");
-            _rightMaterial = serializedObject.FindProperty("rightMaterial");
+            _rightMaterials = serializedObject.FindProperty("rightMaterials");
             
             _boxColliderCenter = serializedObject.FindProperty("boxColliderCenter");
             _boxColliderSize = serializedObject.FindProperty("boxColliderSize");
@@ -102,15 +102,17 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             GUIUtils.PropFieldGUI(_showLabelsProp, "Show Labels");
             GUIUtils.PropFieldGUI(_showConnectionsProp, "Show Connections");
             
-            GUIUtils.HeaderGUI("Chain");
-            GUIUtils.PropFieldGUI(_rotationProp, "Rotation");
-            
+            GUIUtils.HeaderGUI("Left Chain Settings");
+            GUIUtils.PropFieldGUI(_leftRotationProp, "Left Rotation");
             GUIUtils.PropFieldGUI(_leftMesh, "Left Mesh");
-            GUIUtils.PropFieldGUI(_leftMaterial, "Left Material");
+            GUIUtils.PropFieldGUI(_leftMaterials, "Left Material");
             
+            GUIUtils.HeaderGUI("Right Chain Settings");
+            GUIUtils.PropFieldGUI(_rightRotationProp, "Right Rotation");
             GUIUtils.PropFieldGUI(_rightMesh, "Right Mesh");
-            GUIUtils.PropFieldGUI(_rightMaterial, "Right Material");
+            GUIUtils.PropFieldGUI(_rightMaterials, "Right Material");
             
+            GUIUtils.HeaderGUI("General Chain Settings");
             GUIUtils.PropFieldGUI(_boxColliderCenter, "Collider Center");
             GUIUtils.PropFieldGUI(_boxColliderSize, "Collider Size");
             GUIUtils.PropFieldGUI(_boxColliderMaterial, "Collider Material");
@@ -241,7 +243,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
 
                 Vector3 pivot = new Vector3(center.x + x, center.y, center.z + z);
                 float rotationAngle = Mathf.Lerp(startAngle, endAngle, i / (curveCount - 1));
-                Vector3 rotation = _rotationProp.vector3Value;
+                Vector3 rotation = isLeft ? _leftRotationProp.vector3Value : _rightRotationProp.vector3Value;
                 rotation.y += rotationAngle;
     
                 string linkName = isLeft ? "L " : "R ";
@@ -260,7 +262,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
                 Vector3 pivot = start + direction * (i * _chainSpacing.floatValue);
                 string linkName = isLeft ? "L " : "R ";
                 linkName += isUpper ? "Upper Straight " : "Lower Straight ";
-                Vector3 rotation = new Vector3(0, rotationAngle, 0);
+                Vector3 rotation = isLeft ? _leftRotationProp.vector3Value : _rightRotationProp.vector3Value;
+                rotation.y = rotationAngle;
                 GameObject chainLink = CreateChainLink(pivot, linkName + (i - 0.5f), isLeft, rotation);
                 chainLinks.Add(chainLink);
             }
@@ -286,8 +289,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private void AttachComponents(GameObject chainLink, bool isLeft)
         {
             SerializedProperty mesh =  isLeft ? _leftMesh : _rightMesh;
-            AttachMesh(chainLink, mesh, _leftMaterial);
-            AttachRigidbody(chainLink, _chainMass, _angularDrag);
+            UpdateMesh(chainLink.transform, mesh, _leftMaterials);
+            UpdateRigidbody(chainLink.transform, _chainMass, _angularDrag);
             AttachBoxCollider(chainLink);
             AttachScript(chainLink);
         }
@@ -332,14 +335,16 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         protected override void OnSceneGUI()
         {
             if (!_showConnectionsProp.boolValue) return;
+            Quaternion rotation90DegreesAroundZ = Quaternion.Euler(0, 0, 90);
             
             for (int i = 0; i < transform.childCount; i++)
             {
                 GameObject chainLink = transform.GetChild(i).gameObject;
+                Vector3 rotatedLocalPosition = rotation90DegreesAroundZ * chainLink.transform.localPosition;
                 
                 DrawUtils.DrawLine(
                     transform.position,
-                    transform.position + chainLink.transform.localPosition,
+                    transform.position + rotatedLocalPosition,
                     Color.green
                 );
             }

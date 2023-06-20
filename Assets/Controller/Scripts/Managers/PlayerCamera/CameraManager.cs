@@ -22,6 +22,12 @@ namespace Controller.Scripts.Managers.PlayerCamera
 
         private void Awake()
         {
+            if (cameraControllers.Count == 0)
+            {
+                DestroyImmediate(this);
+                return;
+            }
+            
             SetUpCamera();
             SetUpCameraControllers();
             _activeCameraMovementController.ToggleUI(true);

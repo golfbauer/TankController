@@ -16,41 +16,6 @@ namespace Controller.Scripts.Editors.Wheels
                 DestroyImmediate (transform.GetChild(0).gameObject);
         }
         
-        protected void AttachCollider(GameObject gameObject, SerializedProperty radiusProp, SerializedProperty materialProp)
-        {
-            var collider = gameObject.AddComponent<SphereCollider>();
-            collider.radius = radiusProp.floatValue;
-            collider.center = Vector3.zero;
-            collider.material = materialProp.objectReferenceValue as PhysicMaterial;
-        }
-        
-        protected void AttachMesh(GameObject gameObject, SerializedProperty meshProp, SerializedProperty materialProp)
-        {
-            if(meshProp.objectReferenceValue == null || materialProp.objectReferenceValue == null)
-                return;
-            
-            MeshFilter mesh = gameObject.AddComponent<MeshFilter>();
-            mesh.mesh = meshProp.objectReferenceValue as Mesh;
-            MeshRenderer renderer = gameObject.AddComponent<MeshRenderer>();
-            renderer.material = materialProp.objectReferenceValue as Material;
-        }
-
-        protected virtual void AttachRigidbody(GameObject gameObject, SerializedProperty massProp,
-            SerializedProperty angularDragProp = null)
-        {
-            Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
-            wheelRigidbody.mass = massProp.floatValue;
-            
-            if (angularDragProp != null)
-                wheelRigidbody.angularDrag = angularDragProp.floatValue;
-        }
-        
-        protected void AttachFixedRigidbody(GameObject gameObject, SerializedProperty massProp)
-        {
-            Rigidbody wheelRigidbody = gameObject.AddComponent<Rigidbody>();
-            wheelRigidbody.mass = massProp.floatValue;
-        }
-        
         protected void AttachWheelHingeJoint(GameObject wheel, Transform connectedTo, Vector3 axis)
         {
             HingeJoint wheelHingeJoint = wheel.AddComponent<HingeJoint>();
@@ -79,11 +44,22 @@ namespace Controller.Scripts.Editors.Wheels
             
             wheelManager.wheelRadius = wheelRadius;
         }
-
-        protected void UpdateAllGUI()
+        
+        protected void AttachWheelResizeScript(GameObject wheel, bool attachResize, float wheelScale, float time)
         {
-            if(GUILayout.Button(WheelUtilsMessages.UpdateAll))
-                updateAll = true;
+            if (!attachResize){
+                WheelResize resize = wheel.GetComponent<WheelResize>();
+                if (resize != null)
+                    DestroyImmediate(resize);
+                return;
+            }
+            
+            WheelResize wheelResize = wheel.GetComponent<WheelResize>();
+            if (wheelResize == null)
+                wheelResize = wheel.AddComponent<WheelResize>();
+            
+            wheelResize.wheelResizeScale = wheelScale;
+            wheelResize.wheelResizeSpeed = time;
         }
 
         protected virtual void OnSceneGUI()
