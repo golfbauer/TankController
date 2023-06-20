@@ -20,16 +20,20 @@ namespace Controller.Scripts.Editors.Wheels
         
         public const string ColliderRadius = "Collider Radius";
         public const string ColliderMaterial = "Collider Material";
+        public const string ColliderCenter = "Collider Center";
+        public const string ColliderSize = "Collider Size";
         
         public const string SpringTargetPosition = "Spring Target Position";
         public const string SpringMaxAngle = "Spring Max Angle";
         public const string SpringMinAngle = "Spring Min Angle";
+        public const string BreakForce = "Break Force";
         
         public const string EulerRotation = "Euler Rotation";
         public const string TorqueDirection = "Torque Direction";
         public const string HingeAxis = "Hinge Axis";
 
         public const string Mass = "Mass";
+        public const string AngularDrag = "Angular Drag";
 
         public const string Mesh = "Mesh";
         public const string Material = "Material";
@@ -40,6 +44,16 @@ namespace Controller.Scripts.Editors.Wheels
         public const string RightWheel = "R Wheel ";
         public const string LeftSuspension = "L Suspension ";
         public const string RightSuspension = "R Suspension ";
+
+        public const string ShowConnections = "Show Connections";
+        public const string LeftChainSettings = "Left Chain Settings";
+        public const string RightChainSettings = "Right Chain Settings";
+        public const string ChainSettings = "Chain Settings";
+        
+        public const string StraightCount = "Straight Count";
+        public const string FrontCurveCount = "Front Curve Count";
+        public const string BackCurveCount = "Back Curve Count";
+        
         
         public const string Resize = "Use Resize Script";
         public const string ResizeScale = "Resize Scale";

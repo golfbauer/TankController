@@ -34,6 +34,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private SerializedProperty _chainStraightCount;
         private SerializedProperty _chainFrontCurveCount;
         private SerializedProperty _chainBackCurveCount;
+        
+        private SerializedProperty _hingeJointBreakForce;
 
         
         private Vector3 _leftFrontCurveCenter;
@@ -90,6 +92,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             _chainFrontCurveCount = serializedObject.FindProperty("chainFrontCurveCount");
             _chainBackCurveCount = serializedObject.FindProperty("chainBackCurveCount");
             
+            _hingeJointBreakForce = serializedObject.FindProperty("hingeJointBreakForce");
+            
             transform = ((CreateChain) target).transform;
             transform.localRotation = Quaternion.Euler(0, 0, 90);
             _leftChainLinks = new List<GameObject>();
@@ -98,34 +102,36 @@ namespace Controller.Scripts.Editors.Wheels.Chain
 
         public override void SetUpGUI()
         {
-            GUIUtils.HeaderGUI("General");
-            GUIUtils.PropFieldGUI(_showLabelsProp, "Show Labels");
-            GUIUtils.PropFieldGUI(_showConnectionsProp, "Show Connections");
+            GUIUtils.HeaderGUI(WheelMessages.GeneralSettings);
+            GUIUtils.PropFieldGUI(_showLabelsProp);
+            GUIUtils.PropFieldGUI(_showConnectionsProp, WheelMessages.ShowConnections);
             
-            GUIUtils.HeaderGUI("Left Chain Settings");
-            GUIUtils.PropFieldGUI(_leftRotationProp, "Left Rotation");
-            GUIUtils.PropFieldGUI(_leftMesh, "Left Mesh");
-            GUIUtils.PropFieldGUI(_leftMaterials, "Left Material");
+            GUIUtils.HeaderGUI(WheelMessages.LeftChainSettings);
+            GUIUtils.PropFieldGUI(_leftRotationProp, WheelMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_leftMesh, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_leftMaterials, WheelMessages.Material);
             
-            GUIUtils.HeaderGUI("Right Chain Settings");
-            GUIUtils.PropFieldGUI(_rightRotationProp, "Right Rotation");
-            GUIUtils.PropFieldGUI(_rightMesh, "Right Mesh");
-            GUIUtils.PropFieldGUI(_rightMaterials, "Right Material");
+            GUIUtils.HeaderGUI(WheelMessages.RightChainSettings);
+            GUIUtils.PropFieldGUI(_rightRotationProp, WheelMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_rightMesh, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_rightMaterials, WheelMessages.Material);
             
-            GUIUtils.HeaderGUI("General Chain Settings");
-            GUIUtils.PropFieldGUI(_boxColliderCenter, "Collider Center");
-            GUIUtils.PropFieldGUI(_boxColliderSize, "Collider Size");
-            GUIUtils.PropFieldGUI(_boxColliderMaterial, "Collider Material");
+            GUIUtils.HeaderGUI(WheelMessages.ChainSettings);
+            GUIUtils.PropFieldGUI(_boxColliderCenter, WheelMessages.ColliderCenter);
+            GUIUtils.PropFieldGUI(_boxColliderSize, WheelMessages.ColliderSize);
+            GUIUtils.PropFieldGUI(_boxColliderMaterial, WheelMessages.ColliderMaterial);
 
-            GUIUtils.PropFieldGUI(_chainMass, "Chain Mass");
-            GUIUtils.PropFieldGUI(_angularDrag, "Angular Drag");
+            GUIUtils.PropFieldGUI(_chainMass, WheelMessages.Mass);
+            GUIUtils.PropFieldGUI(_angularDrag, WheelMessages.AngularDrag);
             
-            GUIUtils.SliderGUI(_chainDistance, 0.1f, 5f, "Distance");
-            GUIUtils.SliderGUI(_chainSpacing, 0.01f, 1f, "Spacing");
+            GUIUtils.PropFieldGUI(_hingeJointBreakForce, WheelMessages.BreakForce);
             
-            GUIUtils.IntSliderGUI(_chainStraightCount, 1, 100, "Straight Count");
-            GUIUtils.IntSliderGUI(_chainFrontCurveCount, 1, 100, "Front Curve Count");
-            GUIUtils.IntSliderGUI(_chainBackCurveCount, 1, 100, "Back Curve Count");
+            GUIUtils.SliderGUI(_chainDistance, 0.1f, 5f, WheelMessages.Distance);
+            GUIUtils.SliderGUI(_chainSpacing, 0.01f, 1f, WheelMessages.Spacing);
+            
+            GUIUtils.IntSliderGUI(_chainStraightCount, 1, 100, WheelMessages.StraightCount);
+            GUIUtils.IntSliderGUI(_chainFrontCurveCount, 1, 100, WheelMessages.FrontCurveCount);
+            GUIUtils.IntSliderGUI(_chainBackCurveCount, 1, 100, WheelMessages.BackCurveCount);
             
             UpdateAllGUI();
         }
@@ -325,6 +331,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             hingeJoint.anchor = anchor;
             hingeJoint.axis = Vector3.right;
             hingeJoint.connectedBody = prevLink.GetComponent<Rigidbody>();
+            hingeJoint.breakForce = _hingeJointBreakForce.floatValue;
         }
 
         private void AttachScript(GameObject chainLink)

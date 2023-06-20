@@ -40,6 +40,9 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         public Vector3 boxColliderCenter;
         public Vector3 boxColliderSize;
         public PhysicMaterial boxColliderMaterial;
+        
+        // Hinge Joint
+        public float hingeJointBreakForce = 100000;
 
         private void Start()
         {
