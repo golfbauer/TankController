@@ -3,96 +3,104 @@ using UnityEngine;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
 {
+    /// <summary>
+    /// I recommend taking a look at the ThirdPersonCameraMovementController.cs and the ScopedCameraMovementController.cs
+    /// </summary>
     public class CameraMovementController : MonoBehaviour
     {
-        [SerializeField] protected KeyCode cameraSwitchKey;
-        [SerializeField] protected float cameraZOffset;
-        [SerializeField] protected float cameraSensitivity;
-        [SerializeField] protected float minPitch;
-        [SerializeField] protected float maxPitch;
-        [SerializeField] protected float fieldOfView;
+        public KeyCode cameraSwitchKey = KeyCode.None;
+        public float cameraZOffset = 1;
+        public float cameraSensitivity = 1;
+        public float minPitch = -30;
+        public float maxPitch = 30;
+        public float fieldOfView = 60;
 
-        public float Yaw => yaw;
-        public float Pitch => pitch;
+        protected GameObject MainCameraObject;
+        protected Camera MainCamera;
+        protected CameraManager CameraManager;
+        protected CameraUIController CameraUIController;
         
-        protected GameObject mainCameraObject;
-        protected Camera mainCamera;
-        protected CameraManager cameraManager;
-        protected CameraUIController cameraUIController;
-        protected float yaw;
-        protected float pitch;
+        public float yaw;
+        public float pitch;
 
         private void Awake()
         {
-            if(cameraUIController == null)
+            if(CameraUIController == null)
             {
-                cameraUIController = GetComponent<CameraUIController>();
+                CameraUIController = GetComponent<CameraUIController>();
             }
         }
 
-        public bool CameraKeyIsPressed()
+        public virtual bool CameraKeyIsPressed()
         {
             return Input.GetKeyDown(cameraSwitchKey);
         }
-        
-        public virtual void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
-        {
-            mainCameraObject = mainCamera;
-            this.mainCamera = mainCameraObject.GetComponent<Camera>();
-            this.cameraManager = cameraManager;
-        }
-        
-        public virtual void SetTransitionInConditions(CameraMovementController previousCameraMovementController)
-        {
-            yaw = previousCameraMovementController.Yaw;
-            pitch = previousCameraMovementController.Pitch;
-            mainCameraObject.transform.position = transform.position;
-            mainCamera.fieldOfView = fieldOfView;
-            ToggleUI(true);
-        }
-        
-        public virtual void SetTransitionOutConditions(CameraMovementController nextCameraMovementController)
-        {
-            ToggleUI();
-        }
 
-        public virtual void TransitionIn()
-        {
-            cameraManager.FinishTransitionIn();
-        }
+        /// <summary>
+        /// Set up the controller, this is called once in the CameraManager on Start.
+        /// </summary>
+        /// <param name="mainCamera"></param>
+        /// <param name="cameraManager"></param>
+        public virtual void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager) {}
 
-        public virtual void TransitionOut()
-        {
-            cameraManager.FinishTransitionOut();
-        }
+        /// <summary>
+        /// Can be used to set up parameters for the transition in.
+        /// This is called once in the CameraManager when Controller is switched.
+        /// </summary>
+        /// <param name="previousCameraMovementController"></param>
+        public virtual void SetUpTransitionIn(CameraMovementController previousCameraMovementController) {}
 
+        /// <summary>
+        /// Called in the update loop of the CameraManager when transitioning in.
+        /// This function needs to call the FinishTransitionIn function of the CameraManager, to exit the loop.
+        /// </summary>
+        public virtual void TransitionIn() {}
+
+        /// <summary>
+        /// Can be used to set up parameters for the transition out.
+        /// This is called once in the CameraManager when Controller is switched.
+        /// </summary>
+        /// <param name="nextCameraMovementController"></param>
+        public virtual void SetUpTransitionOut(CameraMovementController nextCameraMovementController) {}
+
+        /// <summary>
+        /// Called in the update loop of the CameraManager when transitioning out.
+        /// This function needs to call the FinishTransitionOut function of the CameraManager, to exit the loop.
+        /// </summary>
+        public virtual void TransitionOut() {}
+
+        /// <summary>
+        /// Called in the update loop of the CameraManager when the controller is active.
+        /// </summary>
         public virtual void ActiveCameraMovement()
         {
-            float mouseX = Input.GetAxis("Mouse X") * cameraSensitivity;
-            float mouseY = Input.GetAxis("Mouse Y") * cameraSensitivity;
-
-            yaw += mouseX;
-            pitch = Mathf.Clamp(pitch - mouseY, minPitch, maxPitch);
-
-            Quaternion rotation = Quaternion.Euler(pitch, yaw, 0.0f);
-
-            mainCameraObject.transform.position = transform.position;
-            mainCameraObject.transform.rotation = rotation;
-            
-            mainCameraObject.transform.Translate(0, 0, -cameraZOffset, Space.Self);
+            throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets camera type for the CameraManager.
+        /// </summary>
+        /// <returns></returns>
         public virtual CameraType GetCameraType()
         {
-            return CameraType.ThirdPerson;
+            throw new System.NotImplementedException();
         }
 
-        public virtual void ToggleUI(bool activate = false)
+        /// <summary>
+        /// Disables or enables all UI elements for this controller.
+        /// </summary>
+        /// <param name="activate"></param>
+        public virtual void ShowUI(bool activate)
         {
-            if (cameraUIController == null)
+            if (CameraUIController == null)
                 return;
             
-            cameraUIController.ToggleAllUIElements(activate);
+            CameraUIController.ToggleAllUIElements(activate);
+        }
+
+        public virtual void EditorGUI()
+        {
+            
         }
     }
 }

@@ -10,11 +10,11 @@ namespace Controller.Scripts.Managers.PlayerCamera
     public class CameraManager : MonoBehaviour
     {
         [SerializeField] private List<CameraMovementController> cameraControllers = new();
+        [SerializeField] private KeyCode cameraSwitchKey = KeyCode.C;
 
         private GameObject _camera;
         private CameraMovementController _activeCameraMovementController;
-        private CameraMovementController _switchToCameraMovementController;
-        private bool _isSwitchingCameras;
+        private CameraMovementController _nextCameraMovementController;
 
         public bool TransitioningIn { get; set; }
         public bool TransitioningOut { get; set; }
@@ -24,13 +24,12 @@ namespace Controller.Scripts.Managers.PlayerCamera
         {
             if (cameraControllers.Count == 0)
             {
-                DestroyImmediate(this);
+                Destroy(this);
                 return;
             }
             
             SetUpCamera();
             SetUpCameraControllers();
-            _activeCameraMovementController.ToggleUI(true);
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -63,10 +62,9 @@ namespace Controller.Scripts.Managers.PlayerCamera
             }
             
             _activeCameraMovementController = cameraControllers[0];
-            _switchToCameraMovementController = cameraControllers[0];
+            _nextCameraMovementController = cameraControllers[0];
+            _activeCameraMovementController.ShowUI(true);
         }
-
-
 
         private void Update()
         {
@@ -78,15 +76,11 @@ namespace Controller.Scripts.Managers.PlayerCamera
             
             if (TransitioningIn)
             {
-                _switchToCameraMovementController.TransitionIn();
+                _nextCameraMovementController.TransitionIn();
                 return;
             }
-
-            if (_isSwitchingCameras)
-            {
-                _activeCameraMovementController = _switchToCameraMovementController;
-                _isSwitchingCameras = false;
-            }
+            
+            _activeCameraMovementController = _nextCameraMovementController;
             
             _activeCameraMovementController.ActiveCameraMovement();
             
@@ -95,30 +89,40 @@ namespace Controller.Scripts.Managers.PlayerCamera
 
         private void CheckCameraControllers()
         {
+            if (Input.GetKeyDown(cameraSwitchKey))
+            {
+                int index = cameraControllers.IndexOf(_activeCameraMovementController);
+                if(index == cameraControllers.Count - 1)
+                    index = -1;
+                
+                SwitchToToNextCamera(cameraControllers[index + 1]);
+                return;
+            }
+            
             foreach(CameraMovementController cameraController in cameraControllers)
             {
                 if (cameraController == _activeCameraMovementController)
                     continue;
                 
-                CheckCameraController(cameraController);
+                if (cameraController.CameraKeyIsPressed())
+                {
+                    SwitchToToNextCamera(cameraController);
+                }
             }
         }
 
-        private void CheckCameraController(CameraMovementController cameraMovementController)
+        private void SwitchToToNextCamera(CameraMovementController cameraMovementController)
         {
-            if (cameraMovementController.CameraKeyIsPressed())
-            {
-                _isSwitchingCameras = true;
-                _switchToCameraMovementController = cameraMovementController;
-                _switchToCameraMovementController.SetTransitionInConditions(_activeCameraMovementController);
-                _activeCameraMovementController.SetTransitionOutConditions(_switchToCameraMovementController);
-                
-                TransitioningOut = true;
-            }
+            _nextCameraMovementController = cameraMovementController;
+            _activeCameraMovementController.SetUpTransitionOut(_nextCameraMovementController);
+            _nextCameraMovementController.SetUpTransitionIn(_activeCameraMovementController);
+            TransitioningOut = true;
         }
+        
         
         public void FinishTransitionIn()
         {
+            TransitioningOut = false;
             TransitioningIn = false;
         }
         
@@ -159,7 +163,7 @@ namespace Controller.Scripts.Managers.PlayerCamera
             switch (cameraType)
             {
                 case (CameraType.ThirdPerson):
-                    cameraMovementController = cameraPosition.AddComponent<CameraMovementController>();
+                    cameraMovementController = cameraPosition.AddComponent<ThirdPersonCameraMovementController>();
                     break;
                 case CameraType.Scoped:
                     cameraMovementController = cameraPosition.AddComponent<ScopedCameraMovementController>();

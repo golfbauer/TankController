@@ -79,6 +79,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 
         public UIElement AddNewUIElement(UIElementType elementType)
         {
+
+            if (canvas == null)
+            {
+                throw new Exception("No canvas assigned to CameraUIController!");
+            }
+            
             GameObject uiGameObject = new GameObject("UIElement");
             RectTransform rectTransform = uiGameObject.AddComponent<RectTransform>();
             
@@ -88,6 +94,8 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
             
             UIElementData.UIElementData elementData = CreateUIElementData(elementType);
             UIElement uiElement = CreateUIElement(elementData, uiGameObject);
+            
+            UpdateActiveUIElements();
 
             return uiElement;
         }

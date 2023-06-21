@@ -1,68 +1,41 @@
-﻿using System;
-using Controller.Scripts.Editors.Utils;
-using UnityEditor;
-using UnityEditor.UIElements;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
 {
-    public class ScopedCameraMovementController : CameraMovementController
+    public class ThirdPersonCameraMovementController : CameraMovementController
     {
-        [SerializeField] private float timeToZoom = 0;
-
-        private float _currentZoom;
-        private float _targetZoom;
-        private float _zoomSpeed;
-        private bool _isZooming;
-
         public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
             CameraManager = cameraManager;
         }
-        
-        private void Zoom()
-        {
-            _currentZoom = Mathf.Lerp(_currentZoom, _targetZoom, Time.deltaTime * _zoomSpeed);
-            MainCamera.fieldOfView = _currentZoom;
-
-            _isZooming = !(Math.Abs(_currentZoom - _targetZoom) < 0.1f);
-        }
 
         public override void SetUpTransitionIn(CameraMovementController previousCameraMovementController)
         {
             yaw = previousCameraMovementController.yaw;
             pitch = previousCameraMovementController.pitch;
-            
-            _targetZoom = fieldOfView;
-            _currentZoom = MainCamera.fieldOfView;
-            _zoomSpeed = Mathf.Abs(_targetZoom - _currentZoom) / timeToZoom;
-            ShowUI(true);
         }
 
         public override void TransitionIn()
         {
             MainCameraObject.transform.position = transform.position;
-            Zoom();
-
-            if (!_isZooming)
-            {
-                CameraManager.FinishTransitionIn();
-                MainCamera.fieldOfView = fieldOfView;
-            }
+            MainCamera.fieldOfView = fieldOfView;
+            ShowUI(true);
+            CameraManager.FinishTransitionIn();
         }
-
+        
         public override void SetUpTransitionOut(CameraMovementController nextCameraMovementController)
         {
+            
         }
-
+        
         public override void TransitionOut()
         {
             ShowUI(false);
             CameraManager.FinishTransitionOut();
         }
-        
+
         public override void ActiveCameraMovement()
         {
             float mouseX = Input.GetAxis("Mouse X") * cameraSensitivity;
@@ -76,17 +49,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
             MainCameraObject.transform.position = transform.position;
             MainCameraObject.transform.rotation = rotation;
             
-            MainCameraObject.transform.Translate(0, 0, cameraZOffset, Space.Self);
-        }
-        
-        public override CameraType GetCameraType()
-        {
-            return CameraType.Scoped;
+            MainCameraObject.transform.Translate(0, 0, -cameraZOffset, Space.Self);
         }
 
-        public override void EditorGUI()
+        public override CameraType GetCameraType()
         {
-            timeToZoom = EditorGUILayout.FloatField("Time to zoom", timeToZoom);
+            return CameraType.ThirdPerson;
         }
     }
 }
