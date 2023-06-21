@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Controller.Scripts.Editors.Turret.Gun;
 using Controller.Scripts.Editors.Utils;
+using Controller.Scripts.Managers.ImpactCollision;
 using Controller.Scripts.Managers.Turret;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -9,9 +10,9 @@ using UnityEngine;
 
 namespace Controller.Scripts.Editors.Turret.Base
 {
-    [CustomEditor(typeof(CreateTurret))]
+    [CustomEditor(typeof(Turret))]
     [CanEditMultipleObjects]
-    public class CreateTurretEditor : TankComponentEditor
+    public class TurretEditor : TankComponentEditor
     {
         // Turret
         // Mesh
@@ -19,15 +20,12 @@ namespace Controller.Scripts.Editors.Turret.Base
         private SerializedProperty _turretMaterials;
         
         // Collider
-        private SerializedProperty _physicsMaterial;
-
         private SerializedProperty _colliderMeshes;
         
         private SerializedProperty _useBoxCollider;
         private SerializedProperty _boxColliderChangeManually;
         private SerializedProperty _boxColliderSize;
         private SerializedProperty _boxColliderCenter;
-        
         
         private List<GameObject> _mainGuns;
 
@@ -38,7 +36,6 @@ namespace Controller.Scripts.Editors.Turret.Base
             
             _colliderMeshes = serializedObject.FindProperty("colliderMeshes");
             
-            _physicsMaterial = serializedObject.FindProperty("physicsMaterial");
             _useBoxCollider = serializedObject.FindProperty("useBoxCollider");
             
             _boxColliderChangeManually = serializedObject.FindProperty("boxColliderChangeManually");
@@ -50,7 +47,7 @@ namespace Controller.Scripts.Editors.Turret.Base
         
         private void Initialize()
         {   
-            transform = ((CreateTurret) target).gameObject.transform;
+            transform = ((Turret) target).gameObject.transform;
             LayerUtils.SetLayer(transform.gameObject, LayerUtils.HullLayer);
             
             if(_mainGuns == null)
@@ -58,19 +55,24 @@ namespace Controller.Scripts.Editors.Turret.Base
             
             if(transform.GetComponent<HorizontalRotation>() == null)
                 transform.gameObject.AddComponent<HorizontalRotation>();
+            
+            if(transform.GetComponent<CollisionManager>() == null)
+                transform.gameObject.AddComponent<CollisionManager>();
+            
+            if(transform.Find("Mantlet") == null)
+                AddMantlet();
         }
 
         public override void SetUpGUI()
         {
-            GUIUtils.HeaderGUI("Turret");
-            GUIUtils.PropFieldGUI(_turretMesh, "Turret Mesh");
-            GUIUtils.PropFieldGUI(_turretMaterials, "Turret Materials");
-            GUIUtils.PropFieldGUI(_useBoxCollider, "Box Collider");
-            GUIUtils.PropFieldGUI(_physicsMaterial, "Physics Material");
+            GUIUtils.HeaderGUI(TurretMessages.TurretSettings);
+            GUIUtils.PropFieldGUI(_turretMesh, TurretMessages.Mesh);
+            GUIUtils.PropFieldGUI(_turretMaterials, TurretMessages.Materials);
+            
+            GUIUtils.PropFieldGUI(_useBoxCollider, TurretMessages.UseBoxCollider);
             ShowCollider();
             
             EditorGUILayout.Space();
-            AddNewMantlet();
             updateAll = GUIUtils.UpdateAllGUI();
         }
 
@@ -78,30 +80,31 @@ namespace Controller.Scripts.Editors.Turret.Base
         {
             if (_useBoxCollider.boolValue)
             {
-                GUIUtils.PropFieldGUI(_boxColliderChangeManually, "Change Box Collider Manually");
-                GUIUtils.PropFieldGUI(_boxColliderSize, "Box Collider Size");
-                GUIUtils.PropFieldGUI(_boxColliderCenter, "Box Collider Center");
+                GUIUtils.PropFieldGUI(_boxColliderChangeManually, TurretMessages.ChangeBoxColliderManually);
+                if (!_boxColliderChangeManually.boolValue)
+                {
+                    BoxCollider boxCollider = transform.GetComponent<BoxCollider>();
+                    if (boxCollider != null)
+                    {
+                        _boxColliderCenter.vector3Value = boxCollider.center;
+                        _boxColliderSize.vector3Value = boxCollider.size;
+                    }
+                    GUIUtils.PropFieldGUI(_boxColliderSize, TurretMessages.BoxColliderSize);
+                    GUIUtils.PropFieldGUI(_boxColliderCenter, TurretMessages.BoxColliderCenter);
+                }
             }
             else
-                GUIUtils.PropFieldGUI(_colliderMeshes, "Collider Meshes");
-        }
-
-        private void AddNewMantlet()
-        {
-            if (GUILayout.Button("Add Main Gun"))
-            {
-                AddMantlet(_mainGuns.Count);
-            }
+                GUIUtils.PropFieldGUI(_colliderMeshes, TurretMessages.ColliderMeshes);
         }
         
-        private void AddMantlet(int i)
+        private void AddMantlet()
         {
-            GameObject mantlet = new GameObject("Mantlet " + i);
+            GameObject mantlet = new GameObject("Mantlet");
             mantlet.transform.SetParent(transform);
             mantlet.transform.localPosition = Vector3.zero;
             LayerUtils.SetLayer(mantlet, LayerUtils.HullLayer);
             
-            mantlet.AddComponent<CreateGun>();
+            mantlet.AddComponent<Gun.Gun>();
 
             _mainGuns.Add(mantlet);
             
@@ -122,12 +125,12 @@ namespace Controller.Scripts.Editors.Turret.Base
                     UpdateBoxCollider(transform);
                     return;
                 }
-                UpdateBoxCollider(transform,_boxColliderCenter, _boxColliderSize, _physicsMaterial);
+                UpdateBoxCollider(transform,_boxColliderCenter, _boxColliderSize);
                 return;
             }
             
             RemoveBoxCollider(transform);
-            UpdateMeshColliders(transform, _colliderMeshes, _physicsMaterial);
+            UpdateMeshColliders(transform, _colliderMeshes);
         }
     }
 }

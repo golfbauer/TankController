@@ -1,16 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Controller.Scripts.Editors.Turret.Base
 {
-    public class CreateTurret : MonoBehaviour
+    public class Turret : MonoBehaviour
     {
         // Turret
         // Mesh
         public Mesh turretMesh;
-        public Material[] turretMaterials;
+        public List<Material> turretMaterials;
         
         // Collider
-        public MeshCollider[] colliderMeshes;
+        public List<Mesh> colliderMeshes;
 
         public bool useBoxCollider;
         public PhysicMaterial physicsMaterial;

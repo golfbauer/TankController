@@ -8,7 +8,7 @@ namespace Controller.Scripts.Managers.Turret
         [Tooltip("Draws Ray to show the guns vertical aiming direction")]
         public bool debug;
         public float maxRotationSpeed = 10f;
-        public float minMovement = 0.1f;
+        public float minMovement = 0.2f;
         public float accelerationTime = 2f;
         public float decelerationTime = 2f;
         public float minAngle = -45f;
@@ -50,6 +50,7 @@ namespace Controller.Scripts.Managers.Turret
             if (Mathf.Abs(_targetAngle) < minMovement)
             {
                 _currentRotationSpeed = 0;
+                
                 return;
             }
 
@@ -79,12 +80,10 @@ namespace Controller.Scripts.Managers.Turret
         
         private float AngleBetweenVectorAndPlane(Vector3 vector, Vector3 planeNormal) 
         {
-            // Note: planeNormal is the normal vector of the plane (in your case Vector3.up)
-
-            // Step 1: Project the vector onto the plane
+            // Project the vector onto the plane
             Vector3 projectedVector = Vector3.ProjectOnPlane(vector, planeNormal);
 
-            // Step 2: Get the angle between the vector and its projection (i.e., the angle between the vector and the plane)
+            // Get the angle between the vector and its projection (i.e., the angle between the vector and the plane)
             float dotProduct = Vector3.Dot(vector, projectedVector);
             float vectorMagnitude = vector.magnitude;
             float projectedVectorMagnitude = projectedVector.magnitude;

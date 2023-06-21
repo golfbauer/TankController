@@ -149,7 +149,7 @@ namespace Controller.Scripts.Editors.Tank
                     break;
                 
                 case ComponentType.Turret:
-                    CreateComponent("Turret", typeof(CreateTurret));
+                    CreateComponent("Turret", typeof(Turret.Base.Turret));
                     break;
                 
                 case ComponentType.Camera:
