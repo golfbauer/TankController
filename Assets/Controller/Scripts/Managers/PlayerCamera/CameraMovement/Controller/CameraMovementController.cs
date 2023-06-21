@@ -1,7 +1,7 @@
 ﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
+namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {
     /// <summary>
     /// I recommend taking a look at the ThirdPersonCameraMovementController.cs and the ScopedCameraMovementController.cs
@@ -17,17 +17,17 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
 
         protected GameObject MainCameraObject;
         protected Camera MainCamera;
-        protected CameraManager CameraManager;
-        protected CameraUIController CameraUIController;
+        protected CameraControllerManager CameraControllerManager;
+        protected CameraUIManager CameraUIManager;
         
         public float yaw;
         public float pitch;
 
         private void Awake()
         {
-            if(CameraUIController == null)
+            if(CameraUIManager == null)
             {
-                CameraUIController = GetComponent<CameraUIController>();
+                CameraUIManager = GetComponent<CameraUIManager>();
             }
         }
 
@@ -40,8 +40,8 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
         /// Set up the controller, this is called once in the CameraManager on Start.
         /// </summary>
         /// <param name="mainCamera"></param>
-        /// <param name="cameraManager"></param>
-        public virtual void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager) {}
+        /// <param name="cameraControllerManager"></param>
+        public virtual void SetUpCameraController(GameObject mainCamera, CameraControllerManager cameraControllerManager) {}
 
         /// <summary>
         /// Can be used to set up parameters for the transition in.
@@ -92,10 +92,10 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
         /// <param name="activate"></param>
         public virtual void ShowUI(bool activate)
         {
-            if (CameraUIController == null)
+            if (CameraUIManager == null)
                 return;
             
-            CameraUIController.ToggleAllUIElements(activate);
+            CameraUIManager.ToggleUIElements(activate);
         }
 
         public virtual void EditorGUI()

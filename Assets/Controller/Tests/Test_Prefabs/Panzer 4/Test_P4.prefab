@@ -6176,7 +6176,7 @@ MonoBehaviour:
   cameraControllers:
   - {fileID: 4007741534159030186}
   - {fileID: 2325896557629560419}
-  cameraSwitchKey: 99
+  cameraSwitchKey: 9
 --- !u!114 &1512239587507105518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13975,8 +13975,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff77e572233b400384527ae2483dfaa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiElements: []
-  uiElementsData: []
+  uiElements:
+  - {fileID: 0}
+  - {fileID: 0}
+  uiElementsData:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   canvas: {fileID: 0}
   isActive: 0
 --- !u!1 &6403914778770402807
@@ -19111,8 +19117,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff77e572233b400384527ae2483dfaa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiElements: []
-  uiElementsData: []
+  uiElements:
+  - {fileID: 0}
+  - {fileID: 0}
+  uiElementsData:
+  - {fileID: 0}
+  - {fileID: 0}
   canvas: {fileID: 0}
   isActive: 0
 --- !u!114 &2325896557629560419
@@ -19128,7 +19138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraSwitchKey: 0
-  cameraZOffset: 1
+  cameraZOffset: 2.5
   cameraSensitivity: 1
   minPitch: -30
   maxPitch: 30

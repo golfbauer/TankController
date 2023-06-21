@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElementData
+namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.ElementData
 {
     [CreateAssetMenu(fileName = "SpriteData", menuName = "ScriptableObjects/UISpriteElementData", order = 2)]
     public class UISpriteElementData : UIElementData

@@ -1,6 +1,7 @@
 ﻿using System;
 using Controller.Scripts.Editors.Utils;
 using Controller.Scripts.Managers.PlayerCamera.CameraMovement;
+using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
 using UnityEditor;
 
 namespace Controller.Scripts.Editors.PlayerCamera

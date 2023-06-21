@@ -1,10 +1,8 @@
 ﻿using System;
-using Controller.Scripts.Editors.Utils;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
+namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {
     public class ScopedCameraMovementController : CameraMovementController
     {
@@ -15,11 +13,11 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
         private float _zoomSpeed;
         private bool _isZooming;
 
-        public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
+        public override void SetUpCameraController(GameObject mainCamera, CameraControllerManager cameraControllerManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
-            CameraManager = cameraManager;
+            CameraControllerManager = cameraControllerManager;
         }
         
         private void Zoom()
@@ -48,7 +46,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
 
             if (!_isZooming)
             {
-                CameraManager.FinishTransitionIn();
+                CameraControllerManager.FinishTransitionIn();
                 MainCamera.fieldOfView = fieldOfView;
             }
         }
@@ -60,7 +58,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
         public override void TransitionOut()
         {
             ShowUI(false);
-            CameraManager.FinishTransitionOut();
+            CameraControllerManager.FinishTransitionOut();
         }
         
         public override void ActiveCameraMovement()

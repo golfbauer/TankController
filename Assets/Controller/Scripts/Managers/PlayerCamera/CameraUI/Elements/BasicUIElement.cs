@@ -1,4 +1,4 @@
-﻿namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements
+﻿namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
 {
     public class BasicUIElement: UIElement
     {

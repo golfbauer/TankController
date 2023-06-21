@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
+namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {
     public class ThirdPersonCameraMovementController : CameraMovementController
     {
-        public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
+        public override void SetUpCameraController(GameObject mainCamera, CameraControllerManager cameraControllerManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
-            CameraManager = cameraManager;
+            CameraControllerManager = cameraControllerManager;
         }
 
         public override void SetUpTransitionIn(CameraMovementController previousCameraMovementController)
@@ -22,7 +22,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
             MainCameraObject.transform.position = transform.position;
             MainCamera.fieldOfView = fieldOfView;
             ShowUI(true);
-            CameraManager.FinishTransitionIn();
+            CameraControllerManager.FinishTransitionIn();
         }
         
         public override void SetUpTransitionOut(CameraMovementController nextCameraMovementController)
@@ -33,7 +33,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
         public override void TransitionOut()
         {
             ShowUI(false);
-            CameraManager.FinishTransitionOut();
+            CameraControllerManager.FinishTransitionOut();
         }
 
         public override void ActiveCameraMovement()

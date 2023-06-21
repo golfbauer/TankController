@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controller.Scripts.Managers.PlayerCamera.CameraMovement;
+using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera
+namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
 {
-    public class CameraManager : MonoBehaviour
+    public class CameraControllerManager : MonoBehaviour
     {
         [SerializeField] private List<CameraMovementController> cameraControllers = new();
         [SerializeField] private KeyCode cameraSwitchKey = KeyCode.C;
@@ -143,7 +143,7 @@ namespace Controller.Scripts.Managers.PlayerCamera
         private void AttachCameraController(GameObject cameraPosition, CameraType cameraType)
         {
             cameraControllers.Add(GetCameraController(cameraPosition, cameraType));
-            cameraPosition.AddComponent<CameraUIController>();
+            cameraPosition.AddComponent<CameraUIManager>();
         }
 
         public void ReplaceCameraController(GameObject cameraPosition, CameraType cameraType)

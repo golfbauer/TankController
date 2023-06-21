@@ -9,5 +9,9 @@
         public static string MinPitch = "Min Pitch";
         public static string MaxPitch = "Max Pitch";
         public static string FieldOfView = "Field of View";
+        
+        public static string UIElements = "UI Elements";
+        public static string ShowUIElements = "Show UI Elements";
+        public static string Canvas = "Canvas";
     }
 }

@@ -10,6 +10,7 @@ using Controller.Scripts.Managers.ImpactCollision;
 using Controller.Scripts.Managers.Movement;
 using Controller.Scripts.Managers.PlayerCamera;
 using Controller.Scripts.Managers.PlayerCamera.CameraMovement;
+using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
 using UnityEditor;
 using UnityEngine;
 using CameraType = Controller.Scripts.Managers.PlayerCamera.CameraType;
@@ -39,7 +40,7 @@ namespace Controller.Scripts.Editors.Tank
         private SerializedProperty _hullColliderSize;
 
         // Manager
-        private CameraManager _cameraManager;
+        private CameraControllerManager _cameraControllerManager;
         
         private void OnEnable()
         {
@@ -69,10 +70,10 @@ namespace Controller.Scripts.Editors.Tank
             if (transform.GetComponent<MovementManager>() == null)
                 transform.gameObject.AddComponent<MovementManager>();
 
-            if (transform.GetComponent<CameraManager>() == null)
+            if (transform.GetComponent<CameraControllerManager>() == null)
             {
-                _cameraManager = transform.gameObject.AddComponent<CameraManager>();
-                _cameraManager.SetUpCamera();
+                _cameraControllerManager = transform.gameObject.AddComponent<CameraControllerManager>();
+                _cameraControllerManager.SetUpCamera();
             }
 
             if (transform.GetComponent<CollisionManager>() == null)
@@ -152,7 +153,7 @@ namespace Controller.Scripts.Editors.Tank
                     break;
                 
                 case ComponentType.Camera:
-                    _cameraManager.AddNewCameraPosition(transform, CameraType.ThirdPerson);
+                    _cameraControllerManager.AddNewCameraPosition(transform, CameraType.ThirdPerson);
                     break;
             }
         }
@@ -174,18 +175,18 @@ namespace Controller.Scripts.Editors.Tank
 
         private void CameraPositionsGUI()
         {
-            if(_cameraManager == null)
-                _cameraManager = transform.GetComponent<CameraManager>();
+            if(_cameraControllerManager == null)
+                _cameraControllerManager = transform.GetComponent<CameraControllerManager>();
             
-            _cameraManager.SetUpCamera();
+            _cameraControllerManager.SetUpCamera();
             
             GUIUtils.HeaderGUI(CreateTankMessages.Camera);
             
-            if (_cameraManager != null)
+            if (_cameraControllerManager != null)
             {
-                for(int i=0; i < _cameraManager.GetCameraControllers().Count; i++)
+                for(int i=0; i < _cameraControllerManager.GetCameraControllers().Count; i++)
                 {
-                    var cameraController = _cameraManager.GetCameraControllers()[i];
+                    var cameraController = _cameraControllerManager.GetCameraControllers()[i];
                     if (cameraController == null)
                         continue;
                     CameraControllerGUI(cameraController, i);
@@ -206,10 +207,10 @@ namespace Controller.Scripts.Editors.Tank
                 CameraType currentType = movementController.GetCameraType();
                 CameraType newType = (CameraType)EditorGUILayout.EnumPopup(CreateTankMessages.CameraType, currentType);
                 if (newType != currentType)
-                    _cameraManager.ReplaceCameraController(cameraPosition, newType);
+                    _cameraControllerManager.ReplaceCameraController(cameraPosition, newType);
                 EditorGUILayout.ObjectField(CreateTankMessages.Transform, cameraPosition.transform, typeof(Transform), true);
                 if (GUILayout.Button(GeneralMessages.Remove))
-                    _cameraManager.RemoveCameraPosition(cameraPosition);
+                    _cameraControllerManager.RemoveCameraPosition(cameraPosition);
                 EditorGUI.indentLevel--;
             }
         }
