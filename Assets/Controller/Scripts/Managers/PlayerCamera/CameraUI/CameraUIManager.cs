@@ -54,18 +54,31 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 
         public void UpdateUIElements()
         {
-            if (uiElements.Count == 0)
-                return;
-            
-            for(int i = 0; i < uiElements.Count; i++)
+            uiElements.RemoveAll(element => element == null);
+            uiElementsData.RemoveAll(element => element == null);
+
+            foreach(var element in uiElements)
             {
-                if (uiElements[i] == null)
+                UpdateUIElement(element);
+            }
+            
+            for(int i = uiElementsData.Count - 1; i >= 0; i--)
+            {
+                bool isOrphan = true;
+                foreach(var element in uiElements)
                 {
-                    uiElements.RemoveAt(i);
-                    continue;
+                    if (element.Data == uiElementsData[i])
+                    {
+                        isOrphan = false;
+                        break;
+                    }
                 }
 
-                UpdateUIElement(uiElements[i]);
+                if (isOrphan)
+                {
+                    DestroyImmediate(uiElementsData[i]);
+                    uiElementsData.RemoveAt(i);
+                }
             }
         }
 
@@ -111,12 +124,14 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
                 UIElement uiElement = uiElements[index];
                 GameObject uiGameObject = uiElement.gameObject;
                 uiElements.RemoveAt(index);
+                uiElementsData.RemoveAt(index);
                 
                 UIElementData elementData = CreateUIElementData(uiElementType);
                 UIElement newUIElement = CreateUIElement(elementData, uiGameObject);
                 
                 DestroyImmediate(uiElement);
                 uiElements.Insert(index, newUIElement);
+                uiElementsData.Insert(index, elementData);
                 return newUIElement;
             }
 

@@ -10,5 +10,6 @@
     {
         Basic,
         StaticSprite,
+        Ammo,
     }
 }

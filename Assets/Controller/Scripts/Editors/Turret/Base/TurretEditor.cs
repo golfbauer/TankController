@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Controller.Scripts.Editors.Turret.Gun;
+﻿using System;
 using Controller.Scripts.Editors.Utils;
+using Controller.Scripts.Managers.Ammunition;
 using Controller.Scripts.Managers.ImpactCollision;
 using Controller.Scripts.Managers.Turret;
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Controller.Scripts.Editors.Turret.Base
@@ -26,8 +25,6 @@ namespace Controller.Scripts.Editors.Turret.Base
         private SerializedProperty _boxColliderChangeManually;
         private SerializedProperty _boxColliderSize;
         private SerializedProperty _boxColliderCenter;
-        
-        private List<GameObject> _mainGuns;
 
         private void OnEnable()
         {
@@ -49,9 +46,20 @@ namespace Controller.Scripts.Editors.Turret.Base
         {   
             transform = ((Turret) target).gameObject.transform;
             LayerUtils.SetLayer(transform.gameObject, LayerUtils.HullLayer);
-            
-            if(_mainGuns == null)
-                _mainGuns = new List<GameObject>();
+
+            if (!transform.GetComponent<AmmunitionManager>())
+            {
+                AmmunitionManager ammunitionManager = transform.AddComponent<AmmunitionManager>();
+                try
+                {
+                    ammunitionManager.spawnPoint = transform.Find("Mantlet/Main Gun/Spawn Point").gameObject;
+                }
+                catch (NullReferenceException)
+                {
+                    Debug.LogWarning("Couldn't find the spawn point, please assign manually.");
+                }
+
+            }
             
             if(transform.GetComponent<HorizontalRotation>() == null)
                 transform.gameObject.AddComponent<HorizontalRotation>();
@@ -106,8 +114,6 @@ namespace Controller.Scripts.Editors.Turret.Base
             
             mantlet.AddComponent<Gun.Gun>();
 
-            _mainGuns.Add(mantlet);
-            
             GameObject gun = new GameObject("Main Gun");
             gun.transform.SetParent(mantlet.transform);
             gun.transform.localPosition = Vector3.zero;

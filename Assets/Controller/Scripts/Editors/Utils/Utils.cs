@@ -127,6 +127,10 @@ namespace Controller.Scripts.Editors.Utils
     {
         public const string UpdateAll = "Update All";
         public const string Remove = "Remove";
+        public const string Add = "Add";
+        public const string Import = "Import";
+        public const string MoveUp = "Move Up";
+        public const string MoveDown = "Move Down";
         public const string NotPrefabModeWarning = "You must be in prefab mode to use this tool.";
         public const string PrefabModeWarning = "You must exit prefab mode to use this tool.";
         public const string TargetNotAssigned = "It seems like the target is not assigned. Try to restart prefab mode. If that does not work restart Unity.";

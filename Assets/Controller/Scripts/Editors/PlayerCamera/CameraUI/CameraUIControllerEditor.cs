@@ -34,6 +34,8 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
         {
             GUIUtils.PropFieldGUI(_isActive, CameraMessages.ShowUIElements);
             GUIUtils.PropFieldGUI(_canvas, CameraMessages.Canvas);
+            GUIUtils.PropFieldGUI(_uiElements);
+            GUIUtils.PropFieldGUI(_uiElementsData);
             ShowUIElementsGUI();
             CreateUIElementGUI();
             
@@ -76,6 +78,8 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
                 EditorGUILayout.ObjectField("Transform", uiElement.transform, typeof(Transform), true);
                 
                 element.DisplayGUI();
+                
+                RemoveUIElementGUI(index);
 
                 EditorGUI.indentLevel--;
                 
@@ -94,6 +98,32 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
                 UIElement uiElement = _manager.AddNewUIElement(uiElementType);
 
                 AttachNewUIElement(uiElement);
+            }
+        }
+        
+        private void RemoveUIElementGUI(int index)
+        {
+            if(GUILayout.Button("Remove UI Element"))
+            {
+                // Get the element to be removed
+                UIElement element = _uiElements.GetArrayElementAtIndex(index).objectReferenceValue as UIElement;
+        
+                // Remove the UIElement component and associated ScriptableObject data
+                if(element != null)
+                {
+                    // Destroy UIElementData
+                    if(element.Data != null)
+                    {
+                        DestroyImmediate(element.Data);
+                    }
+
+                    // Destroy UIElement GameObject
+                    DestroyImmediate(element.gameObject);
+                }
+
+                // Remove the element from serialized lists
+                _uiElements.DeleteArrayElementAtIndex(index);
+                _uiElementsData.DeleteArrayElementAtIndex(index);
             }
         }
 

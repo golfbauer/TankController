@@ -1,8 +1,10 @@
-﻿using Controller.Scripts.Editors.Utils;
+﻿using System;
+using Controller.Scripts.Editors.Utils;
 using Controller.Scripts.Managers.ImpactCollision;
 using Controller.Scripts.Managers.Turret;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Controller.Scripts.Editors.Turret.Gun
 {
@@ -60,6 +62,11 @@ namespace Controller.Scripts.Editors.Turret.Gun
             transform = ((Gun) target).gameObject.transform;
             _mainGun = transform.Find("Main Gun").gameObject;
 
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             if (!transform.GetComponent<VerticalRotation>())
             {
                 VerticalRotation verticalRotation = transform.gameObject.AddComponent<VerticalRotation>();
@@ -71,6 +78,17 @@ namespace Controller.Scripts.Editors.Turret.Gun
             
             if(!_mainGun.GetComponent<CollisionManager>())
                 _mainGun.AddComponent<CollisionManager>();
+
+            try
+            {
+                GameObject spawnPoint = _mainGun.transform.Find("Spawn Point").gameObject;
+            } catch (NullReferenceException)
+            {
+                GameObject spawnPoint = new GameObject("Spawn Point");
+                spawnPoint.transform.parent = _mainGun.transform;
+                spawnPoint.transform.localPosition = Vector3.zero;
+                spawnPoint.transform.localRotation = Quaternion.identity;
+            }
         }
 
         public override void SetUpGUI()
