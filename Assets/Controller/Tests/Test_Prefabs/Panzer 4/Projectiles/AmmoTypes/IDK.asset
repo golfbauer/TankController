@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42ffe02284ba463b947f1c888b5e7def, type: 3}
   m_Name: IDK
   m_EditorClassIdentifier: 
-  ammunition: {fileID: 3465617431648377259, guid: 44e635f665931bf41bfeee418376b4ce, type: 3}
   ammunitionCount: 971
+  projectile: {fileID: 3465617431648377259, guid: 44e635f665931bf41bfeee418376b4ce, type: 3}
   shortCutKey: 0

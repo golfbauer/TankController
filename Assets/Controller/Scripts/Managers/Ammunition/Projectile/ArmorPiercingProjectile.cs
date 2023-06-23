@@ -38,7 +38,7 @@ namespace Controller.Scripts.Managers.Ammunition.Projectile
 
             float effectiveArmorThickness = CalculateEffectiveArmor(armorSection.thickness, angle);
 
-            float penetrationCapability = CalculatePenetrationDeMarre(caliber, mass, (float) armorSection.armorMaterialType);
+            float penetrationCapability = CalculatePenetrationKrupp(mass, initVelocity, caliber);
             
             Debug.Log("Penetration capability: " + penetrationCapability);
             Debug.Log("Effective armor thickness: " + effectiveArmorThickness);
@@ -64,9 +64,9 @@ namespace Controller.Scripts.Managers.Ammunition.Projectile
             return armorMaterialCoefficient * Mathf.Pow(diameter, n) * Mathf.Pow(weight, m);
         }
         
-        protected virtual float CalculatePenetrationKrupp(float impactFactor, float velocity, float weight, float armorMaterialConstant, float diameter) {
-            // Using Krupp formula: P = (iF * V² * W * K) / D²
-            return (impactFactor * velocity * velocity * weight * armorMaterialConstant) / (diameter * diameter);
+        protected virtual float CalculatePenetrationKrupp(float m, float v, float diameter) {
+            // Using Krupp formula: P = 0.0194 + sqrt(sqrt(0.5 * m * v^2)^3 / D^5)
+            return 0.0194f * Mathf.Pow(Mathf.Pow(0.5f * m * Mathf.Pow(v, 2), 3) / Mathf.Pow(diameter / 10, 5), 0.25f);
         }
 
         protected virtual float CalculateEffectiveArmor(float thickness, float angle)

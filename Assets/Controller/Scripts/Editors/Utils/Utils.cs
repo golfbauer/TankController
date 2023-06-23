@@ -128,6 +128,7 @@ namespace Controller.Scripts.Editors.Utils
         public const string UpdateAll = "Update All";
         public const string Remove = "Remove";
         public const string Add = "Add";
+        public const string Cancel = "Cancel";
         public const string Import = "Import";
         public const string MoveUp = "Move Up";
         public const string MoveDown = "Move Down";

@@ -32,6 +32,7 @@ namespace Controller.Scripts.Editors.Utils
                 serializedObject.ApplyModifiedProperties();
                 RefreshParentSelection(transform.gameObject);
                 EditorUtility.SetDirty(transform.gameObject);
+                // PrefabUtility.SavePrefabAsset(transform.gameObject);
                 updateAll = false;
             }
         }

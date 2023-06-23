@@ -9,7 +9,7 @@ namespace Controller.Scripts.Managers.ImpactCollision
     {
         public List<Vector3> connectingPoints = new List<Vector3>();
         public float thickness;
-        public ArmorMaterialType armorMaterialType;
+        public ArmorMaterialType armorMaterialType = ArmorMaterialType.LowCarbonSteelPlate;
         public float tolerance;
         
         public bool useColliderAngle;
