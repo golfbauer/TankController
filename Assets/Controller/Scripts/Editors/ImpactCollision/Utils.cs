@@ -7,12 +7,10 @@
         public const string ArmorSections = "Armor Sections";
         
         public const string Thickness = "Thickness";
-        public const string UseColliderAngle = "Use Collider Angle";
-        public const string ColliderAngle = "Collider Angle";
-        public const string RotationAxis = "Rotation Axis";
         public const string Tolerance = "Tolerance";
         public const string MaterialType = "Material Type";
         public const string ConnectingPoints = "Connecting Points";
+        public const string ClearArmorSections = "Clear Armor Sections";
         
         public const string VertexSettings = "Vertex Settings";
         public const string AddVertex = "Add Vertex";

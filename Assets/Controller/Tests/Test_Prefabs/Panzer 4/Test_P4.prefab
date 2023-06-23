@@ -781,9 +781,6 @@ MonoBehaviour:
     thickness: 0
     armorMaterialType: 0
     tolerance: 0
-    useColliderAngle: 0
-    angle: 0
-    rotationAxis: {x: 0, y: 0, z: 0}
     planeNormal: {x: 0, y: 0, z: 0}
     planeD: 0
   vertices: []
@@ -6201,8 +6198,8 @@ GameObject:
   - component: {fileID: 4191692550191378709}
   - component: {fileID: 9185780536009755805}
   - component: {fileID: 5499054798853670898}
-  - component: {fileID: 7629131148471912795}
-  - component: {fileID: 240004319753618873}
+  - component: {fileID: 6329133469557482504}
+  - component: {fileID: 4116330336873005685}
   m_Layer: 21
   m_Name: Body
   m_TagString: Untagged
@@ -6394,9 +6391,6 @@ MonoBehaviour:
     thickness: 1
     armorMaterialType: 0
     tolerance: 0
-    useColliderAngle: 0
-    angle: 0
-    rotationAxis: {x: 0, y: 0, z: 0}
     planeNormal: {x: 0, y: 0, z: 0}
     planeD: 0
   vertices:
@@ -6428,6 +6422,27 @@ MonoBehaviour:
   - {x: 37.128685, y: 3.8899999, z: -21.300652}
   - {x: 37.128685, y: 3.1434927, z: -21.093792}
   - {x: 35.168686, y: 3.1434927, z: -21.093792}
+  - {x: 35.373676, y: 4.9904876, z: -19.067991}
+  - {x: 35.12396, y: 4.3404875, z: -19.067991}
+  - {x: 35.12364, y: 4.340634, z: -18.63932}
+  - {x: 35.332664, y: 4.3404875, z: -19.736998}
+  - {x: 35.582382, y: 4.9904876, z: -19.736998}
+  - {x: 36.148685, y: 4.9904876, z: -19.067991}
+  - {x: 36.964706, y: 4.3404875, z: -19.736998}
+  - {x: 37.173412, y: 4.3404875, z: -19.067991}
+  - {x: 36.923695, y: 4.9904876, z: -19.067991}
+  - {x: 37.173733, y: 4.340634, z: -18.63932}
+  - {x: 36.71499, y: 4.9904876, z: -19.736998}
+  - {x: 36.36863, y: 4.3404875, z: -20.05409}
+  - {x: 36.282448, y: 4.9904876, z: -19.908583}
+  - {x: 35.928745, y: 4.3404875, z: -20.05409}
+  - {x: 36.014923, y: 4.9904876, z: -19.908583}
+  - {x: 35.487095, y: 4.3404875, z: -18.148325}
+  - {x: 36.810276, y: 4.3404875, z: -18.148325}
+  - {x: 36.924015, y: 4.872069, z: -18.230087}
+  - {x: 35.373356, y: 4.872069, z: -18.230087}
+  - {x: 35.25335, y: 4.6063514, z: -18.189203}
+  - {x: 37.04402, y: 4.6063514, z: -18.189203}
   useColliderVertices: 1
   colliderColor: {r: 0, g: 0, b: 1, a: 1}
 --- !u!54 &4191692550191378709
@@ -6498,7 +6513,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2702287146473413408}
   m_Mesh: {fileID: -3557436312110731332, guid: 02b40569b8511324fbdb8a49d90f0132, type: 3}
---- !u!64 &7629131148471912795
+--- !u!64 &6329133469557482504
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6512,7 +6527,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4147025820206734789, guid: dc2bc49ec1c56194a81faa1d5e00a1c9, type: 3}
---- !u!64 &240004319753618873
+--- !u!64 &4116330336873005685
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9804,9 +9819,6 @@ MonoBehaviour:
     thickness: 0
     armorMaterialType: 0
     tolerance: 0
-    useColliderAngle: 0
-    angle: 0
-    rotationAxis: {x: 0, y: 0, z: 0}
     planeNormal: {x: 0, y: 0, z: 0}
     planeD: 0
   vertices: []
@@ -15644,9 +15656,6 @@ MonoBehaviour:
     thickness: 0
     armorMaterialType: 0
     tolerance: 0
-    useColliderAngle: 0
-    angle: 0
-    rotationAxis: {x: 0, y: 0, z: 0}
     planeNormal: {x: 0, y: 0, z: 0}
     planeD: 0
   vertices: []

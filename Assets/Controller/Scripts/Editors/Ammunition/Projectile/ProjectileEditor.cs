@@ -9,7 +9,7 @@ namespace Controller.Scripts.Editors.Ammunition.Projectile
     [CustomEditor(typeof(BaseProjectile), true)]
     public class ProjectileEditor : TankComponentEditor
     {
-        private SerializedProperty _caliber;
+        private SerializedProperty _diameter;
         private SerializedProperty _mass;
         private SerializedProperty _initVelocity;
         private SerializedProperty _maxTravelDistance;
@@ -17,7 +17,7 @@ namespace Controller.Scripts.Editors.Ammunition.Projectile
 
         private void OnEnable()
         {
-            _caliber = serializedObject.FindProperty("caliber");
+            _diameter = serializedObject.FindProperty("diameter");
             _mass = serializedObject.FindProperty("mass");
             _initVelocity = serializedObject.FindProperty("initVelocity");
             _maxTravelDistance = serializedObject.FindProperty("maxTravelDistance");
@@ -28,18 +28,18 @@ namespace Controller.Scripts.Editors.Ammunition.Projectile
 
         public override void SetUpGUI()
         {
-            GUIUtils.PropFieldGUI(_caliber, "Caliber");
-            GUIUtils.PropFieldGUI(_mass, "Mass");
-            GUIUtils.PropFieldGUI(_initVelocity, "Initial Velocity");
-            GUIUtils.PropFieldGUI(_maxTravelDistance, "Max Travel Distance");
-            GUIUtils.PropFieldGUI(_maxLifetime, "Max Lifetime");
+            GUIUtils.PropFieldGUI(_diameter, ProjectileMessages.Diameter);
+            GUIUtils.PropFieldGUI(_mass, ProjectileMessages.Mass);
+            GUIUtils.PropFieldGUI(_initVelocity, ProjectileMessages.InitialVelocity);
+            GUIUtils.PropFieldGUI(_maxTravelDistance, ProjectileMessages.MaxTravelDistance);
+            GUIUtils.PropFieldGUI(_maxLifetime, ProjectileMessages.MaxLifetime);
 
             BaseProjectile projectile = (BaseProjectile)target;
             MethodInfo editorMethod = projectile.GetType().GetMethod("EditorSetUp", BindingFlags.Public | BindingFlags.Instance);
             
             if (editorMethod != null)
             {
-                EditorGUILayout.LabelField("Projectile Type Settings", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField(ProjectileMessages.ProjectileTypeSettings, EditorStyles.boldLabel);
                 editorMethod.Invoke(projectile, null);
             }
         }

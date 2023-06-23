@@ -59,7 +59,7 @@ namespace Controller.Scripts.Editors.ImpactCollision
             }
             
             EditorGUILayout.Space();
-            if(GUILayout.Button("Clear Armor Sections"))
+            if(GUILayout.Button(CollisionMessages.ClearArmorSections))
                 _armorSections.ClearArray();
             GUIUtils.UpdateAllGUI();
         }
@@ -83,13 +83,6 @@ namespace Controller.Scripts.Editors.ImpactCollision
             EditorGUILayout.LabelField("Armor Section " + (index + 1), EditorStyles.boldLabel);
 
             GUIUtils.PropFieldGUI(armorSection.FindPropertyRelative("thickness"), CollisionMessages.Thickness);
-            GUIUtils.PropFieldGUI(armorSection.FindPropertyRelative("useColliderAngle"), CollisionMessages.UseColliderAngle);
-            if (!armorSection.FindPropertyRelative("useColliderAngle").boolValue)
-            {
-                GUIUtils.PropFieldGUI(armorSection.FindPropertyRelative("angle"), CollisionMessages.ColliderAngle);
-                GUIUtils.PropFieldGUI(armorSection.FindPropertyRelative("rotationAxis"), CollisionMessages.RotationAxis);
-            }
-            
             GUIUtils.PropFieldGUI(armorSection.FindPropertyRelative("tolerance"), CollisionMessages.Tolerance);
             GUIUtils.PropFieldGUI(armorSection.FindPropertyRelative("armorMaterialType"), CollisionMessages.MaterialType);
 
@@ -248,15 +241,6 @@ namespace Controller.Scripts.Editors.ImpactCollision
                 connectingPoints.GetArrayElementAtIndex(connectingPoints.arraySize - 1).vector3Value + transform.position,
                 3f
             );
-
-            if (armorSection.FindPropertyRelative("useColliderAngle").boolValue)
-            {
-                Handles.DrawLine(
-                    connectingPoints.GetArrayElementAtIndex(0).vector3Value, 
-                    connectingPoints.GetArrayElementAtIndex(0).vector3Value +
-                    armorSection.FindPropertyRelative("rotationAxis").vector3Value * 2f
-                );
-            }
         }
 
         private void OnDisable()

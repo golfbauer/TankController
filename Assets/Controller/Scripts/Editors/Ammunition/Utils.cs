@@ -16,6 +16,16 @@
         public const string SaveNewAmmunitionType = "Save New Ammunition Type";
         public const string NewAmmunitionTypeName = "NewAmmunitionType";
         public const string OpenAmmunitionType = "Open Ammunition Type";
+    }
+
+    public static class ProjectileMessages
+    {
+        public const string Diameter = "Diameter";
+        public const string Mass = "Mass";
+        public const string InitialVelocity = "Initial Velocity";
+        public const string MaxTravelDistance = "Max Travel Distance";
+        public const string MaxLifetime = "Max Lifetime";
         
+        public const string ProjectileTypeSettings = "Projectile Type Settings";
     }
 }
