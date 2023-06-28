@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI.ElementData;
+using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements
+namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
 {
     public abstract class UIElement : MonoBehaviour
     {
-        public UIElementData.UIElementData Data;
+        public UIElementData Data;
 
         public abstract void PerformUpdateAction();
         public abstract void DisplayGUI();

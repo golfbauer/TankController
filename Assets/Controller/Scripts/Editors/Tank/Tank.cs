@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Controller.Scripts.Editors.Wheels;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using CameraType = Controller.Scripts.Managers.PlayerCamera.CameraType;
 
 namespace Controller.Scripts.Editors.Tank
 {
-    public class CreateTank: MonoBehaviour
+    public class Tank: MonoBehaviour
     {
         // Wheels
-        public ComponentType wheelType;
-        
-        // Cameras
-        public CameraType cameraType;
-        
-        
+        public ComponentType componentType = ComponentType.Turret;
+
         // Hull
         // Rigidbody
-        public float hullMass = 1f;
-        public int physicsIterations = 8;
+        public float hullMass = 500f;
+        public int physicsIterations = 16;
         public Vector3 hullCenterOfMass = Vector3.zero;
 
         // Mesh
@@ -30,7 +23,6 @@ namespace Controller.Scripts.Editors.Tank
         public List<Mesh> hullMeshColliders = null;
         public Vector3 hullColliderCenter = Vector3.zero;
         public Vector3 hullColliderSize = Vector3.one;
-
 
 
         private void Awake()

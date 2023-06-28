@@ -1,25 +1,23 @@
 ﻿using Controller.Scripts.Editors.Utils;
 using Controller.Scripts.Managers.PlayerCamera;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements;
+using Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Controller.Scripts.Editors.PlayerCameraUI
+namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
 {
-    [CustomEditor(typeof(CameraUIController))]
+    [CustomEditor(typeof(CameraUIManager))]
     [CanEditMultipleObjects]
-    public class CameraUIControllerEditor : Editor
+    public class CameraUIControllerEditor : TankComponentEditor
     {
         private SerializedProperty _canvas;
         private SerializedProperty _isActive;
         private SerializedProperty _uiElements;
         private SerializedProperty _uiElementsData;
 
-        private CameraUIController _controller;
-        private bool UpdateAll;
-        private Transform Transform;
+        private CameraUIManager _manager;
 
         private void OnEnable()
         {
@@ -28,50 +26,25 @@ namespace Controller.Scripts.Editors.PlayerCameraUI
             _uiElements = serializedObject.FindProperty("uiElements");
             _uiElementsData = serializedObject.FindProperty("uiElementsData");
             
-            Transform = ((CameraUIController) target).gameObject.transform;
-            _controller = (CameraUIController) target;
-        }
-        
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update ();
-
-            if (PrefabStageUtility.GetCurrentPrefabStage() != null)
-            {
-                GUIUtils.DenyAccessGUI(GeneralMessages.PrefabModeWarning);
-                return;
-            }
-
-            SetUpGUI();
-
-            if (GUI.changed || Event.current.commandName == "UndoRedoPerformed")
-            {
-                UpdateAll = true;
-            }
-
-            if (UpdateAll)
-            {
-                _controller.isActive = _isActive.boolValue;
-                _controller.UpdateActiveUIElements();
-                
-                serializedObject.ApplyModifiedProperties();
-                RefreshParentSelection(Transform.gameObject);
-                EditorUtility.SetDirty(Transform.gameObject);
-            }
+            transform = ((CameraUIManager) target).gameObject.transform;
+            _manager = (CameraUIManager) target;
         }
 
-        private void SetUpGUI()
+        public override void SetUpGUI()
         {
-            GUIUtils.PropFieldGUI(_isActive, "Show UI Elements");
-            GUIUtils.PropFieldGUI(_canvas, "Canvas");
+            GUIUtils.PropFieldGUI(_isActive, CameraMessages.ShowUIElements);
+            GUIUtils.PropFieldGUI(_canvas, CameraMessages.Canvas);
+            GUIUtils.PropFieldGUI(_uiElements);
+            GUIUtils.PropFieldGUI(_uiElementsData);
             ShowUIElementsGUI();
             CreateUIElementGUI();
-            UpdateAll = GUIUtils.UpdateAllGUI();
+            
+            UpdateAllGUI();
         }
-        
+
         private void ShowUIElementsGUI()
         {
-            GUIUtils.HeaderGUI("UI Elements");
+            GUIUtils.HeaderGUI(CameraMessages.UIElements);
             for(int i=0; i < _uiElements.arraySize; i++)
             {
                 SerializedProperty elementProperty = _uiElements.GetArrayElementAtIndex(i);
@@ -105,13 +78,14 @@ namespace Controller.Scripts.Editors.PlayerCameraUI
                 EditorGUILayout.ObjectField("Transform", uiElement.transform, typeof(Transform), true);
                 
                 element.DisplayGUI();
+                
+                RemoveUIElementGUI(index);
 
                 EditorGUI.indentLevel--;
                 
                 if (newType != currentType)
                 {
-                    UIElement newUIElement = _controller.ChangeTypeOfUIElement(index, newType);
-                    AttachNewUIElement(newUIElement);
+                    _manager.ChangeTypeOfUIElement(index, newType);
                 }
             }
         }
@@ -121,9 +95,35 @@ namespace Controller.Scripts.Editors.PlayerCameraUI
             if(GUILayout.Button("Create UI Element"))
             {
                 UIElementType uiElementType = (UIElementType)EditorGUILayout.EnumPopup("UI Element Type", UIElementType.Basic);
-                UIElement uiElement = _controller.AddNewUIElement(uiElementType);
+                UIElement uiElement = _manager.AddNewUIElement(uiElementType);
 
                 AttachNewUIElement(uiElement);
+            }
+        }
+        
+        private void RemoveUIElementGUI(int index)
+        {
+            if(GUILayout.Button("Remove UI Element"))
+            {
+                // Get the element to be removed
+                UIElement element = _uiElements.GetArrayElementAtIndex(index).objectReferenceValue as UIElement;
+        
+                // Remove the UIElement component and associated ScriptableObject data
+                if(element != null)
+                {
+                    // Destroy UIElementData
+                    if(element.Data != null)
+                    {
+                        DestroyImmediate(element.Data);
+                    }
+
+                    // Destroy UIElement GameObject
+                    DestroyImmediate(element.gameObject);
+                }
+
+                // Remove the element from serialized lists
+                _uiElements.DeleteArrayElementAtIndex(index);
+                _uiElementsData.DeleteArrayElementAtIndex(index);
             }
         }
 
@@ -138,12 +138,21 @@ namespace Controller.Scripts.Editors.PlayerCameraUI
             SerializedProperty newData = _uiElementsData.GetArrayElementAtIndex(_uiElementsData.arraySize - 1);
             newData.objectReferenceValue = uiElement.Data;
         }
-
-        private void RefreshParentSelection(GameObject parent)
+        
+        public override bool AllowAccess()
         {
-            Selection.activeGameObject = null;
-            Selection.activeGameObject = parent;
+            return PrefabStageUtility.GetCurrentPrefabStage() != null;
+        }
+
+        public override void DenyAccessMessage()
+        {
+            GUIUtils.DenyAccessGUI(GeneralMessages.PrefabModeWarning);
         }
         
+        public override void BulkUpdateComponents()
+        {
+            _manager.isActive = _isActive.boolValue;
+            _manager.UpdateUIElements();
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Controller.Scripts.Editors.Tank
 {
-    public static class TankUtilsMessages
+    public static class CreateTankMessages
     {
         public const string Hull = "Hull";
         public const string Rigidbody = "Rigidbody";
@@ -22,7 +22,7 @@ namespace Controller.Scripts.Editors.Tank
         
         public const string UseBoxCollider = "Use Box Collider";
         public const string MeshCollider = "Mesh Collider";
-        public const string ColliderCenter = "Colider Center";
+        public const string ColliderCenter = "Collider Center";
         public const string ColliderSize = "Collider Size";
         
         public const string Transform = "Transform";
@@ -38,5 +38,6 @@ namespace Controller.Scripts.Editors.Tank
         RearWheel,
         Chain,
         Turret,
+        Camera,
     }
 }

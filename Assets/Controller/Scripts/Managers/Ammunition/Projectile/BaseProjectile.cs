@@ -7,7 +7,7 @@ namespace Controller.Scripts.Managers.Ammunition.Projectile
 {
     public abstract class BaseProjectile : MonoBehaviour
     {
-        public float caliber;
+        public float diameter;
         public float mass;
         public float initVelocity;
         

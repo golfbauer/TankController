@@ -1,33 +1,35 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Controller.Scripts.Editors.Turret.Gun
 {
-    public class CreateGun : MonoBehaviour
+    public class Gun : MonoBehaviour
     {
-        public bool useBoxCollider;
-        public bool boxColliderChangeManually;
-        public PhysicMaterial physicsMaterial;
-        
         // Main Gun
         // Mesh
         public Mesh mainGunMesh;
-        public Material[] mainGunMaterials;
+        public List<Material> mainGunMaterials;
         
         // Collider
-        public MeshCollider[] mainGunColliderMeshes;
+        public List<Mesh> mainGunColliderMeshes;
         
         // BoxCollider
+        public bool mainGunUseBoxCollider;
+        public bool mainGunBoxColliderChangeManually;
         public Vector3 mainGunBoxColliderSize;
         public Vector3 mainGunBoxColliderCenter;
         
         // Mantlet
+        //Mesh
         public Mesh mantletMesh;
-        public Material[] mantletMaterials;
+        public List<Material> mantletMaterials;
         
         // Collider
-        public MeshCollider[] mantletColliderMeshes;
+        public List<Mesh> mantletColliderMeshes;
         
         // BoxCollider
+        public bool mantletUseBoxCollider;
+        public bool mantletBoxColliderChangeManually;
         public Vector3 mantletBoxColliderSize;
         public Vector3 mantletBoxColliderCenter;
     }

@@ -1,9 +1,9 @@
-﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElementData;
+﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI.ElementData;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements
+namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
 {
     public class StaticSpriteUIElement : UIElement
     {

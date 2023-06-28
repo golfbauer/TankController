@@ -5,18 +5,13 @@ namespace Controller.Scripts.Managers.Ammunition
     [CreateAssetMenu(fileName = "AmmunitionType", menuName = "ScriptableObjects/AmmunitionType", order = 1)]
     public class AmmunitionType : ScriptableObject
     {
-        public GameObject ammunition;
-        // This is reduced in the manager during runtime and will be kept as well after.
-        public int ammunitionCount;
-        public KeyCode shortCutKey;
-
         public string AmmunitionName
         {
             get
             {
                 try
                 {
-                    return ammunition.name;
+                    return projectile.name;
                 }
                 catch
                 {
@@ -24,16 +19,37 @@ namespace Controller.Scripts.Managers.Ammunition
                 }
             }
         }
+        
+        public int ammunitionCount;
+        public GameObject projectile;
+        public KeyCode shortCutKey;
+        
+        private int _runtimeAmmunitionCount;
+        
+        public void ResetAmmunitionCount()
+        {
+            _runtimeAmmunitionCount = ammunitionCount;
+        }
+
+        public void DecreaseAmmunitionCount()
+        {
+            _runtimeAmmunitionCount--;
+        }
 
         public GameObject FireShot()
         {
-            if (ammunitionCount < 1)
+            if (_runtimeAmmunitionCount < 1)
             {
                 return null;
             }
 
-            ammunitionCount--;
-            return ammunition;
+            DecreaseAmmunitionCount();
+            return projectile;
+        }
+        
+        public int GetAmmoCount()
+        {
+            return _runtimeAmmunitionCount;
         }
     }
 

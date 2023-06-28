@@ -13,13 +13,13 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private SerializedProperty _showLabelsProp;
         private SerializedProperty _showConnectionsProp;
         
-        private SerializedProperty _rotationProp;
+        private SerializedProperty _leftRotationProp;
         private SerializedProperty _leftMesh;
-        private SerializedProperty _leftMaterial;
+        private SerializedProperty _leftMaterials;
         
         private SerializedProperty _rightRotationProp;
         private SerializedProperty _rightMesh;
-        private SerializedProperty _rightMaterial;
+        private SerializedProperty _rightMaterials;
         
         private SerializedProperty _boxColliderCenter;
         private SerializedProperty _boxColliderSize;
@@ -34,6 +34,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private SerializedProperty _chainStraightCount;
         private SerializedProperty _chainFrontCurveCount;
         private SerializedProperty _chainBackCurveCount;
+        
+        private SerializedProperty _hingeJointBreakForce;
 
         
         private Vector3 _leftFrontCurveCenter;
@@ -68,13 +70,13 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             _showLabelsProp = serializedObject.FindProperty("showLabels");
             _showConnectionsProp = serializedObject.FindProperty("showConnections");
             
-            _rotationProp = serializedObject.FindProperty("Rotation");
-            
+            _leftRotationProp = serializedObject.FindProperty("leftRotation");
             _leftMesh = serializedObject.FindProperty("leftMesh");
-            _leftMaterial = serializedObject.FindProperty("leftMaterial");
+            _leftMaterials = serializedObject.FindProperty("leftMaterials");
             
+            _rightRotationProp = serializedObject.FindProperty("rightRotation");
             _rightMesh = serializedObject.FindProperty("rightMesh");
-            _rightMaterial = serializedObject.FindProperty("rightMaterial");
+            _rightMaterials = serializedObject.FindProperty("rightMaterials");
             
             _boxColliderCenter = serializedObject.FindProperty("boxColliderCenter");
             _boxColliderSize = serializedObject.FindProperty("boxColliderSize");
@@ -90,6 +92,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             _chainFrontCurveCount = serializedObject.FindProperty("chainFrontCurveCount");
             _chainBackCurveCount = serializedObject.FindProperty("chainBackCurveCount");
             
+            _hingeJointBreakForce = serializedObject.FindProperty("hingeJointBreakForce");
+            
             transform = ((CreateChain) target).transform;
             transform.localRotation = Quaternion.Euler(0, 0, 90);
             _leftChainLinks = new List<GameObject>();
@@ -98,32 +102,36 @@ namespace Controller.Scripts.Editors.Wheels.Chain
 
         public override void SetUpGUI()
         {
-            GUIUtils.HeaderGUI("General");
-            GUIUtils.PropFieldGUI(_showLabelsProp, "Show Labels");
-            GUIUtils.PropFieldGUI(_showConnectionsProp, "Show Connections");
+            GUIUtils.HeaderGUI(WheelMessages.GeneralSettings);
+            GUIUtils.PropFieldGUI(_showLabelsProp);
+            GUIUtils.PropFieldGUI(_showConnectionsProp, WheelMessages.ShowConnections);
             
-            GUIUtils.HeaderGUI("Chain");
-            GUIUtils.PropFieldGUI(_rotationProp, "Rotation");
+            GUIUtils.HeaderGUI(WheelMessages.LeftChainSettings);
+            GUIUtils.PropFieldGUI(_leftRotationProp, WheelMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_leftMesh, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_leftMaterials, WheelMessages.Material);
             
-            GUIUtils.PropFieldGUI(_leftMesh, "Left Mesh");
-            GUIUtils.PropFieldGUI(_leftMaterial, "Left Material");
+            GUIUtils.HeaderGUI(WheelMessages.RightChainSettings);
+            GUIUtils.PropFieldGUI(_rightRotationProp, WheelMessages.EulerRotation);
+            GUIUtils.PropFieldGUI(_rightMesh, WheelMessages.Mesh);
+            GUIUtils.PropFieldGUI(_rightMaterials, WheelMessages.Material);
             
-            GUIUtils.PropFieldGUI(_rightMesh, "Right Mesh");
-            GUIUtils.PropFieldGUI(_rightMaterial, "Right Material");
-            
-            GUIUtils.PropFieldGUI(_boxColliderCenter, "Collider Center");
-            GUIUtils.PropFieldGUI(_boxColliderSize, "Collider Size");
-            GUIUtils.PropFieldGUI(_boxColliderMaterial, "Collider Material");
+            GUIUtils.HeaderGUI(WheelMessages.ChainSettings);
+            GUIUtils.PropFieldGUI(_boxColliderCenter, WheelMessages.ColliderCenter);
+            GUIUtils.PropFieldGUI(_boxColliderSize, WheelMessages.ColliderSize);
+            GUIUtils.PropFieldGUI(_boxColliderMaterial, WheelMessages.ColliderMaterial);
 
-            GUIUtils.PropFieldGUI(_chainMass, "Chain Mass");
-            GUIUtils.PropFieldGUI(_angularDrag, "Angular Drag");
+            GUIUtils.PropFieldGUI(_chainMass, WheelMessages.Mass);
+            GUIUtils.PropFieldGUI(_angularDrag, WheelMessages.AngularDrag);
             
-            GUIUtils.SliderGUI(_chainDistance, 0.1f, 5f, "Distance");
-            GUIUtils.SliderGUI(_chainSpacing, 0.01f, 1f, "Spacing");
+            GUIUtils.PropFieldGUI(_hingeJointBreakForce, WheelMessages.BreakForce);
             
-            GUIUtils.IntSliderGUI(_chainStraightCount, 1, 100, "Straight Count");
-            GUIUtils.IntSliderGUI(_chainFrontCurveCount, 1, 100, "Front Curve Count");
-            GUIUtils.IntSliderGUI(_chainBackCurveCount, 1, 100, "Back Curve Count");
+            GUIUtils.SliderGUI(_chainDistance, 0.1f, 5f, WheelMessages.Distance);
+            GUIUtils.SliderGUI(_chainSpacing, 0.01f, 1f, WheelMessages.Spacing);
+            
+            GUIUtils.IntSliderGUI(_chainStraightCount, 1, 100, WheelMessages.StraightCount);
+            GUIUtils.IntSliderGUI(_chainFrontCurveCount, 1, 100, WheelMessages.FrontCurveCount);
+            GUIUtils.IntSliderGUI(_chainBackCurveCount, 1, 100, WheelMessages.BackCurveCount);
             
             UpdateAllGUI();
         }
@@ -241,7 +249,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
 
                 Vector3 pivot = new Vector3(center.x + x, center.y, center.z + z);
                 float rotationAngle = Mathf.Lerp(startAngle, endAngle, i / (curveCount - 1));
-                Vector3 rotation = _rotationProp.vector3Value;
+                Vector3 rotation = isLeft ? _leftRotationProp.vector3Value : _rightRotationProp.vector3Value;
                 rotation.y += rotationAngle;
     
                 string linkName = isLeft ? "L " : "R ";
@@ -260,7 +268,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
                 Vector3 pivot = start + direction * (i * _chainSpacing.floatValue);
                 string linkName = isLeft ? "L " : "R ";
                 linkName += isUpper ? "Upper Straight " : "Lower Straight ";
-                Vector3 rotation = new Vector3(0, rotationAngle, 0);
+                Vector3 rotation = isLeft ? _leftRotationProp.vector3Value : _rightRotationProp.vector3Value;
+                rotation.y = rotationAngle;
                 GameObject chainLink = CreateChainLink(pivot, linkName + (i - 0.5f), isLeft, rotation);
                 chainLinks.Add(chainLink);
             }
@@ -286,8 +295,8 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         private void AttachComponents(GameObject chainLink, bool isLeft)
         {
             SerializedProperty mesh =  isLeft ? _leftMesh : _rightMesh;
-            AttachMesh(chainLink, mesh, _leftMaterial);
-            AttachRigidbody(chainLink, _chainMass, _angularDrag);
+            UpdateMesh(chainLink.transform, mesh, _leftMaterials);
+            UpdateRigidbody(chainLink.transform, _chainMass, _angularDrag);
             AttachBoxCollider(chainLink);
             AttachScript(chainLink);
         }
@@ -322,6 +331,7 @@ namespace Controller.Scripts.Editors.Wheels.Chain
             hingeJoint.anchor = anchor;
             hingeJoint.axis = Vector3.right;
             hingeJoint.connectedBody = prevLink.GetComponent<Rigidbody>();
+            hingeJoint.breakForce = _hingeJointBreakForce.floatValue;
         }
 
         private void AttachScript(GameObject chainLink)
@@ -332,14 +342,16 @@ namespace Controller.Scripts.Editors.Wheels.Chain
         protected override void OnSceneGUI()
         {
             if (!_showConnectionsProp.boolValue) return;
+            Quaternion rotation90DegreesAroundZ = Quaternion.Euler(0, 0, 90);
             
             for (int i = 0; i < transform.childCount; i++)
             {
                 GameObject chainLink = transform.GetChild(i).gameObject;
+                Vector3 rotatedLocalPosition = rotation90DegreesAroundZ * chainLink.transform.localPosition;
                 
                 DrawUtils.DrawLine(
                     transform.position,
-                    transform.position + chainLink.transform.localPosition,
+                    transform.position + rotatedLocalPosition,
                     Color.green
                 );
             }

@@ -9,19 +9,15 @@ namespace Controller.Scripts.Managers.ImpactCollision
     {
         public List<Vector3> connectingPoints = new List<Vector3>();
         public float thickness;
-        public ArmorMaterialType armorMaterialType;
+        public ArmorMaterialType armorMaterialType = ArmorMaterialType.LowCarbonSteelPlate;
         public float tolerance;
-        
-        public bool useColliderAngle;
-        public float angle;
-        public Vector3 rotationAxis;
 
         public Vector3 planeNormal;
         public float planeD;
         int dim1, dim2;
         
         
-        public ArmorSection(List<Vector3> connectingPoints, float thickness, float angle, float tolerance = CollisionUtils.CollisionTolerance)
+        public ArmorSection(List<Vector3> connectingPoints, float thickness, float tolerance = CollisionUtils.CollisionTolerance)
         {
             if (connectingPoints == null || connectingPoints.Count != 4)
             {
@@ -29,7 +25,6 @@ namespace Controller.Scripts.Managers.ImpactCollision
             }
             this.connectingPoints = connectingPoints;
             this.thickness = thickness;
-            this.angle = angle;
             this.tolerance = tolerance;
             
             SetUpArmorSection();
@@ -115,11 +110,6 @@ namespace Controller.Scripts.Managers.ImpactCollision
         private float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
         {
             return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-        }
-
-        public Vector3 RotatePlaneNormal()
-        {
-            return Quaternion.AngleAxis(angle, rotationAxis) * planeNormal;
         }
     }
 }

@@ -7,7 +7,11 @@ namespace Controller.Scripts.Managers.Turret
         [Tooltip("Will draw rays, to show the directions the camera and turret are pointing at")]
         public bool debug;
         public float maxRotationSpeed = 10f;
-        public float minMovement = 0.1f;
+        [Tooltip(
+            "The turret might shake a little, when it has found its target. " +
+            "Pump up this value to prevent that. It will lock the last bit of rotation."
+            )]
+        public float minMovement = 0.3f;
         public float accelerationTime = 2f;
         public float decelerationTime = 2f;
         public float maxLeftRotationAngle = 180f;
@@ -19,7 +23,7 @@ namespace Controller.Scripts.Managers.Turret
         public int maxCollisionDistance = 1000;
         public Vector3 cameraAimDirection = Vector3.zero;
         
-        private float _currentRotationSpeed = 0f;
+        private float _currentRotationSpeed;
         private int _raycastLayers;
         private Vector3 _targetPoint;
         private Vector3 _directionToTarget;
@@ -49,7 +53,7 @@ namespace Controller.Scripts.Managers.Turret
             }
             else
             {
-                _targetPoint = cameraRay.GetPoint(maxCollisionDistance); // Max distance if no hit
+                _targetPoint = cameraRay.GetPoint(maxCollisionDistance);
             }
         }
 
@@ -57,21 +61,28 @@ namespace Controller.Scripts.Managers.Turret
         {
             _directionToTarget = _targetPoint - transform.position;
             _directionToTarget.y = 0; // Ignore vertical difference.
-            float targetAngle = Vector3.SignedAngle(transform.forward, _directionToTarget, Vector3.up);
+            _targetAngle = Vector3.SignedAngle(transform.forward, _directionToTarget, Vector3.up);
             
-            targetAngle = Mathf.Clamp(targetAngle, -maxRightRotationAngle, maxLeftRotationAngle);
+            _targetAngle = Mathf.Clamp(_targetAngle, -maxRightRotationAngle, maxLeftRotationAngle);
             
-            // Ignore small movements.
-            if (Mathf.Abs(targetAngle) < minMovement)
+            // Stop Turret from shaking, by forcing the last rotation, when the target angle is very small.
+            if (Mathf.Abs(_targetAngle) < minMovement)
             {
                 _currentRotationSpeed = 0;
+                
+                // This will also rotate x and z axis, by about 0.01f, but Quaternion are hard to understand (or just annoying to use).
+                Vector3 targetForward = _directionToTarget.normalized;
+                float yRotation = Mathf.Atan2(targetForward.x, targetForward.z) * Mathf.Rad2Deg;
+                float deltaYRotation = yRotation - transform.eulerAngles.y;
+                transform.Rotate(Vector3.up, deltaYRotation, Space.World);
+
                 return;
             }
 
             // Determine current rotation speed
             float deceleration = maxRotationSpeed / decelerationTime;
             float decelerationAngle = 0.5f * _currentRotationSpeed * _currentRotationSpeed / deceleration;
-            if (Mathf.Abs(targetAngle) > decelerationAngle)
+            if (Mathf.Abs(_targetAngle) > decelerationAngle)
             {
                 _currentRotationSpeed = Mathf.Lerp(_currentRotationSpeed, maxRotationSpeed, Time.deltaTime / accelerationTime);
             }
@@ -82,7 +93,7 @@ namespace Controller.Scripts.Managers.Turret
 
             // Rotate towards the target angle at the current speed.
             float currentYRotation = transform.localEulerAngles.y;
-            float angleToRotate = Mathf.Sign(targetAngle) * _currentRotationSpeed * Time.deltaTime;
+            float angleToRotate = Mathf.Sign(_targetAngle) * _currentRotationSpeed * Time.deltaTime;
             float newYRotation = currentYRotation + angleToRotate;
 
             Vector3 currentRotation = transform.localEulerAngles;

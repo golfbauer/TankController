@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElementData;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements;
+using Controller.Scripts.Managers.PlayerCamera.CameraUI.ElementData;
+using Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 {
     [Serializable]
-    public class CameraUIController : MonoBehaviour
+    public class CameraUIManager : MonoBehaviour
     {
         [SerializeField] public List<UIElement> uiElements = new List<UIElement>();
         // I doubt that I need this, but this took me an entire day to get this to work, so I'm keeping it
-        public List<UIElementData.UIElementData> uiElementsData = new List<UIElementData.UIElementData>();
+        public List<UIElementData> uiElementsData = new List<UIElementData>();
         
         [SerializeField] public GameObject canvas;
-        public bool isActive;
+        public bool isActive = false;
+
+        private void Awake()
+        {
+            UpdateUIElements();
+        }
 
         public void ActivateUIElement(int index)
         {
@@ -31,38 +37,48 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
                 uiElements[index].Deactivate();
             }
         }
-        
-        public void UpdateActiveUIElements()
+
+        public void UpdateUIElement(UIElement uiElement)
         {
-            List<int> emptySlots = new List<int>();
-            foreach(UIElement element in uiElements)
-            {
-                if (element == null)
-                    return;
-                
-                if(isActive)
-                {
-                    element.Activate();
-                }
-                else
-                {
-                    element.Deactivate();
-                }
-            }
-            RemoveEmptySlots(emptySlots);
+            if(isActive)
+                uiElement.Activate();
+            else
+                uiElement.Deactivate();
         }
         
-        public void ToggleAllUIElements(bool setActive)
+        public void ToggleUIElements(bool setActive)
         {
             isActive = setActive;
-            UpdateActiveUIElements();
+            UpdateUIElements();
         }
-        
-        public void RemoveEmptySlots(List<int> emptySlots)
+
+        public void UpdateUIElements()
         {
-            foreach(int index in emptySlots)
+            uiElements.RemoveAll(element => element == null);
+            uiElementsData.RemoveAll(element => element == null);
+
+            foreach(var element in uiElements)
             {
-                uiElements.RemoveAt(index);
+                UpdateUIElement(element);
+            }
+            
+            for(int i = uiElementsData.Count - 1; i >= 0; i--)
+            {
+                bool isOrphan = true;
+                foreach(var element in uiElements)
+                {
+                    if (element.Data == uiElementsData[i])
+                    {
+                        isOrphan = false;
+                        break;
+                    }
+                }
+
+                if (isOrphan)
+                {
+                    DestroyImmediate(uiElementsData[i]);
+                    uiElementsData.RemoveAt(i);
+                }
             }
         }
 
@@ -79,6 +95,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 
         public UIElement AddNewUIElement(UIElementType elementType)
         {
+
+            if (canvas == null)
+            {
+                throw new Exception("No canvas assigned to CameraUIController!");
+            }
+            
             GameObject uiGameObject = new GameObject("UIElement");
             RectTransform rectTransform = uiGameObject.AddComponent<RectTransform>();
             
@@ -86,8 +108,10 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
             rectTransform.anchoredPosition = new Vector2(0, 0);
             rectTransform.sizeDelta = new Vector2(100, 100);
             
-            UIElementData.UIElementData elementData = CreateUIElementData(elementType);
+            UIElementData elementData = CreateUIElementData(elementType);
             UIElement uiElement = CreateUIElement(elementData, uiGameObject);
+            
+            UpdateUIElement(uiElement);
 
             return uiElement;
         }
@@ -100,24 +124,27 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
                 UIElement uiElement = uiElements[index];
                 GameObject uiGameObject = uiElement.gameObject;
                 uiElements.RemoveAt(index);
+                uiElementsData.RemoveAt(index);
                 
-                UIElementData.UIElementData elementData = CreateUIElementData(uiElementType);
+                UIElementData elementData = CreateUIElementData(uiElementType);
                 UIElement newUIElement = CreateUIElement(elementData, uiGameObject);
                 
                 DestroyImmediate(uiElement);
+                uiElements.Insert(index, newUIElement);
+                uiElementsData.Insert(index, elementData);
                 return newUIElement;
             }
 
             return null;
         }
         
-        private UIElementData.UIElementData CreateUIElementData(UIElementType elementType)
+        private UIElementData CreateUIElementData(UIElementType elementType)
         {
-            UIElementData.UIElementData uiElementData;
+            UIElementData uiElementData;
             switch (elementType)
             {
                 case UIElementType.Basic:
-                    uiElementData = ScriptableObject.CreateInstance<UIElementData.UIElementData>();
+                    uiElementData = ScriptableObject.CreateInstance<UIElementData>();
                     break;
                 case UIElementType.StaticSprite:
                     uiElementData = ScriptableObject.CreateInstance<UISpriteElementData>();
@@ -131,7 +158,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
             return uiElementData;
         }
 
-        private UIElement CreateUIElement(UIElementData.UIElementData elementData, GameObject uiGameObject)
+        private UIElement CreateUIElement(UIElementData elementData, GameObject uiGameObject)
         {
             UIElement uiElement;
 

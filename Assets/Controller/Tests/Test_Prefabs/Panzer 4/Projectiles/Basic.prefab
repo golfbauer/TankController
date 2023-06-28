@@ -34087,9 +34087,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bb4e1f51c3f4489a9f3755711c8028d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  caliber: 75
-  mass: 5
-  initVelocity: 600
+  diameter: 80
+  mass: 15
+  initVelocity: 500
   maxTravelDistance: 1000
   maxLifetime: 100
 --- !u!54 &650066425631200959
