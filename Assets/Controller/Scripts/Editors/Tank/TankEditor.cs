@@ -40,6 +40,10 @@ namespace Controller.Scripts.Editors.Tank
         private SerializedProperty _hullColliderSize;
 
         // Manager
+        private SerializedProperty _useCameraManager;
+        private SerializedProperty _useCollisionManager;
+        private SerializedProperty _useMovementManager;
+        
         private CameraControllerManager _cameraControllerManager;
         
         private void OnEnable()
@@ -59,6 +63,10 @@ namespace Controller.Scripts.Editors.Tank
             _hullMeshColliders = serializedObject.FindProperty("hullMeshColliders");
             _hullColliderCenter = serializedObject.FindProperty("hullColliderCenter");
             _hullColliderSize = serializedObject.FindProperty("hullColliderSize");
+            
+            _useCameraManager = serializedObject.FindProperty("useCameraManager");
+            _useCollisionManager = serializedObject.FindProperty("useCollisionManager");
+            _useMovementManager = serializedObject.FindProperty("useMovementManager");
 
             Initialize();
         }
@@ -67,16 +75,16 @@ namespace Controller.Scripts.Editors.Tank
         {
             transform = ((Tank) target).gameObject.transform;
             
-            if (transform.GetComponent<MovementManager>() == null)
+            if (transform.GetComponent<MovementManager>() == null && _useMovementManager.boolValue)
                 transform.gameObject.AddComponent<MovementManager>();
 
-            if (transform.GetComponent<CameraControllerManager>() == null)
+            if (transform.GetComponent<CameraControllerManager>() == null && _useCameraManager.boolValue)
             {
                 _cameraControllerManager = transform.gameObject.AddComponent<CameraControllerManager>();
                 _cameraControllerManager.SetUpCamera();
             }
 
-            if (transform.GetComponent<CollisionManager>() == null)
+            if (transform.GetComponent<CollisionManager>() == null && _useCollisionManager.boolValue)
             {
                 transform.gameObject.AddComponent<CollisionManager>();
             }
@@ -84,8 +92,14 @@ namespace Controller.Scripts.Editors.Tank
 
         public override void SetUpGUI()
         {
+            GUIUtils.HeaderGUI(CreateTankMessages.TankManager);
+            GUIUtils.PropFieldGUI(_useCameraManager, CreateTankMessages.UseCameraManager);
+            GUIUtils.PropFieldGUI(_useCollisionManager, CreateTankMessages.UseCollisionManager);
+            GUIUtils.PropFieldGUI(_useMovementManager, CreateTankMessages.UseMovementManager);
+            
             CreateComponentGUI();
-            CameraPositionsGUI();
+            if(_useCameraManager.boolValue)
+                CameraPositionsGUI();
             
             GUIUtils.HeaderGUI(CreateTankMessages.Hull);
             GUIUtils.PropFieldGUI(_hullMesh, CreateTankMessages.Mesh);
@@ -177,6 +191,9 @@ namespace Controller.Scripts.Editors.Tank
         {
             if(_cameraControllerManager == null)
                 _cameraControllerManager = transform.GetComponent<CameraControllerManager>();
+
+            if (_cameraControllerManager == null)
+                return;
             
             _cameraControllerManager.SetUpCamera();
             

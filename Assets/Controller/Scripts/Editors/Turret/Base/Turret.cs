@@ -19,5 +19,10 @@ namespace Controller.Scripts.Editors.Turret.Base
         public bool boxColliderChangeManually;
         public Vector3 boxColliderSize;
         public Vector3 boxColliderCenter;
+        
+        // Manager
+        public bool useAmmunitionManager = true;
+        public bool useRotationManager = true;
+        public bool useCollisionManager = true;
     }
 }

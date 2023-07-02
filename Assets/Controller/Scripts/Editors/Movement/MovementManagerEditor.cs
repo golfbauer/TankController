@@ -12,9 +12,7 @@ namespace Controller.Scripts.Editors.Movement
     public class MovementManagerEditor : TankComponentEditor
     {
         private SerializedProperty _inputType;
-        
-        private SerializedProperty _steeringMode;
-        
+
         private SerializedProperty _allowPivotSteering;
         private SerializedProperty _maxPivotSpeed;
         private SerializedProperty _pivotTime;
@@ -40,8 +38,6 @@ namespace Controller.Scripts.Editors.Movement
         private void OnEnable()
         {
             _inputType = serializedObject.FindProperty("inputType");
-            
-            _steeringMode = serializedObject.FindProperty("steeringMode");
             
             _allowPivotSteering = serializedObject.FindProperty("allowPivotSteering");
             _maxPivotSpeed = serializedObject.FindProperty("maxPivotSpeed");
@@ -71,22 +67,18 @@ namespace Controller.Scripts.Editors.Movement
         public override void SetUpGUI()
         {
             EditorGUILayout.PropertyField(_inputType);
-            EditorGUILayout.PropertyField(_steeringMode);
-            if (_steeringMode.enumValueIndex == (int)TankSteeringMode.TrackAccelerationAndDeceleration)
+            EditorGUILayout.PropertyField(_allowPivotSteering);
+            if (_allowPivotSteering.boolValue)
             {
-                EditorGUILayout.PropertyField(_allowPivotSteering);
-                if (_allowPivotSteering.boolValue)
-                {
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.PropertyField(_maxPivotSpeed);
-                    EditorGUILayout.PropertyField(_pivotTime);
-                    serializedObject.ApplyModifiedProperties();
-                    ShowCurve(_pivotCurve, "Pivot Curve");
-                    EditorGUI.indentLevel--;
-                }
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(_maxPivotSpeed);
+                EditorGUILayout.PropertyField(_pivotTime);
+                serializedObject.ApplyModifiedProperties();
+                ShowCurve(_pivotCurve, "Pivot Curve");
+                EditorGUI.indentLevel--;
             }
-            
-            EditorGUILayout.Space();
+
+                EditorGUILayout.Space();
             GUIUtils.HeaderGUI("Break");
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_breakDrag);

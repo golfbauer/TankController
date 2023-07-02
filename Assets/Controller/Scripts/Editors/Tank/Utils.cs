@@ -28,6 +28,11 @@ namespace Controller.Scripts.Editors.Tank
         public const string Transform = "Transform";
         
         public const string Create = "Create";
+        
+        public const string TankManager = "Tank Manager";
+        public const string UseCameraManager = "Use Camera Manager";
+        public const string UseCollisionManager = "Use Collision Manager";
+        public const string UseMovementManager = "Use Movement Manager";
     }
 
     public enum ComponentType

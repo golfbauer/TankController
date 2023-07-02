@@ -7,31 +7,29 @@ namespace Controller.Scripts.Managers.Movement
 {
     public class MovementManager: MonoBehaviour
     {
-        public TankSteeringMode steeringMode;
+        public MovementInputType inputType = MovementInputType.Keyboard;
+        
+        public bool allowPivotSteering = true;
+        public float maxPivotSpeed = 1.5f;
+        public float pivotTime = 2;
+        public AnimationCurve pivotCurve = AnimationCurve.Linear(0, 0, 1, 1);
+        
+        public float torque = 5000;
+        
+        public float turningDrag = 50;
+        public float minTurningDrag = 20;
+        public float breakDrag = 100;
+        public float breakDecelerationRate = 10;
+        public float rollingDrag = 20;
+        
+        public float maxForwardSpeed = 4;
+        public float maxReverseSpeed = 3;
 
-        public MovementInputType inputType;
+        public float accelerationTime = 4;
+        public AnimationCurve accelerationCurve = AnimationCurve.Linear(0, 0, 1, 1);
         
-        public bool allowPivotSteering;
-        public float maxPivotSpeed;
-        public float pivotTime;
-        public AnimationCurve pivotCurve;
-        
-        public float torque;
-        
-        public float turningDrag;
-        public float minTurningDrag;
-        public float breakDrag;
-        public float breakDecelerationRate;
-        public float rollingDrag;
-        
-        public float maxForwardSpeed;
-        public float maxReverseSpeed;
-
-        public float accelerationTime;
-        public AnimationCurve accelerationCurve;
-        
-        public float decelerationTime;
-        public AnimationCurve decelerationCurve;
+        public float decelerationTime = 5;
+        public AnimationCurve decelerationCurve = AnimationCurve.Linear(0, 0, 1, 1);
         
         
         private MovementInputManager _movementInputManager;

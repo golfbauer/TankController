@@ -71,7 +71,7 @@ namespace Controller.Scripts.Editors.ImpactCollision
             GUIUtils.PropFieldGUI(_useColliderVertices, CollisionMessages.UseColliderVertices);
             
             if(GUILayout.Button(!_addVertex ? CollisionMessages.AddVertex : GeneralMessages.Cancel))
-                _addVertex = true;
+                _addVertex = !_addVertex;
             
             if(GUILayout.Button(CollisionMessages.ClearVertices))
                 _vertices.ClearArray();
@@ -164,7 +164,7 @@ namespace Controller.Scripts.Editors.ImpactCollision
 
             if (_selectedVertices.Count >= 4)
             {
-                ArmorSection newSection = new ArmorSection(_selectedVertices.GetRange(0, 4), 0, 0);
+                ArmorSection newSection = new ArmorSection(_selectedVertices.GetRange(0, 4), 0, 0.1f);
                 _collisionManager.armorSections.Add(newSection);
                 
                 _selectedVertices.Clear();

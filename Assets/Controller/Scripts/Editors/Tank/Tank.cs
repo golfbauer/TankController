@@ -23,6 +23,11 @@ namespace Controller.Scripts.Editors.Tank
         public List<Mesh> hullMeshColliders = null;
         public Vector3 hullColliderCenter = Vector3.zero;
         public Vector3 hullColliderSize = Vector3.one;
+        
+        // Manager
+        public bool useCameraManager = true;
+        public bool useCollisionManager = true;
+        public bool useMovementManager = true;
 
 
         private void Awake()
