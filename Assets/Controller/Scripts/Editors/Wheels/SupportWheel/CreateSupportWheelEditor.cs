@@ -96,7 +96,7 @@ namespace Controller.Scripts.Editors.Wheels.SupportWheel
             
             GUIUtils.HeaderGUI(WheelMessages.GeneralWheelSettings);
             GUIUtils.PropFieldGUI(_wheelMassProp, WheelMessages.Mass);
-            GUIUtils.IntSliderGUI(_wheelCountProp, 1, 10, WheelMessages.Count);
+            GUIUtils.PropFieldGUI(_wheelCountProp, WheelMessages.Count);
             GUIUtils.SliderGUI(_wheelDistanceProp, 0.1f, 5f, WheelMessages.Distance);
             GUIUtils.SliderGUI(_wheelSpacingProp, 0.1f, 5f, WheelMessages.Spacing);
             

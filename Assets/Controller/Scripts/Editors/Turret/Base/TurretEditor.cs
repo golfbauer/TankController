@@ -25,6 +25,11 @@ namespace Controller.Scripts.Editors.Turret.Base
         private SerializedProperty _boxColliderChangeManually;
         private SerializedProperty _boxColliderSize;
         private SerializedProperty _boxColliderCenter;
+        
+        // Manager
+        private SerializedProperty _useAmmunitionManager;
+        private SerializedProperty _useRotationManager;
+        private SerializedProperty _useCollisionManager;
 
         private void OnEnable()
         {
@@ -39,6 +44,10 @@ namespace Controller.Scripts.Editors.Turret.Base
             _boxColliderSize = serializedObject.FindProperty("boxColliderSize");
             _boxColliderCenter = serializedObject.FindProperty("boxColliderCenter");
             
+            _useAmmunitionManager = serializedObject.FindProperty("useAmmunitionManager");
+            _useRotationManager = serializedObject.FindProperty("useRotationManager");
+            _useCollisionManager = serializedObject.FindProperty("useCollisionManager");
+            
             Initialize();
         }
         
@@ -47,7 +56,7 @@ namespace Controller.Scripts.Editors.Turret.Base
             transform = ((Turret) target).gameObject.transform;
             LayerUtils.SetLayer(transform.gameObject, LayerUtils.HullLayer);
 
-            if (!transform.GetComponent<AmmunitionManager>())
+            if (!transform.GetComponent<AmmunitionManager>() && _useAmmunitionManager.boolValue)
             {
                 AmmunitionManager ammunitionManager = transform.AddComponent<AmmunitionManager>();
                 try
@@ -61,10 +70,10 @@ namespace Controller.Scripts.Editors.Turret.Base
 
             }
             
-            if(transform.GetComponent<HorizontalRotation>() == null)
+            if(transform.GetComponent<HorizontalRotation>() == null && _useRotationManager.boolValue)
                 transform.gameObject.AddComponent<HorizontalRotation>();
             
-            if(transform.GetComponent<CollisionManager>() == null)
+            if(transform.GetComponent<CollisionManager>() == null && _useCollisionManager.boolValue)
                 transform.gameObject.AddComponent<CollisionManager>();
             
             if(transform.Find("Mantlet") == null)
@@ -73,6 +82,11 @@ namespace Controller.Scripts.Editors.Turret.Base
 
         public override void SetUpGUI()
         {
+            GUIUtils.HeaderGUI(TurretMessages.TurretManager);
+            GUIUtils.PropFieldGUI(_useAmmunitionManager, TurretMessages.UseAmmunitionManager);
+            GUIUtils.PropFieldGUI(_useRotationManager, TurretMessages.UseRotationManager);
+            GUIUtils.PropFieldGUI(_useCollisionManager, TurretMessages.UseCollisionManager);
+            
             GUIUtils.HeaderGUI(TurretMessages.TurretSettings);
             GUIUtils.PropFieldGUI(_turretMesh, TurretMessages.Mesh);
             GUIUtils.PropFieldGUI(_turretMaterials, TurretMessages.Materials);
