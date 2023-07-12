@@ -394,10 +394,10 @@ namespace Controller.Scripts.Editors.Wheels.SuspensionWheel
         {
             Quaternion pivotRotation = Quaternion.AngleAxis(rotationAngle, rotationAxis);
             Vector3 pivotToWheel = objectToRotate.position - pivot.position;
-    
+            
             pivot.rotation *= pivotRotation;
             objectToRotate.rotation *= pivotRotation;
-
+            
             Vector3 newPivotToWheel = pivotRotation * pivotToWheel;
             objectToRotate.position = pivot.position + newPivotToWheel;
         }

@@ -78,7 +78,7 @@ namespace Controller.Scripts.Editors.Movement
                 EditorGUI.indentLevel--;
             }
 
-                EditorGUILayout.Space();
+            EditorGUILayout.Space();
             GUIUtils.HeaderGUI("Break");
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_breakDrag);

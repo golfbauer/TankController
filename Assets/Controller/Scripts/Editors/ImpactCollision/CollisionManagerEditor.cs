@@ -261,7 +261,7 @@ namespace Controller.Scripts.Editors.ImpactCollision
             if(!_useColliderVertices.boolValue)
                 return;
             
-            MeshCollider[] meshColliders = transform.GetComponentsInChildren<MeshCollider>();
+            MeshCollider[] meshColliders = transform.GetComponents<MeshCollider>();
 
             if (meshColliders.Length == 0) return;
 

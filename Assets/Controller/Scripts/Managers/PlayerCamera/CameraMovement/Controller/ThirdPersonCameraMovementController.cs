@@ -4,11 +4,11 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {
     public class ThirdPersonCameraMovementController : CameraMovementController
     {
-        public override void SetUpCameraController(GameObject mainCamera, CameraControllerManager cameraControllerManager)
+        public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
-            CameraControllerManager = cameraControllerManager;
+            this.cameraManager = cameraManager;
         }
 
         public override void SetUpTransitionIn(CameraMovementController previousCameraMovementController)
@@ -22,7 +22,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
             MainCameraObject.transform.position = transform.position;
             MainCamera.fieldOfView = fieldOfView;
             ShowUI(true);
-            CameraControllerManager.FinishTransitionIn();
+            cameraManager.FinishTransitionIn();
         }
         
         public override void SetUpTransitionOut(CameraMovementController nextCameraMovementController)
@@ -33,7 +33,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
         public override void TransitionOut()
         {
             ShowUI(false);
-            CameraControllerManager.FinishTransitionOut();
+            cameraManager.FinishTransitionOut();
         }
 
         public override void ActiveCameraMovement()

@@ -43,6 +43,5 @@ namespace Controller.Scripts.Editors.Tank
         RearWheel,
         Chain,
         Turret,
-        Camera,
     }
 }

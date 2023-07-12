@@ -17,7 +17,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 
         protected GameObject MainCameraObject;
         protected Camera MainCamera;
-        protected CameraControllerManager CameraControllerManager;
+        protected CameraManager cameraManager;
         protected CameraUIManager CameraUIManager;
         
         public float yaw;
@@ -40,8 +40,8 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
         /// Set up the controller, this is called once in the CameraManager on Start.
         /// </summary>
         /// <param name="mainCamera"></param>
-        /// <param name="cameraControllerManager"></param>
-        public virtual void SetUpCameraController(GameObject mainCamera, CameraControllerManager cameraControllerManager) {}
+        /// <param name="cameraManager"></param>
+        public virtual void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager) {}
 
         /// <summary>
         /// Can be used to set up parameters for the transition in.

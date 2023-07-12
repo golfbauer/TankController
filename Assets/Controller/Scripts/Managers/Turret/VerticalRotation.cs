@@ -76,23 +76,8 @@ namespace Controller.Scripts.Managers.Turret
             _currentVerticalAngle = newAngle;
 
             // Apply the new angle to the gun
-            try
-            {
-                transform.rotation = Quaternion.Euler(newAngle, transform.rotation.eulerAngles.y,
+            transform.rotation = Quaternion.Euler(newAngle, transform.rotation.eulerAngles.y,
                     transform.rotation.eulerAngles.z);
-            }
-            catch (Exception)
-            {
-                decelerationTime = 1;
-                accelerationTime = 1;
-            }
-
-            if (decelerationTime == 0 || accelerationTime == 0)
-            {
-                decelerationTime = 1;
-                accelerationTime = 1;
-            }
-
         }
         
         private float AngleBetweenVectorAndPlane(Vector3 vector, Vector3 planeNormal) 
