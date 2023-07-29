@@ -6,18 +6,18 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {
     public class ScopedCameraMovementController : CameraMovementController
     {
-        [SerializeField] private float timeToZoom = 0;
+        [SerializeField] private float timeToZoom;
 
         private float _currentZoom;
         private float _targetZoom;
         private float _zoomSpeed;
         private bool _isZooming;
 
-        public override void SetUpCameraController(GameObject mainCamera, CameraControllerManager cameraControllerManager)
+        public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
-            CameraControllerManager = cameraControllerManager;
+            this.cameraManager = cameraManager;
         }
         
         private void Zoom()
@@ -35,7 +35,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
             
             _targetZoom = fieldOfView;
             _currentZoom = MainCamera.fieldOfView;
-            _zoomSpeed = Mathf.Abs(_targetZoom - _currentZoom) / timeToZoom;
+            _zoomSpeed = Mathf.Abs(_targetZoom - _currentZoom) / (timeToZoom + 0.1f);
             ShowUI(true);
         }
 
@@ -43,10 +43,11 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
         {
             MainCameraObject.transform.position = transform.position;
             Zoom();
+            ActiveCameraMovement();
 
             if (!_isZooming)
             {
-                CameraControllerManager.FinishTransitionIn();
+                cameraManager.FinishTransitionIn();
                 MainCamera.fieldOfView = fieldOfView;
             }
         }
@@ -58,7 +59,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
         public override void TransitionOut()
         {
             ShowUI(false);
-            CameraControllerManager.FinishTransitionOut();
+            cameraManager.FinishTransitionOut();
         }
         
         public override void ActiveCameraMovement()

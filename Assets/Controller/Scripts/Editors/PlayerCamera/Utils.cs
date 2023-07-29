@@ -2,6 +2,8 @@
 {
     public static class CameraMessages
     {
+        public const string CameraPositions = "Camera Positions";
+        public const string AddCameraPosition = "Add Camera Position";
         public static string GeneralSettings = "General Controller Settings";
         public static string CameraSwitchKey = "Camera Switch Key";
         public static string CameraZOffset = "Camera Z Offset";

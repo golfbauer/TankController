@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
 {
-    public class CameraControllerManager : MonoBehaviour
+    public class CameraManager : MonoBehaviour
     {
-        [SerializeField] private List<CameraMovementController> cameraControllers = new();
-        [SerializeField] private KeyCode cameraSwitchKey = KeyCode.C;
+        [SerializeField] public List<CameraMovementController> cameraControllers = new();
+        [SerializeField] public KeyCode cameraSwitchKey = KeyCode.C;
 
         private GameObject _camera;
         private CameraMovementController _activeCameraMovementController;
@@ -64,6 +62,18 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
             _activeCameraMovementController = cameraControllers[0];
             _nextCameraMovementController = cameraControllers[0];
             _activeCameraMovementController.ShowUI(true);
+        }
+        
+        private void ClearCameraControllers()
+        {
+            for (int i = 0; i < cameraControllers.Count; i++)
+            {
+                if (cameraControllers[i] == null)
+                {
+                    cameraControllers.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         private void Update()
@@ -130,77 +140,6 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement
         {
             TransitioningOut = false;
             TransitioningIn = true;
-        }
-
-        public void AddNewCameraPosition(Transform parent, CameraType cameraType)
-        {
-            ClearCameraControllers();
-            GameObject cameraPosition = new GameObject("Camera Position " + (cameraControllers.Count + 1));
-            cameraPosition.transform.SetParent(parent);
-            AttachCameraController(cameraPosition, cameraType);
-        }
-
-        private void AttachCameraController(GameObject cameraPosition, CameraType cameraType)
-        {
-            cameraControllers.Add(GetCameraController(cameraPosition, cameraType));
-            cameraPosition.AddComponent<CameraUIManager>();
-        }
-
-        public void ReplaceCameraController(GameObject cameraPosition, CameraType cameraType)
-        {
-            int index = cameraControllers.IndexOf(cameraPosition.GetComponent<CameraMovementController>());
-            
-            DestroyImmediate(cameraPosition.GetComponent<CameraMovementController>());
-            cameraControllers.RemoveAt(index);
-            
-            cameraControllers.Insert(index, GetCameraController(cameraPosition, cameraType));
-            ClearCameraControllers();
-        }
-
-        private CameraMovementController GetCameraController(GameObject cameraPosition, CameraType cameraType)
-        {
-            CameraMovementController cameraMovementController;
-            switch (cameraType)
-            {
-                case (CameraType.ThirdPerson):
-                    cameraMovementController = cameraPosition.AddComponent<ThirdPersonCameraMovementController>();
-                    break;
-                case CameraType.Scoped:
-                    cameraMovementController = cameraPosition.AddComponent<ScopedCameraMovementController>();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(cameraType), cameraType, null); 
-            }
-            
-            return cameraMovementController;
-        }
-        
-        private void ClearCameraControllers()
-        {
-            for (int i = 0; i < cameraControllers.Count; i++)
-            {
-                if (cameraControllers[i] == null)
-                {
-                    cameraControllers.RemoveAt(i);
-                    i--;
-                    continue;
-                }
-                
-                cameraControllers[i].transform.name = "Camera Position " + (i + 1);
-            }
-        }
-        
-        public void RemoveCameraPosition(GameObject cameraPosition)
-        {
-            cameraControllers.Remove(cameraPosition.GetComponent<CameraMovementController>());
-            DestroyImmediate(cameraPosition);
-            ClearCameraControllers();
-        }
-
-        [ItemCanBeNull]
-        public List<CameraMovementController> GetCameraControllers()
-        {
-            return cameraControllers;
         }
     }
 }

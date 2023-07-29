@@ -49,7 +49,7 @@ namespace Controller.Scripts.Editors.Utils
         }
     }
     
-        public static class DrawUtils
+    public static class DrawUtils
     {
         public static void ShowLabel(GameObject gameObject, SerializedProperty showLabel)
         {

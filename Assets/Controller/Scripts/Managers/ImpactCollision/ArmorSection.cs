@@ -12,11 +12,8 @@ namespace Controller.Scripts.Managers.ImpactCollision
         public ArmorMaterialType armorMaterialType = ArmorMaterialType.LowCarbonSteelPlate;
         public float tolerance;
 
-        public Vector3 planeNormal;
-        public float planeD;
-        int dim1, dim2;
-        
-        
+        private Vector3 _planeNormal;
+
         public ArmorSection(List<Vector3> connectingPoints, float thickness, float tolerance = CollisionUtils.CollisionTolerance)
         {
             if (connectingPoints == null || connectingPoints.Count != 4)
@@ -26,34 +23,6 @@ namespace Controller.Scripts.Managers.ImpactCollision
             this.connectingPoints = connectingPoints;
             this.thickness = thickness;
             this.tolerance = tolerance;
-            
-            SetUpArmorSection();
-        }
-
-        public void SetUpArmorSection()
-        {
-            Vector3 A = connectingPoints[0];
-            Vector3 B = connectingPoints[1];
-            Vector3 C = connectingPoints[2];
-            
-            planeNormal = Vector3.Cross(B - A, C - A).normalized;
-            
-            // Choose the two dimensions to project onto
-            if (Mathf.Abs(planeNormal.x) <= Mathf.Min(Mathf.Abs(planeNormal.y), Mathf.Abs(planeNormal.z)))
-            {
-                dim1 = 1; // y
-                dim2 = 2; // z
-            }
-            else if (Mathf.Abs(planeNormal.y) <= Mathf.Min(Mathf.Abs(planeNormal.x), Mathf.Abs(planeNormal.z)))
-            {
-                dim1 = 0; // x
-                dim2 = 2; // z
-            }
-            else
-            {
-                dim1 = 0; // x
-                dim2 = 1; // y
-            }
         }
         
         public bool IsImpactPointWithinArmorSection(Vector3 impactPoint, Vector3 objectPosition)
@@ -62,13 +31,15 @@ namespace Controller.Scripts.Managers.ImpactCollision
             Vector3 B = connectingPoints[1] + objectPosition;
             Vector3 C = connectingPoints[2] + objectPosition;
             Vector3 D = connectingPoints[3] + objectPosition;
+            
+            _planeNormal = Vector3.Cross(B - A, C - A).normalized;
 
             // Find d for the plane equation => ax + by + cz + d = 0
-            planeD = -Vector3.Dot(planeNormal, A);
+            float planeD = -Vector3.Dot(_planeNormal, A);
 
             // Calculate the distance of the point from the plane
-            float distance = Mathf.Abs(planeNormal.x * impactPoint.x + planeNormal.y * impactPoint.y +
-                                       planeNormal.z * impactPoint.z + planeD);
+            float distance = Mathf.Abs(_planeNormal.x * impactPoint.x + _planeNormal.y * impactPoint.y +
+                                       _planeNormal.z * impactPoint.z + planeD);
 
             // Check if the distance is within some tolerance
             if (distance > tolerance)
@@ -90,6 +61,25 @@ namespace Controller.Scripts.Managers.ImpactCollision
 
         private bool IsPointInTriangle(Vector3 P, Vector3 A, Vector3 B, Vector3 C)
         {
+            int dim1, dim2;
+            
+            // Choose the two dimensions to project onto
+            if (Mathf.Abs(_planeNormal.x) <= Mathf.Min(Mathf.Abs(_planeNormal.y), Mathf.Abs(_planeNormal.z)))
+            {
+                dim1 = 1; // y
+                dim2 = 2; // z
+            }
+            else if (Mathf.Abs(_planeNormal.y) <= Mathf.Min(Mathf.Abs(_planeNormal.x), Mathf.Abs(_planeNormal.z)))
+            {
+                dim1 = 0; // x
+                dim2 = 2; // z
+            }
+            else
+            {
+                dim1 = 0; // x
+                dim2 = 1; // y
+            }
+            
             // Project the 3D points onto the 2D plane by picking the two dimensions
             Vector2 P2D = new Vector2(P[dim1], P[dim2]);
             Vector2 A2D = new Vector2(A[dim1], A[dim2]);

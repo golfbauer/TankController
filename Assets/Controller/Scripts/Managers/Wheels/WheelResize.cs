@@ -17,6 +17,9 @@ namespace Controller.Scripts.Managers.Wheels
 
         private void Update()
         {
+            if (transform.localScale == _initWheelScale)
+                Destroy(this);
+            
             transform.localScale = Vector3.Lerp(transform.localScale, _initWheelScale, wheelResizeSpeed * Time.deltaTime);
         }
     }

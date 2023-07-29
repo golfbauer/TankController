@@ -28,19 +28,5 @@ namespace Controller.Scripts.Editors.Tank
         public bool useCameraManager = true;
         public bool useCollisionManager = true;
         public bool useMovementManager = true;
-
-
-        private void Awake()
-        {
-            Rigidbody tankRigidbody = gameObject.GetComponent<Rigidbody>();
-            
-            if (tankRigidbody == null)
-            {
-                tankRigidbody = gameObject.AddComponent<Rigidbody>();
-            }
-            
-            tankRigidbody.solverIterations = physicsIterations;
-            tankRigidbody.centerOfMass = hullCenterOfMass;
-        }
     }
 }
