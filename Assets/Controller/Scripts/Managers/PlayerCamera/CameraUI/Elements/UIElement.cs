@@ -23,7 +23,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
         public virtual void InitializeUIElement()
         {
         }
-        
+
         public virtual UIElementType GetUIElementType()
         {
             return Data.Type;

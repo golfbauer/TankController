@@ -15,70 +15,91 @@ namespace Controller.Scripts.Editors.Ammunition
         private SerializedProperty _switchToPreviousKey;
         private SerializedProperty _allowNumbers;
         private SerializedProperty _reloadTime;
-        
+
         private string _tmpPath = "/Assets";
+
         private void OnEnable()
         {
-            _ammunitionTypes = serializedObject.FindProperty("ammunitionTypes");
+            _ammunitionTypes =
+                serializedObject.FindProperty("ammunitionTypes");
             _spawnPoint = serializedObject.FindProperty("spawnPoint");
             _fireKey = serializedObject.FindProperty("fireKey");
-            _switchToNextKey = serializedObject.FindProperty("switchToNextKey");
-            _switchToPreviousKey = serializedObject.FindProperty("switchToPreviousKey");
+            _switchToNextKey =
+                serializedObject.FindProperty("switchToNextKey");
+            _switchToPreviousKey =
+                serializedObject.FindProperty("switchToPreviousKey");
             _allowNumbers = serializedObject.FindProperty("allowNumbers");
             _reloadTime = serializedObject.FindProperty("reloadTime");
-            
-            transform = ((AmmunitionManager) target).gameObject.transform;
+
+            transform = ((AmmunitionManager)target).gameObject.transform;
         }
 
         public override void SetUpGUI()
         {
             GUIUtils.PropFieldGUI(_spawnPoint, AmmunitionMessages.SpawnPoint);
             GUIUtils.PropFieldGUI(_fireKey, AmmunitionMessages.FireKey);
-            GUIUtils.PropFieldGUI(_switchToNextKey, AmmunitionMessages.SwitchToNextKey);
-            GUIUtils.PropFieldGUI(_switchToPreviousKey, AmmunitionMessages.SwitchToPreviousKey);
-            GUIUtils.PropFieldGUI(_allowNumbers, AmmunitionMessages.AllowNumbers);
+            GUIUtils.PropFieldGUI(_switchToNextKey,
+                AmmunitionMessages.SwitchToNextKey);
+            GUIUtils.PropFieldGUI(_switchToPreviousKey,
+                AmmunitionMessages.SwitchToPreviousKey);
+            GUIUtils.PropFieldGUI(_allowNumbers,
+                AmmunitionMessages.AllowNumbers);
             GUIUtils.PropFieldGUI(_reloadTime, AmmunitionMessages.ReloadTime);
-            
+
             EditorGUILayout.Space();
-            
-            for(int i=0; i < _ammunitionTypes.arraySize; i++)
+
+            for (int i = 0; i < _ammunitionTypes.arraySize; i++)
             {
-                SerializedProperty ammunitionType = _ammunitionTypes.GetArrayElementAtIndex(i);
+                SerializedProperty ammunitionType =
+                    _ammunitionTypes.GetArrayElementAtIndex(i);
                 if (ammunitionType == null)
                     continue;
                 AmmunitionTypeGUI(ammunitionType, i);
                 EditorGUILayout.Space();
             }
-            
-            EditorGUILayout.Space(); 
-            
+
+            EditorGUILayout.Space();
+
             Create();
             Open();
         }
 
-        private void AmmunitionTypeGUI(SerializedProperty ammunitionType, int index)
+        private void AmmunitionTypeGUI(SerializedProperty ammunitionType,
+            int index)
         {
-            bool foldout = EditorPrefs.GetBool("AmmunitionTypeFoldout" + index, false);
-            string name = ammunitionType.objectReferenceValue == null ? "Empty" : ammunitionType.objectReferenceValue.name;
-            foldout = EditorGUILayout.Foldout(foldout, name);            
+            bool foldout =
+                EditorPrefs.GetBool("AmmunitionTypeFoldout" + index, false);
+            string name = ammunitionType.objectReferenceValue == null
+                ? "Empty"
+                : ammunitionType.objectReferenceValue.name;
+            foldout = EditorGUILayout.Foldout(foldout, name);
             EditorPrefs.SetBool("AmmunitionTypeFoldout" + index, foldout);
 
             if (foldout)
             {
                 EditorGUI.indentLevel++;
 
-                AmmunitionType ammoType = (AmmunitionType)ammunitionType.objectReferenceValue;
-                SerializedObject ammoTypeSerializedObject = new SerializedObject(ammoType);
-                
-                SerializedProperty ammunitionProp = ammoTypeSerializedObject.FindProperty("projectile");
-                SerializedProperty ammunitionCountProp = ammoTypeSerializedObject.FindProperty("ammunitionCount");
-                SerializedProperty shortCutKeyProp = ammoTypeSerializedObject.FindProperty("shortCutKey");
-                
-                GUIUtils.PropFieldGUI(ammunitionProp, AmmunitionMessages.AmmunitionPrefab);
-                GUIUtils.PropFieldGUI(ammunitionCountProp, AmmunitionMessages.AmmunitionCount);
-                GUIUtils.PropFieldGUI(shortCutKeyProp, AmmunitionMessages.ShortcutKey);
-                
-                if (GUI.changed || Event.current.commandName == "UndoRedoPerformed")
+                AmmunitionType ammoType =
+                    (AmmunitionType)ammunitionType.objectReferenceValue;
+                SerializedObject ammoTypeSerializedObject =
+                    new SerializedObject(ammoType);
+
+                SerializedProperty ammunitionProp =
+                    ammoTypeSerializedObject.FindProperty("projectile");
+                SerializedProperty ammunitionCountProp =
+                    ammoTypeSerializedObject.FindProperty("ammunitionCount");
+                SerializedProperty shortCutKeyProp =
+                    ammoTypeSerializedObject.FindProperty("shortCutKey");
+
+                GUIUtils.PropFieldGUI(ammunitionProp,
+                    AmmunitionMessages.AmmunitionPrefab);
+                GUIUtils.PropFieldGUI(ammunitionCountProp,
+                    AmmunitionMessages.AmmunitionCount);
+                GUIUtils.PropFieldGUI(shortCutKeyProp,
+                    AmmunitionMessages.ShortcutKey);
+
+                if (GUI.changed ||
+                    Event.current.commandName == "UndoRedoPerformed")
                 {
                     ammoTypeSerializedObject.ApplyModifiedProperties();
                     EditorUtility.SetDirty(ammoType);
@@ -100,13 +121,16 @@ namespace Controller.Scripts.Editors.Ammunition
                 _ammunitionTypes.MoveArrayElement(index - 1, index);
                 isChanged = true;
             }
-            if (GUILayout.Button(GeneralMessages.MoveDown) && index < _ammunitionTypes.arraySize - 1)
+
+            if (GUILayout.Button(GeneralMessages.MoveDown) &&
+                index < _ammunitionTypes.arraySize - 1)
             {
                 _ammunitionTypes.MoveArrayElement(index + 1, index);
                 isChanged = true;
             }
+
             GUILayout.EndHorizontal();
-    
+
             if (isChanged)
             {
                 serializedObject.ApplyModifiedProperties();
@@ -128,17 +152,23 @@ namespace Controller.Scripts.Editors.Ammunition
         {
             if (GUILayout.Button(GeneralMessages.Import))
             {
-                string assetPath = EditorUtility.OpenFilePanel(AmmunitionMessages.OpenAmmunitionType, _tmpPath, "asset");
+                string assetPath = EditorUtility.OpenFilePanel(
+                    AmmunitionMessages.OpenAmmunitionType, _tmpPath, "asset");
                 _tmpPath = assetPath;
                 assetPath = FileUtil.GetProjectRelativePath(assetPath);
                 if (assetPath.Length != 0)
                 {
-                    var fileContent = (AmmunitionType) AssetDatabase.LoadAssetAtPath(assetPath, typeof(AmmunitionType));
+                    var fileContent =
+                        (AmmunitionType)AssetDatabase.LoadAssetAtPath(
+                            assetPath, typeof(AmmunitionType));
                     if (fileContent != null)
                     {
                         serializedObject.Update();
                         _ammunitionTypes.arraySize++;
-                        _ammunitionTypes.GetArrayElementAtIndex(_ammunitionTypes.arraySize - 1).objectReferenceValue = fileContent;
+                        _ammunitionTypes
+                            .GetArrayElementAtIndex(
+                                _ammunitionTypes.arraySize - 1)
+                            .objectReferenceValue = fileContent;
                         serializedObject.ApplyModifiedProperties();
                     }
                 }
@@ -154,10 +184,11 @@ namespace Controller.Scripts.Editors.Ammunition
 
                 // Open a save file dialog for the developer to choose where to save the new asset
                 string assetPath = EditorUtility.SaveFilePanel(
-                    AmmunitionMessages.SaveNewAmmunitionType, 
-                    _tmpPath, AmmunitionMessages.NewAmmunitionTypeName, "asset");
+                    AmmunitionMessages.SaveNewAmmunitionType,
+                    _tmpPath, AmmunitionMessages.NewAmmunitionTypeName,
+                    "asset");
                 _tmpPath = assetPath;
-        
+
                 // Check if the user actually chose a path (they may have cancelled the dialog)
                 if (!string.IsNullOrEmpty(assetPath))
                 {
@@ -167,11 +198,14 @@ namespace Controller.Scripts.Editors.Ammunition
                     // Save the new instance as an asset at the chosen path
                     AssetDatabase.CreateAsset(newAmmoType, assetPath);
                     AssetDatabase.SaveAssets();
-            
+
                     // Add the new asset to _ammunitionTypes
                     serializedObject.Update();
                     _ammunitionTypes.arraySize++;
-                    _ammunitionTypes.GetArrayElementAtIndex(_ammunitionTypes.arraySize - 1).objectReferenceValue = newAmmoType;
+                    _ammunitionTypes
+                        .GetArrayElementAtIndex(
+                            _ammunitionTypes.arraySize - 1)
+                        .objectReferenceValue = newAmmoType;
                     serializedObject.ApplyModifiedProperties();
                 }
             }

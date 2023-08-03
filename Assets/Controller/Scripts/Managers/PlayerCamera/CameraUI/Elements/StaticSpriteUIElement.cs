@@ -12,22 +12,24 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
             get => ((UISpriteElementData)Data).Sprite;
             set => ((UISpriteElementData)Data).Sprite = value;
         }
-        
+
         public override void PerformUpdateAction()
         {
             // Do nothing
         }
-        
+
         public override void DisplayGUI()
         {
-            Sprite newSprite = (Sprite)EditorGUILayout.ObjectField("Sprite", Sprite, typeof(Sprite), true);
+            Sprite newSprite =
+                (Sprite)EditorGUILayout.ObjectField("Sprite", Sprite,
+                    typeof(Sprite), true);
             if (newSprite != Sprite)
             {
                 Sprite = newSprite;
                 InitializeUIElement();
             }
         }
-        
+
         public override void InitializeUIElement()
         {
             Image spriteRenderer = gameObject.GetComponent<Image>();
@@ -35,6 +37,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
             {
                 spriteRenderer = gameObject.AddComponent<Image>();
             }
+
             spriteRenderer.sprite = Sprite;
         }
     }

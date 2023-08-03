@@ -249,7 +249,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1436
+  m_VersionIndex: 1439
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -363,7 +363,7 @@ MonoBehaviour:
     - {x: 1.152668, y: 1.3325667, z: -1.3576365}
     - {x: 1.152668, y: -1.3325667, z: -1.3576365}
     - {x: -1.152668, y: -1.3325667, z: -1.3576365}
-    thickness: 30
+    thickness: 1000
     armorMaterialType: 1530
     tolerance: 0.1
   - connectingPoints:
@@ -373,6 +373,14 @@ MonoBehaviour:
     - {x: 1.152668, y: -1.3325667, z: -1.3576365}
     thickness: 30
     armorMaterialType: 1530
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 1.152669, y: 1.3325672, z: 1.3576365}
+    - {x: -1.152667, y: 1.3325672, z: 1.3576365}
+    - {x: -1.152667, y: -1.3325672, z: 1.3576365}
+    - {x: 1.152669, y: -1.3325672, z: 1.3576365}
+    thickness: 10000
+    armorMaterialType: 0
     tolerance: 0.1
   defaultArmorSection:
     connectingPoints: []
@@ -388,6 +396,22 @@ MonoBehaviour:
   - {x: 42.50115, y: 3.7390308, z: -7.625471}
   - {x: 40.195812, y: 1.0738964, z: -7.625471}
   - {x: 40.195812, y: 3.7390308, z: -7.625471}
+  - {x: 28.617332, y: 1.0738964, z: -9.952364}
+  - {x: 30.922668, y: 1.0738964, z: -9.952364}
+  - {x: 28.617332, y: 3.7390308, z: -9.952364}
+  - {x: 30.922668, y: 3.7390308, z: -9.952364}
+  - {x: 30.922668, y: 1.0738964, z: -12.667637}
+  - {x: 30.922668, y: 3.7390308, z: -12.667637}
+  - {x: 28.617332, y: 1.0738964, z: -12.667637}
+  - {x: 28.617332, y: 3.7390308, z: -12.667637}
+  - {x: 27.21733, y: 1.0738964, z: 18.737637}
+  - {x: 29.522667, y: 1.0738964, z: 18.737637}
+  - {x: 27.21733, y: 3.7390308, z: 18.737637}
+  - {x: 29.522667, y: 3.7390308, z: 18.737637}
+  - {x: 29.522667, y: 1.0738964, z: 16.022362}
+  - {x: 29.522667, y: 3.7390308, z: 16.022362}
+  - {x: 27.21733, y: 1.0738964, z: 16.022362}
+  - {x: 27.21733, y: 3.7390308, z: 16.022362}
   useColliderVertices: 1
   colliderColor: {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &5782122086221617550
@@ -602,7 +626,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1334
+  m_VersionIndex: 1337
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

@@ -27,9 +27,9 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
             _isActive = serializedObject.FindProperty("isActive");
             _uiElements = serializedObject.FindProperty("uiElements");
             _uiElementsData = serializedObject.FindProperty("uiElementsData");
-            
-            transform = ((CameraUIManager) target).gameObject.transform;
-            _manager = (CameraUIManager) target;
+
+            transform = ((CameraUIManager)target).gameObject.transform;
+            _manager = (CameraUIManager)target;
         }
 
         public override void SetUpGUI()
@@ -46,9 +46,10 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
         private void ShowUIElementsGUI()
         {
             GUIUtils.HeaderGUI(CameraMessages.UIElements);
-            for(int i=0; i < _uiElements.arraySize; i++)
+            for (int i = 0; i < _uiElements.arraySize; i++)
             {
-                SerializedProperty elementProperty = _uiElements.GetArrayElementAtIndex(i);
+                SerializedProperty elementProperty =
+                    _uiElements.GetArrayElementAtIndex(i);
                 if (elementProperty.objectReferenceValue == null)
                 {
                     _uiElements.DeleteArrayElementAtIndex(i);
@@ -56,8 +57,10 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
                     i--;
                     continue;
                 }
-                
-                UIElement element = _uiElements.GetArrayElementAtIndex(i).objectReferenceValue as UIElement;
+
+                UIElement element =
+                    _uiElements.GetArrayElementAtIndex(i).objectReferenceValue
+                        as UIElement;
                 UIElementGUI(element, i);
             }
         }
@@ -65,69 +68,76 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
         private void UIElementGUI(UIElement element, int index)
         {
             GameObject uiElement = element.gameObject;
-            bool foldout = EditorPrefs.GetBool("UIElementFoldout" + index, false);
+            bool foldout =
+                EditorPrefs.GetBool("UIElementFoldout" + index, false);
             foldout = EditorGUILayout.Foldout(foldout, uiElement.name);
             EditorPrefs.SetBool("UIElementFoldout" + index, foldout);
 
             if (foldout)
             {
                 EditorGUI.indentLevel++;
-                
+
                 UIElementType currentType = element.GetUIElementType();
-                UIElementType newType = (UIElementType)EditorGUILayout.EnumPopup("Type", currentType);
-                
-                EditorGUILayout.ObjectField("Transform", uiElement.transform, typeof(Transform), true);
-                
+                UIElementType newType =
+                    (UIElementType)EditorGUILayout.EnumPopup("Type",
+                        currentType);
+
+                EditorGUILayout.ObjectField("Transform", uiElement.transform,
+                    typeof(Transform), true);
+
                 element.DisplayGUI();
-                
+
                 RemoveUIElementGUI(index);
 
                 EditorGUI.indentLevel--;
-                
+
                 if (newType != currentType)
                 {
                     ChangeTypeOfUIElement(index, newType);
                 }
             }
         }
-        
+
         private void CreateUIElementGUI()
         {
-            if(GUILayout.Button(GeneralMessages.Add))
+            if (GUILayout.Button(GeneralMessages.Add))
             {
                 UIElement uiElement = AddNewUIElement(UIElementType.Basic);
 
                 AttachNewUIElement(uiElement);
             }
         }
-        
+
         public UIElement AddNewUIElement(UIElementType elementType)
         {
-
             if (_canvas.objectReferenceValue == null)
             {
-                throw new Exception("No canvas assigned to CameraUIController!");
+                throw new Exception(
+                    "No canvas assigned to CameraUIController!");
             }
-            
+
             GameObject uiGameObject = new GameObject("UIElement");
-            RectTransform rectTransform = uiGameObject.AddComponent<RectTransform>();
-            GameObject canvasGameObject = _canvas.objectReferenceValue as GameObject;
-            
-            uiGameObject.transform.SetParent(canvasGameObject.transform, false);
+            RectTransform rectTransform =
+                uiGameObject.AddComponent<RectTransform>();
+            GameObject canvasGameObject =
+                _canvas.objectReferenceValue as GameObject;
+
+            uiGameObject.transform.SetParent(canvasGameObject.transform,
+                false);
             rectTransform.anchoredPosition = new Vector2(0, 0);
             rectTransform.sizeDelta = new Vector2(100, 100);
-            
+
             UIElementData elementData = CreateUIElementData(elementType);
             UIElement uiElement = CreateUIElement(elementData, uiGameObject);
-            
-            if(_isActive.boolValue)
+
+            if (_isActive.boolValue)
                 uiElement.Activate();
             else
                 uiElement.Deactivate();
 
             return uiElement;
         }
-        
+
         private UIElementData CreateUIElementData(UIElementType elementType)
         {
             UIElementData uiElementData;
@@ -142,13 +152,14 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
                 // Add more cases for additional UIElement types
                 default:
                     throw new ArgumentOutOfRangeException();
-
             }
+
             uiElementData.Type = elementType;
             return uiElementData;
         }
 
-        private UIElement CreateUIElement(UIElementData elementData, GameObject uiGameObject)
+        private UIElement CreateUIElement(UIElementData elementData,
+            GameObject uiGameObject)
         {
             UIElement uiElement;
 
@@ -158,7 +169,8 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
                     uiElement = uiGameObject.AddComponent<BasicUIElement>();
                     break;
                 case UIElementType.StaticSprite:
-                    uiElement = uiGameObject.AddComponent<StaticSpriteUIElement>();
+                    uiElement =
+                        uiGameObject.AddComponent<StaticSpriteUIElement>();
                     break;
                 // Add more cases for additional UIElement types
                 default:
@@ -170,33 +182,42 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
 
             return uiElement;
         }
-        
-        public void ChangeTypeOfUIElement(int index, UIElementType uiElementType)
+
+        public void ChangeTypeOfUIElement(int index,
+            UIElementType uiElementType)
         {
-            if(index < _uiElements.arraySize)
+            if (index < _uiElements.arraySize)
             {
-                UIElement uiElement = _uiElements.GetArrayElementAtIndex(index).objectReferenceValue as UIElement;
+                UIElement uiElement =
+                    _uiElements.GetArrayElementAtIndex(index)
+                        .objectReferenceValue as UIElement;
                 GameObject uiGameObject = uiElement.gameObject;
                 DestroyImmediate(uiElement);
-                
-                UIElementData elementData = CreateUIElementData(uiElementType);
-                _uiElements.GetArrayElementAtIndex(index).objectReferenceValue = CreateUIElement(elementData, uiGameObject);
-                _uiElementsData.GetArrayElementAtIndex(index).objectReferenceValue = elementData;
+
+                UIElementData elementData =
+                    CreateUIElementData(uiElementType);
+                _uiElements.GetArrayElementAtIndex(index)
+                        .objectReferenceValue =
+                    CreateUIElement(elementData, uiGameObject);
+                _uiElementsData.GetArrayElementAtIndex(index)
+                    .objectReferenceValue = elementData;
             }
         }
-        
+
         private void RemoveUIElementGUI(int index)
         {
-            if(GUILayout.Button(GeneralMessages.Remove))
+            if (GUILayout.Button(GeneralMessages.Remove))
             {
                 // Get the element to be removed
-                UIElement element = _uiElements.GetArrayElementAtIndex(index).objectReferenceValue as UIElement;
-        
+                UIElement element =
+                    _uiElements.GetArrayElementAtIndex(index)
+                        .objectReferenceValue as UIElement;
+
                 // Remove the UIElement component and associated ScriptableObject data
-                if(element != null)
+                if (element != null)
                 {
                     // Destroy UIElementData
-                    if(element.Data != null)
+                    if (element.Data != null)
                     {
                         DestroyImmediate(element.Data);
                     }
@@ -216,11 +237,14 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
             _uiElements.arraySize++;
             _uiElementsData.arraySize++;
 
-            _uiElements.GetArrayElementAtIndex(_uiElements.arraySize - 1).objectReferenceValue = uiElement;
-            _uiElementsData.GetArrayElementAtIndex(_uiElementsData.arraySize - 1).objectReferenceValue = uiElement.Data;
+            _uiElements.GetArrayElementAtIndex(_uiElements.arraySize - 1)
+                .objectReferenceValue = uiElement;
+            _uiElementsData
+                .GetArrayElementAtIndex(_uiElementsData.arraySize - 1)
+                .objectReferenceValue = uiElement.Data;
         }
-        
-        public override bool AllowAccess()
+
+        public override bool DenyAccess()
         {
             return PrefabStageUtility.GetCurrentPrefabStage() != null;
         }
@@ -229,7 +253,7 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
         {
             GUIUtils.DenyAccessGUI(GeneralMessages.PrefabModeWarning);
         }
-        
+
         public override void BulkUpdateComponents()
         {
             _manager.isActive = _isActive.boolValue;

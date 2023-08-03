@@ -14,21 +14,21 @@ using UnityEngine;
 namespace Controller.Scripts.Editors.Tank
 {
     [CustomEditor(typeof(Tank))]
-    public class TankEditor: TankComponentEditor
+    public class TankEditor : TankComponentEditor
     {
         // Components
         private SerializedProperty _componentType;
-        
+
         // Hull
         // Rigidbody
         private SerializedProperty _hullMass;
         private SerializedProperty _physicsIterations;
         private SerializedProperty _hullCenterOfMass;
-        
+
         // Mesh
         private SerializedProperty _hullMesh;
         private SerializedProperty _hullMaterials;
-        
+
         // Collider
         private SerializedProperty _useBoxCollider;
         private SerializedProperty _hullMeshColliders;
@@ -39,48 +39,60 @@ namespace Controller.Scripts.Editors.Tank
         private SerializedProperty _useCameraManager;
         private SerializedProperty _useCollisionManager;
         private SerializedProperty _useMovementManager;
-        
+
         private CameraManager _cameraManager;
-        
+
         private void OnEnable()
         {
             CheckTarget();
-            
+
             _componentType = serializedObject.FindProperty("componentType");
-            
+
             _hullMass = serializedObject.FindProperty("hullMass");
-            _hullCenterOfMass = serializedObject.FindProperty("hullCenterOfMass");
-            _physicsIterations = serializedObject.FindProperty("physicsIterations");
-            
+            _hullCenterOfMass =
+                serializedObject.FindProperty("hullCenterOfMass");
+            _physicsIterations =
+                serializedObject.FindProperty("physicsIterations");
+
             _hullMesh = serializedObject.FindProperty("hullMesh");
             _hullMaterials = serializedObject.FindProperty("hullMaterials");
-            
+
             _useBoxCollider = serializedObject.FindProperty("useBoxCollider");
-            _hullMeshColliders = serializedObject.FindProperty("hullMeshColliders");
-            _hullColliderCenter = serializedObject.FindProperty("hullColliderCenter");
-            _hullColliderSize = serializedObject.FindProperty("hullColliderSize");
-            
-            _useCameraManager = serializedObject.FindProperty("useCameraManager");
-            _useCollisionManager = serializedObject.FindProperty("useCollisionManager");
-            _useMovementManager = serializedObject.FindProperty("useMovementManager");
+            _hullMeshColliders =
+                serializedObject.FindProperty("hullMeshColliders");
+            _hullColliderCenter =
+                serializedObject.FindProperty("hullColliderCenter");
+            _hullColliderSize =
+                serializedObject.FindProperty("hullColliderSize");
+
+            _useCameraManager =
+                serializedObject.FindProperty("useCameraManager");
+            _useCollisionManager =
+                serializedObject.FindProperty("useCollisionManager");
+            _useMovementManager =
+                serializedObject.FindProperty("useMovementManager");
 
             Initialize();
         }
 
         private void Initialize()
         {
-            transform = ((Tank) target).gameObject.transform;
-            
-            if (transform.GetComponent<MovementManager>() == null && _useMovementManager.boolValue)
+            transform = ((Tank)target).gameObject.transform;
+
+            if (transform.GetComponent<MovementManager>() == null &&
+                _useMovementManager.boolValue)
                 transform.gameObject.AddComponent<MovementManager>();
 
-            if (transform.GetComponent<CameraManager>() == null && _useCameraManager.boolValue)
+            if (transform.GetComponent<CameraManager>() == null &&
+                _useCameraManager.boolValue)
             {
-                _cameraManager = transform.gameObject.AddComponent<CameraManager>();
+                _cameraManager =
+                    transform.gameObject.AddComponent<CameraManager>();
                 _cameraManager.SetUpCamera();
             }
 
-            if (transform.GetComponent<CollisionManager>() == null && _useCollisionManager.boolValue)
+            if (transform.GetComponent<CollisionManager>() == null &&
+                _useCollisionManager.boolValue)
             {
                 transform.gameObject.AddComponent<CollisionManager>();
             }
@@ -89,73 +101,86 @@ namespace Controller.Scripts.Editors.Tank
         public override void SetUpGUI()
         {
             GUIUtils.HeaderGUI(CreateTankMessages.TankManager);
-            GUIUtils.PropFieldGUI(_useCameraManager, CreateTankMessages.UseCameraManager);
-            GUIUtils.PropFieldGUI(_useCollisionManager, CreateTankMessages.UseCollisionManager);
-            GUIUtils.PropFieldGUI(_useMovementManager, CreateTankMessages.UseMovementManager);
-            
+            GUIUtils.PropFieldGUI(_useCameraManager,
+                CreateTankMessages.UseCameraManager);
+            GUIUtils.PropFieldGUI(_useCollisionManager,
+                CreateTankMessages.UseCollisionManager);
+            GUIUtils.PropFieldGUI(_useMovementManager,
+                CreateTankMessages.UseMovementManager);
+
             CreateComponentGUI();
-            
+
             GUIUtils.HeaderGUI(CreateTankMessages.Hull);
             GUIUtils.PropFieldGUI(_hullMesh, CreateTankMessages.Mesh);
-            GUIUtils.PropFieldGUI(_hullMaterials, CreateTankMessages.Material);
-            
+            GUIUtils.PropFieldGUI(_hullMaterials,
+                CreateTankMessages.Material);
+
             GUIUtils.HeaderGUI(CreateTankMessages.Collider);
-            GUIUtils.PropFieldGUI(_useBoxCollider, CreateTankMessages.UseBoxCollider);
+            GUIUtils.PropFieldGUI(_useBoxCollider,
+                CreateTankMessages.UseBoxCollider);
             if (_useBoxCollider.boolValue)
             {
-                GUIUtils.PropFieldGUI(_hullColliderCenter, CreateTankMessages.ColliderCenter);
-                GUIUtils.PropFieldGUI(_hullColliderSize, CreateTankMessages.ColliderSize);
+                GUIUtils.PropFieldGUI(_hullColliderCenter,
+                    CreateTankMessages.ColliderCenter);
+                GUIUtils.PropFieldGUI(_hullColliderSize,
+                    CreateTankMessages.ColliderSize);
             }
             else
-            {                
-                GUIUtils.PropFieldGUI(_hullMeshColliders, CreateTankMessages.MeshCollider);
+            {
+                GUIUtils.PropFieldGUI(_hullMeshColliders,
+                    CreateTankMessages.MeshCollider);
             }
-            
+
             GUIUtils.HeaderGUI(CreateTankMessages.Rigidbody);
             GUIUtils.PropFieldGUI(_hullMass, CreateTankMessages.Mass);
-            GUIUtils.PropFieldGUI(_hullCenterOfMass, CreateTankMessages.CenterOfMass);
-            GUIUtils.PropFieldGUI(_physicsIterations, CreateTankMessages.PhysicsIterations);
-            
+            GUIUtils.PropFieldGUI(_hullCenterOfMass,
+                CreateTankMessages.CenterOfMass);
+            GUIUtils.PropFieldGUI(_physicsIterations,
+                CreateTankMessages.PhysicsIterations);
+
             UpdateAllGUI();
         }
-        
+
         private void CreateComponentGUI()
         {
             GUIUtils.HeaderGUI(CreateTankMessages.Components);
-            GUIUtils.PropFieldGUI(_componentType, CreateTankMessages.Component);
-            
+            GUIUtils.PropFieldGUI(_componentType,
+                CreateTankMessages.Component);
+
             if (GUILayout.Button(CreateTankMessages.Create))
             {
                 CreateComponent();
             }
         }
-        
+
         private void CreateComponent()
         {
-            var createComponent = (ComponentType) _componentType.enumValueFlag;
+            var createComponent = (ComponentType)_componentType.enumValueFlag;
 
             switch (createComponent)
             {
                 case ComponentType.SupportWheel:
-                    CreateComponent("Support Wheel", typeof(CreateSupportWheel));
+                    CreateComponent("Support Wheel",
+                        typeof(CreateSupportWheel));
                     break;
-                
+
                 case ComponentType.SuspensionWheel:
-                    CreateComponent("Suspension Wheel", typeof(CreateSuspensionWheel));
+                    CreateComponent("Suspension Wheel",
+                        typeof(CreateSuspensionWheel));
                     break;
-                
+
                 case ComponentType.DriveWheel:
                     CreateComponent("Drive Wheel", typeof(CreateDriveWheel));
                     break;
-                
+
                 case ComponentType.RearWheel:
                     CreateComponent("Rear Wheel", typeof(CreateRearWheel));
                     break;
-                
+
                 case ComponentType.Chain:
                     CreateComponent("Chain", typeof(CreateChain));
                     break;
-                
+
                 case ComponentType.Turret:
                     CreateComponent("Turret", typeof(Turret.Base.Turret));
                     break;
@@ -184,7 +209,7 @@ namespace Controller.Scripts.Editors.Tank
             rigidbody.solverIterations = _physicsIterations.intValue;
             UpdateMesh(transform, _hullMesh, _hullMaterials);
             UpdateCollider();
-            
+
             LayerUtils.SetLayer(transform.gameObject, LayerUtils.HullLayer);
         }
 
@@ -192,7 +217,8 @@ namespace Controller.Scripts.Editors.Tank
         {
             if (_useBoxCollider.boolValue)
             {
-                UpdateBoxCollider(transform, _hullColliderCenter, _hullColliderSize);
+                UpdateBoxCollider(transform, _hullColliderCenter,
+                    _hullColliderSize);
                 RemoveMeshColliders(transform);
             }
             else

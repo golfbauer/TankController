@@ -6,7 +6,7 @@ namespace Controller.Scripts.Managers.Ammunition
 {
     public class AmmunitionManager : MonoBehaviour
     {
-        public List<AmmunitionType> ammunitionTypes = new ();
+        public List<AmmunitionType> ammunitionTypes = new();
         public GameObject spawnPoint;
         public Vector3 direction;
         public KeyCode fireKey;
@@ -14,7 +14,7 @@ namespace Controller.Scripts.Managers.Ammunition
         public KeyCode switchToPreviousKey;
         public bool allowNumbers;
         public float reloadTime;
-        
+
         private int _currentAmmunitionTypeIndex;
         private bool _allowShortcuts;
         private float _currentReloadTime;
@@ -22,7 +22,8 @@ namespace Controller.Scripts.Managers.Ammunition
         private void Start()
         {
             _currentReloadTime = reloadTime;
-            _allowShortcuts = ammunitionTypes.Any(ammunitionType => Input.GetKeyDown(ammunitionType.shortCutKey));
+            _allowShortcuts = ammunitionTypes.Any(ammunitionType =>
+                Input.GetKeyDown(ammunitionType.shortCutKey));
             direction = spawnPoint.transform.forward;
 
             foreach (AmmunitionType ammunitionType in ammunitionTypes)
@@ -39,6 +40,7 @@ namespace Controller.Scripts.Managers.Ammunition
                 _currentReloadTime += Time.deltaTime;
                 return;
             }
+
             CheckFire();
         }
 
@@ -46,14 +48,14 @@ namespace Controller.Scripts.Managers.Ammunition
         {
             if (_allowShortcuts)
                 UseShortcuts();
-            
+
             if (allowNumbers)
                 UseNumbers();
-            
+
             SwitchToNext();
             SwitchToPrevious();
         }
-        
+
         private void Reload()
         {
             _currentReloadTime = 0;
@@ -61,11 +63,12 @@ namespace Controller.Scripts.Managers.Ammunition
 
         private void UseShortcuts()
         {
-            foreach(AmmunitionType ammunitionType in ammunitionTypes)
+            foreach (AmmunitionType ammunitionType in ammunitionTypes)
             {
                 if (Input.GetKeyDown(ammunitionType.shortCutKey))
                 {
-                    _currentAmmunitionTypeIndex = ammunitionTypes.IndexOf(ammunitionType);
+                    _currentAmmunitionTypeIndex =
+                        ammunitionTypes.IndexOf(ammunitionType);
                     Reload();
                 }
             }
@@ -75,6 +78,7 @@ namespace Controller.Scripts.Managers.Ammunition
         {
             if (Input.GetKeyDown(switchToNextKey))
             {
+                Debug.LogWarning("Switch to next");
                 _currentAmmunitionTypeIndex++;
                 Reload();
                 if (_currentAmmunitionTypeIndex > ammunitionTypes.Count - 1)
@@ -83,11 +87,12 @@ namespace Controller.Scripts.Managers.Ammunition
                 }
             }
         }
-        
+
         private void SwitchToPrevious()
         {
-            if(Input.GetKeyDown(switchToPreviousKey))
+            if (Input.GetKeyDown(switchToPreviousKey))
             {
+                Debug.LogWarning("Switch to previous");
                 _currentAmmunitionTypeIndex--;
                 Reload();
                 if (_currentAmmunitionTypeIndex < 0)
@@ -96,12 +101,13 @@ namespace Controller.Scripts.Managers.Ammunition
                 }
             }
         }
-        
+
         private void UseNumbers()
         {
             for (int i = 0; i < ProjectileUtils.KeyCodes.Length; i++)
             {
-                if (Input.GetKeyDown(ProjectileUtils.KeyCodes[i]) && i < ammunitionTypes.Count)
+                if (Input.GetKeyDown(ProjectileUtils.KeyCodes[i]) &&
+                    i < ammunitionTypes.Count)
                 {
                     _currentAmmunitionTypeIndex = i;
                     Reload();
@@ -111,41 +117,43 @@ namespace Controller.Scripts.Managers.Ammunition
 
         private void CheckFire()
         {
-            if(Input.GetKeyDown(fireKey))
+            if (Input.GetKeyDown(fireKey))
             {
                 Fire();
             }
         }
-        
+
         private void Fire()
         {
-            AmmunitionType ammunitionType = ammunitionTypes[_currentAmmunitionTypeIndex];
+            AmmunitionType ammunitionType =
+                ammunitionTypes[_currentAmmunitionTypeIndex];
             direction = spawnPoint.transform.forward;
-            
+
             GameObject ammunition = ammunitionType.FireShot();
-            
+
             if (ammunition == null)
             {
                 Debug.LogWarning("Out of ammunition");
                 return;
             }
-            
-            Quaternion rotation = Quaternion.LookRotation(direction.normalized);
+
+            Quaternion rotation =
+                Quaternion.LookRotation(direction.normalized);
             Instantiate(ammunition, spawnPoint.transform.position, rotation);
             Debug.LogWarning("Fired " + ammunitionType.name);
             Reload();
         }
-        
+
         public int GetAmmoCount(int index)
         {
             return ammunitionTypes[index].GetAmmoCount();
         }
-        
+
         public float GetReloadPercent(int index)
         {
-            if(index != _currentAmmunitionTypeIndex)
+            if (index != _currentAmmunitionTypeIndex)
                 return 1;
-            
+
             return _currentReloadTime / reloadTime;
         }
     }

@@ -2,16 +2,19 @@
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {
-    public class ThirdPersonCameraMovementController : CameraMovementController
+    public class
+        ThirdPersonCameraMovementController : CameraMovementController
     {
-        public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
+        public override void SetUpCameraController(GameObject mainCamera,
+            CameraManager cameraManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
             this.cameraManager = cameraManager;
         }
 
-        public override void SetUpTransitionIn(CameraMovementController previousCameraMovementController)
+        public override void SetUpTransitionIn(
+            CameraMovementController previousCameraMovementController)
         {
             yaw = previousCameraMovementController.yaw;
             pitch = previousCameraMovementController.pitch;
@@ -24,12 +27,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
             ShowUI(true);
             cameraManager.FinishTransitionIn();
         }
-        
-        public override void SetUpTransitionOut(CameraMovementController nextCameraMovementController)
+
+        public override void SetUpTransitionOut(
+            CameraMovementController nextCameraMovementController)
         {
-            
         }
-        
+
         public override void TransitionOut()
         {
             ShowUI(false);
@@ -48,8 +51,9 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 
             MainCameraObject.transform.position = transform.position;
             MainCameraObject.transform.rotation = rotation;
-            
-            MainCameraObject.transform.Translate(0, 0, -cameraZOffset, Space.Self);
+
+            MainCameraObject.transform.Translate(0, 0, -cameraZOffset,
+                Space.Self);
         }
 
         public override CameraType GetCameraType()

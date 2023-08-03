@@ -123,7 +123,7 @@ namespace Controller.Scripts.Editors.Movement
             EditorGUILayout.EndHorizontal();
         }
 
-        public override bool AllowAccess()
+        public override bool DenyAccess()
         {
             return false;
         }

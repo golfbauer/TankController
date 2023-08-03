@@ -8,6 +8,7 @@ namespace Controller.Scripts.Managers.Turret
     {
         [Tooltip("Draws Ray to show the guns vertical aiming direction")]
         public bool debug;
+
         public float maxRotationSpeed = 10f;
         public float minMovement = 0.2f;
         public float accelerationTime = 2f;
@@ -27,8 +28,10 @@ namespace Controller.Scripts.Managers.Turret
         {
             if (horizontalRotation == null)
             {
-                horizontalRotation = transform.parent.GetComponent<HorizontalRotation>();
-                Debug.Log("Horizontal Rotation not set, please check if working correctly.");
+                horizontalRotation =
+                    transform.parent.GetComponent<HorizontalRotation>();
+                Debug.Log(
+                    "Horizontal Rotation not set, please check if working correctly.");
             }
         }
 
@@ -44,46 +47,57 @@ namespace Controller.Scripts.Managers.Turret
             _directionToTarget = _targetPoint - transform.position;
 
             // Calculate the angle between the gun's forward direction and the direction to the target.
-            _targetAngle = AngleBetweenVectorAndPlane(_directionToTarget, Vector3.up);
+            _targetAngle =
+                AngleBetweenVectorAndPlane(_directionToTarget, Vector3.up);
 
             _targetAngle = Mathf.Clamp(_targetAngle, minAngle, maxAngle);
-            
+
             if (Mathf.Abs(_targetAngle) < minMovement)
             {
                 _currentRotationSpeed = 0;
-                
+
                 return;
             }
 
             float deceleration = maxRotationSpeed / decelerationTime;
-            float decelerationAngle = 0.5f * _currentRotationSpeed * _currentRotationSpeed / deceleration;
-            
-            if (Mathf.Abs(_currentVerticalAngle - _targetAngle) > decelerationAngle)
+            float decelerationAngle = 0.5f * _currentRotationSpeed *
+                _currentRotationSpeed / deceleration;
+
+            if (Mathf.Abs(_currentVerticalAngle - _targetAngle) >
+                decelerationAngle)
             {
                 float targetSpeed = maxRotationSpeed;
-                _currentRotationSpeed = Mathf.SmoothDamp(_currentRotationSpeed, targetSpeed, ref _currentRotationVelocity, accelerationTime);
+                _currentRotationSpeed = Mathf.SmoothDamp(
+                    _currentRotationSpeed, targetSpeed,
+                    ref _currentRotationVelocity, accelerationTime);
             }
             else
             {
                 float targetSpeed = 0;
-                _currentRotationSpeed = Mathf.SmoothDamp(_currentRotationSpeed, targetSpeed, ref _currentRotationVelocity, decelerationTime);
+                _currentRotationSpeed = Mathf.SmoothDamp(
+                    _currentRotationSpeed, targetSpeed,
+                    ref _currentRotationVelocity, decelerationTime);
             }
 
             // Interpolate between the current angle and the target angle
-            float newAngle = Mathf.Lerp(_currentVerticalAngle, -_targetAngle, _currentRotationSpeed * Time.deltaTime);
+            float newAngle = Mathf.Lerp(_currentVerticalAngle, -_targetAngle,
+                _currentRotationSpeed * Time.deltaTime);
 
             // Update the current angle
             _currentVerticalAngle = newAngle;
 
             // Apply the new angle to the gun
-            transform.rotation = Quaternion.Euler(newAngle, transform.rotation.eulerAngles.y,
-                    transform.rotation.eulerAngles.z);
+            transform.rotation = Quaternion.Euler(newAngle,
+                transform.rotation.eulerAngles.y,
+                transform.rotation.eulerAngles.z);
         }
-        
-        private float AngleBetweenVectorAndPlane(Vector3 vector, Vector3 planeNormal) 
+
+        private float AngleBetweenVectorAndPlane(Vector3 vector,
+            Vector3 planeNormal)
         {
             // Project the vector onto the plane
-            Vector3 projectedVector = Vector3.ProjectOnPlane(vector, planeNormal);
+            Vector3 projectedVector =
+                Vector3.ProjectOnPlane(vector, planeNormal);
 
             // Get the angle between the vector and its projection (i.e., the angle between the vector and the plane)
             float dotProduct = Vector3.Dot(vector, projectedVector);
@@ -94,7 +108,9 @@ namespace Controller.Scripts.Managers.Turret
             if (vectorMagnitude * projectedVectorMagnitude <= 0)
                 return 0;
 
-            float angle = Mathf.Acos(dotProduct / (vectorMagnitude * projectedVectorMagnitude));
+            float angle = Mathf.Acos(dotProduct /
+                                     (vectorMagnitude *
+                                      projectedVectorMagnitude));
 
             // Convert the angle from radians to degrees
             angle *= Mathf.Rad2Deg;
@@ -109,7 +125,7 @@ namespace Controller.Scripts.Managers.Turret
         {
             if (!debug)
                 return;
-            
+
             Debug.DrawRay(transform.position, _directionToTarget, Color.blue);
             Debug.Log("Vertical Target Angle: " + _targetAngle);
         }

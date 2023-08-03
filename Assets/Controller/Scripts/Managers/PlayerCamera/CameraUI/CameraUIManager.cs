@@ -9,10 +9,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
     [Serializable]
     public class CameraUIManager : MonoBehaviour
     {
-        [SerializeField] public List<UIElement> uiElements = new List<UIElement>();
+        [SerializeField]
+        public List<UIElement> uiElements = new List<UIElement>();
+
         // I doubt that I need this, but this took me an entire day to get this to work, so I'm keeping it
         public List<UIElementData> uiElementsData = new List<UIElementData>();
-        
+
         [SerializeField] public GameObject canvas;
         public bool isActive;
 
@@ -23,7 +25,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 
         public void ActivateUIElement(int index)
         {
-            if(index < uiElements.Count)
+            if (index < uiElements.Count)
             {
                 uiElements[index].Activate();
             }
@@ -31,7 +33,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 
         public void DeactivateUIElement(int index)
         {
-            if(index < uiElements.Count)
+            if (index < uiElements.Count)
             {
                 uiElements[index].Deactivate();
             }
@@ -39,12 +41,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
 
         public void UpdateUIElement(UIElement uiElement)
         {
-            if(isActive)
+            if (isActive)
                 uiElement.Activate();
             else
                 uiElement.Deactivate();
         }
-        
+
         public void ToggleUIElements(bool setActive)
         {
             isActive = setActive;
@@ -56,15 +58,15 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
             uiElements.RemoveAll(element => element == null);
             uiElementsData.RemoveAll(element => element == null);
 
-            foreach(var element in uiElements)
+            foreach (var element in uiElements)
             {
                 UpdateUIElement(element);
             }
-            
-            for(int i = uiElementsData.Count - 1; i >= 0; i--)
+
+            for (int i = uiElementsData.Count - 1; i >= 0; i--)
             {
                 bool isOrphan = true;
-                foreach(var element in uiElements)
+                foreach (var element in uiElements)
                 {
                     if (element.Data == uiElementsData[i])
                     {

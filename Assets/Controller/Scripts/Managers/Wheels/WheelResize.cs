@@ -8,7 +8,7 @@ namespace Controller.Scripts.Managers.Wheels
         public float wheelResizeSpeed = 1.0f;
 
         private Vector3 _initWheelScale;
-        
+
         private void Start()
         {
             _initWheelScale = transform.localScale;
@@ -19,8 +19,9 @@ namespace Controller.Scripts.Managers.Wheels
         {
             if (transform.localScale == _initWheelScale)
                 Destroy(this);
-            
-            transform.localScale = Vector3.Lerp(transform.localScale, _initWheelScale, wheelResizeSpeed * Time.deltaTime);
+
+            transform.localScale = Vector3.Lerp(transform.localScale,
+                _initWheelScale, wheelResizeSpeed * Time.deltaTime);
         }
     }
 }

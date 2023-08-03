@@ -4,7 +4,7 @@ using UnityEngine.PlayerLoop;
 
 namespace Controller.Scripts.Managers.Tracks
 {
-    public class ChainLinkBalancer: MonoBehaviour
+    public class ChainLinkBalancer : MonoBehaviour
     {
         /*
          * Lets hope this is only a temporary solution.
@@ -17,18 +17,22 @@ namespace Controller.Scripts.Managers.Tracks
         */
         private Vector3 _fixedPosition;
         private Quaternion _fixedRotation;
-        
+
         private void Awake()
         {
             _fixedPosition = transform.localPosition;
             _fixedRotation = transform.localRotation;
         }
-        
+
         private void Update()
         {
-            Vector3 newPosition = new Vector3(transform.localPosition.x, _fixedPosition.y, transform.localPosition.z);
-            Quaternion newRotation = Quaternion.Euler(_fixedRotation.eulerAngles.x, transform.localRotation.eulerAngles.y, _fixedRotation.eulerAngles.z);
-            
+            Vector3 newPosition = new Vector3(transform.localPosition.x,
+                _fixedPosition.y, transform.localPosition.z);
+            Quaternion newRotation = Quaternion.Euler(
+                _fixedRotation.eulerAngles.x,
+                transform.localRotation.eulerAngles.y,
+                _fixedRotation.eulerAngles.z);
+
             transform.localPosition = newPosition;
             transform.localRotation = newRotation;
         }

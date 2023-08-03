@@ -13,29 +13,33 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
         private float _zoomSpeed;
         private bool _isZooming;
 
-        public override void SetUpCameraController(GameObject mainCamera, CameraManager cameraManager)
+        public override void SetUpCameraController(GameObject mainCamera,
+            CameraManager cameraManager)
         {
             MainCameraObject = mainCamera;
             MainCamera = MainCameraObject.GetComponent<Camera>();
             this.cameraManager = cameraManager;
         }
-        
+
         private void Zoom()
         {
-            _currentZoom = Mathf.Lerp(_currentZoom, _targetZoom, Time.deltaTime * _zoomSpeed);
+            _currentZoom = Mathf.Lerp(_currentZoom, _targetZoom,
+                Time.deltaTime * _zoomSpeed);
             MainCamera.fieldOfView = _currentZoom;
 
             _isZooming = !(Math.Abs(_currentZoom - _targetZoom) < 0.1f);
         }
 
-        public override void SetUpTransitionIn(CameraMovementController previousCameraMovementController)
+        public override void SetUpTransitionIn(
+            CameraMovementController previousCameraMovementController)
         {
             yaw = previousCameraMovementController.yaw;
             pitch = previousCameraMovementController.pitch;
-            
+
             _targetZoom = fieldOfView;
             _currentZoom = MainCamera.fieldOfView;
-            _zoomSpeed = Mathf.Abs(_targetZoom - _currentZoom) / (timeToZoom + 0.1f);
+            _zoomSpeed = Mathf.Abs(_targetZoom - _currentZoom) /
+                         (timeToZoom + 0.1f);
             ShowUI(true);
         }
 
@@ -52,7 +56,8 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
             }
         }
 
-        public override void SetUpTransitionOut(CameraMovementController nextCameraMovementController)
+        public override void SetUpTransitionOut(
+            CameraMovementController nextCameraMovementController)
         {
         }
 
@@ -61,7 +66,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
             ShowUI(false);
             cameraManager.FinishTransitionOut();
         }
-        
+
         public override void ActiveCameraMovement()
         {
             float mouseX = Input.GetAxis("Mouse X") * cameraSensitivity;
@@ -74,10 +79,11 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 
             MainCameraObject.transform.position = transform.position;
             MainCameraObject.transform.rotation = rotation;
-            
-            MainCameraObject.transform.Translate(0, 0, cameraZOffset, Space.Self);
+
+            MainCameraObject.transform.Translate(0, 0, cameraZOffset,
+                Space.Self);
         }
-        
+
         public override CameraType GetCameraType()
         {
             return CameraType.Scoped;
@@ -85,7 +91,8 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 
         public override void EditorGUI()
         {
-            timeToZoom = EditorGUILayout.FloatField("Time to zoom", timeToZoom);
+            timeToZoom =
+                EditorGUILayout.FloatField("Time to zoom", timeToZoom);
         }
     }
 }

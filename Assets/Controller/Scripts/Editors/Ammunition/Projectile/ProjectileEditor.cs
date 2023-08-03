@@ -20,7 +20,8 @@ namespace Controller.Scripts.Editors.Ammunition.Projectile
             _diameter = serializedObject.FindProperty("diameter");
             _mass = serializedObject.FindProperty("mass");
             _initVelocity = serializedObject.FindProperty("initVelocity");
-            _maxTravelDistance = serializedObject.FindProperty("maxTravelDistance");
+            _maxTravelDistance =
+                serializedObject.FindProperty("maxTravelDistance");
             _maxLifetime = serializedObject.FindProperty("maxLifetime");
 
             transform = ((BaseProjectile)target).gameObject.transform;
@@ -30,16 +31,23 @@ namespace Controller.Scripts.Editors.Ammunition.Projectile
         {
             GUIUtils.PropFieldGUI(_diameter, ProjectileMessages.Diameter);
             GUIUtils.PropFieldGUI(_mass, ProjectileMessages.Mass);
-            GUIUtils.PropFieldGUI(_initVelocity, ProjectileMessages.InitialVelocity);
-            GUIUtils.PropFieldGUI(_maxTravelDistance, ProjectileMessages.MaxTravelDistance);
-            GUIUtils.PropFieldGUI(_maxLifetime, ProjectileMessages.MaxLifetime);
+            GUIUtils.PropFieldGUI(_initVelocity,
+                ProjectileMessages.InitialVelocity);
+            GUIUtils.PropFieldGUI(_maxTravelDistance,
+                ProjectileMessages.MaxTravelDistance);
+            GUIUtils.PropFieldGUI(_maxLifetime,
+                ProjectileMessages.MaxLifetime);
 
             BaseProjectile projectile = (BaseProjectile)target;
-            MethodInfo editorMethod = projectile.GetType().GetMethod("EditorSetUp", BindingFlags.Public | BindingFlags.Instance);
-            
+            MethodInfo editorMethod = projectile.GetType()
+                .GetMethod("EditorSetUp",
+                    BindingFlags.Public | BindingFlags.Instance);
+
             if (editorMethod != null)
             {
-                EditorGUILayout.LabelField(ProjectileMessages.ProjectileTypeSettings, EditorStyles.boldLabel);
+                EditorGUILayout.LabelField(
+                    ProjectileMessages.ProjectileTypeSettings,
+                    EditorStyles.boldLabel);
                 editorMethod.Invoke(projectile, null);
             }
         }
