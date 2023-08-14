@@ -2,8 +2,8 @@
 using Controller.Scripts.Editors.Utils;
 using Controller.Scripts.Managers.PlayerCamera;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.ElementData;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements;
+using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups;
+using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -11,215 +11,151 @@ using UnityEngine;
 namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
 {
     [CustomEditor(typeof(CameraUIManager))]
-    [CanEditMultipleObjects]
     public class CameraUIManagerEditor : TankComponentEditor
     {
         private SerializedProperty _canvas;
         private SerializedProperty _isActive;
-        private SerializedProperty _uiElements;
-        private SerializedProperty _uiElementsData;
+        protected SerializedProperty uiGroups;
 
-        private CameraUIManager _manager;
-
-        private void OnEnable()
+        public virtual void OnEnable()
         {
             _canvas = serializedObject.FindProperty("canvas");
             _isActive = serializedObject.FindProperty("isActive");
-            _uiElements = serializedObject.FindProperty("uiElements");
-            _uiElementsData = serializedObject.FindProperty("uiElementsData");
-            
-            transform = ((CameraUIManager) target).gameObject.transform;
-            _manager = (CameraUIManager) target;
+            uiGroups = serializedObject.FindProperty("uiGroups");
+
+            transform = ((CameraUIManager)target).gameObject.transform;
         }
 
         public override void SetUpGUI()
         {
-            GUIUtils.PropFieldGUI(_isActive, CameraMessages.ShowUIElements);
+            GUIUtils.PropFieldGUI(_isActive, CameraMessages.ShowUI);
             GUIUtils.PropFieldGUI(_canvas, CameraMessages.Canvas);
-            GUIUtils.PropFieldGUI(_uiElements);
-            GUIUtils.PropFieldGUI(_uiElementsData);
-            ShowUIElementsGUI();
-            CreateUIElementGUI();
+            ShowUIGroupsGUI();
+            GUIUtils.Space(2);
+            CreateUIGroupGUI();
             UpdateAllGUI();
         }
 
-        private void ShowUIElementsGUI()
+        protected void ShowUIGroupsGUI()
         {
-            GUIUtils.HeaderGUI(CameraMessages.UIElements);
-            for(int i=0; i < _uiElements.arraySize; i++)
+            GUIUtils.HeaderGUI(CameraMessages.UIGroups);
+            for (int i = 0; i < uiGroups.arraySize; i++)
             {
-                SerializedProperty elementProperty = _uiElements.GetArrayElementAtIndex(i);
+                SerializedProperty elementProperty = uiGroups.GetArrayElementAtIndex(i);
                 if (elementProperty.objectReferenceValue == null)
                 {
-                    _uiElements.DeleteArrayElementAtIndex(i);
-                    _uiElementsData.DeleteArrayElementAtIndex(i);
+                    uiGroups.DeleteArrayElementAtIndex(i);
                     i--;
                     continue;
                 }
-                
-                UIElement element = _uiElements.GetArrayElementAtIndex(i).objectReferenceValue as UIElement;
-                UIElementGUI(element, i);
+
+                UIGroup group = uiGroups.GetArrayElementAtIndex(i).objectReferenceValue as UIGroup;
+                UIGroupGUI(group, i);
             }
         }
 
-        private void UIElementGUI(UIElement element, int index)
+        private void UIGroupGUI(UIGroup group, int index)
         {
-            GameObject uiElement = element.gameObject;
-            bool foldout = EditorPrefs.GetBool("UIElementFoldout" + index, false);
-            foldout = EditorGUILayout.Foldout(foldout, uiElement.name);
-            EditorPrefs.SetBool("UIElementFoldout" + index, foldout);
+            GameObject groupGameObject = group.gameObject;
+            bool foldout = EditorPrefs.GetBool("UIGroupFoldout" + index, false);
+            foldout = EditorGUILayout.Foldout(foldout, groupGameObject.name);
+            EditorPrefs.SetBool("UIGroupFoldout" + index, foldout);
 
             if (foldout)
             {
                 EditorGUI.indentLevel++;
-                
-                UIElementType currentType = element.GetUIElementType();
-                UIElementType newType = (UIElementType)EditorGUILayout.EnumPopup("Type", currentType);
-                
-                EditorGUILayout.ObjectField("Transform", uiElement.transform, typeof(Transform), true);
-                
-                element.DisplayGUI();
-                
-                RemoveUIElementGUI(index);
+
+                UIGroupType newType = (UIGroupType)EditorGUILayout.EnumPopup(GeneralMessages.Type, group.type);
+                EditorGUILayout.ObjectField(GeneralMessages.Transform, groupGameObject.transform, typeof(Transform), true);
+                RemoveUIGroupGUI(index, group);
 
                 EditorGUI.indentLevel--;
-                
-                if (newType != currentType)
-                {
-                    ChangeTypeOfUIElement(index, newType);
-                }
+
+                if (newType != group.type)
+                    ReplaceUIGroup(group, index, newType);
             }
         }
-        
-        private void CreateUIElementGUI()
+
+        protected void CreateUIGroupGUI()
         {
-            if(GUILayout.Button(GeneralMessages.Add))
+            if (GUILayout.Button(GeneralMessages.Add))
             {
-                UIElement uiElement = AddNewUIElement(UIElementType.Basic);
+                UIGroup uiGroup = CreateUIGroup(UIGroupType.Basic);
 
-                AttachNewUIElement(uiElement);
+                uiGroups.arraySize++;
+                uiGroups.GetArrayElementAtIndex(uiGroups.arraySize - 1).objectReferenceValue = uiGroup;
             }
         }
-        
-        public UIElement AddNewUIElement(UIElementType elementType)
-        {
 
+        protected virtual UIGroup CreateUIGroup(UIGroupType type)
+        {
             if (_canvas.objectReferenceValue == null)
             {
-                throw new Exception("No canvas assigned to CameraUIController!");
+                throw new NullReferenceException(CameraMessages.NoCanvasSelected);
             }
-            
-            GameObject uiGameObject = new GameObject("UIElement");
+
+            GameObject uiGameObject = new GameObject(CameraMessages.UIGroup);
             RectTransform rectTransform = uiGameObject.AddComponent<RectTransform>();
             GameObject canvasGameObject = _canvas.objectReferenceValue as GameObject;
-            
+
             uiGameObject.transform.SetParent(canvasGameObject.transform, false);
             rectTransform.anchoredPosition = new Vector2(0, 0);
             rectTransform.sizeDelta = new Vector2(100, 100);
-            
-            UIElementData elementData = CreateUIElementData(elementType);
-            UIElement uiElement = CreateUIElement(elementData, uiGameObject);
-            
-            if(_isActive.boolValue)
-                uiElement.Activate();
-            else
-                uiElement.Deactivate();
 
-            return uiElement;
+            UIGroup uiGroup = SelectUIGroup(uiGameObject, type);
+            return uiGroup;
         }
-        
-        private UIElementData CreateUIElementData(UIElementType elementType)
+
+        protected UIGroup SelectUIGroup(GameObject uiGameObject, UIGroupType type)
         {
-            UIElementData uiElementData;
-            switch (elementType)
+            UIGroup uiGroup;
+
+            switch (type)
             {
-                case UIElementType.Basic:
-                    uiElementData = CreateInstance<UIElementData>();
+                case UIGroupType.Basic:
+                    uiGroup = uiGameObject.AddComponent<BasicUIGroup>();
                     break;
-                case UIElementType.StaticSprite:
-                    uiElementData = CreateInstance<UISpriteElementData>();
+                case UIGroupType.Ammo:
+                    uiGroup = uiGameObject.AddComponent<AmmoUIGroup>();
                     break;
-                // Add more cases for additional UIElement types
+                case UIGroupType.Group:
+                    uiGroup = uiGameObject.AddComponent<GroupUIGroup>();
+                    break;
+                // Add more cases for additional UIGroup types
                 default:
-                    throw new ArgumentOutOfRangeException();
-
+                    throw new ArgumentOutOfRangeException(CameraMessages.GroupTypeNotImplemented);
             }
-            uiElementData.Type = elementType;
-            return uiElementData;
+            
+            uiGroup.Initialize();
+            return uiGroup;
         }
 
-        private UIElement CreateUIElement(UIElementData elementData, GameObject uiGameObject)
+        private void RemoveUIGroupGUI(int index, UIGroup uiGroup)
         {
-            UIElement uiElement;
-
-            switch (elementData.Type)
+            if (GUILayout.Button(GeneralMessages.Remove))
             {
-                case UIElementType.Basic:
-                    uiElement = uiGameObject.AddComponent<BasicUIElement>();
-                    break;
-                case UIElementType.StaticSprite:
-                    uiElement = uiGameObject.AddComponent<StaticSpriteUIElement>();
-                    break;
-                // Add more cases for additional UIElement types
-                default:
-                    throw new ArgumentOutOfRangeException();
+                RemoveUIGroup(index, uiGroup);
             }
-
-            uiElement.Data = elementData;
-            uiElement.InitializeUIElement();
-
-            return uiElement;
         }
-        
-        public void ChangeTypeOfUIElement(int index, UIElementType uiElementType)
+
+        private void RemoveUIGroup(int index, UIGroup uiGroup)
         {
-            if(index < _uiElements.arraySize)
+            if (uiGroup != null)
             {
-                UIElement uiElement = _uiElements.GetArrayElementAtIndex(index).objectReferenceValue as UIElement;
-                GameObject uiGameObject = uiElement.gameObject;
-                DestroyImmediate(uiElement);
-                
-                UIElementData elementData = CreateUIElementData(uiElementType);
-                _uiElements.GetArrayElementAtIndex(index).objectReferenceValue = CreateUIElement(elementData, uiGameObject);
-                _uiElementsData.GetArrayElementAtIndex(index).objectReferenceValue = elementData;
+                DestroyImmediate(uiGroup.gameObject);
             }
+            uiGroups.DeleteArrayElementAtIndex(index);
         }
-        
-        private void RemoveUIElementGUI(int index)
+
+        private void ReplaceUIGroup(UIGroup uiGroup, int index, UIGroupType type)
         {
-            if(GUILayout.Button(GeneralMessages.Remove))
-            {
-                // Get the element to be removed
-                UIElement element = _uiElements.GetArrayElementAtIndex(index).objectReferenceValue as UIElement;
-        
-                // Remove the UIElement component and associated ScriptableObject data
-                if(element != null)
-                {
-                    // Destroy UIElementData
-                    if(element.Data != null)
-                    {
-                        DestroyImmediate(element.Data);
-                    }
-
-                    // Destroy UIElement GameObject
-                    DestroyImmediate(element.gameObject);
-                }
-
-                // Remove the element from serialized lists
-                _uiElements.DeleteArrayElementAtIndex(index);
-                _uiElementsData.DeleteArrayElementAtIndex(index);
-            }
+            GameObject uiGameObject = uiGroup.gameObject;
+            DestroyImmediate(uiGroup);
+            
+            UIGroup newUIGroup = SelectUIGroup(uiGameObject, type);
+            uiGroups.GetArrayElementAtIndex(index).objectReferenceValue = newUIGroup;
         }
 
-        private void AttachNewUIElement(UIElement uiElement)
-        {
-            _uiElements.arraySize++;
-            _uiElementsData.arraySize++;
-
-            _uiElements.GetArrayElementAtIndex(_uiElements.arraySize - 1).objectReferenceValue = uiElement;
-            _uiElementsData.GetArrayElementAtIndex(_uiElementsData.arraySize - 1).objectReferenceValue = uiElement.Data;
-        }
-        
         public override bool AllowAccess()
         {
             return PrefabStageUtility.GetCurrentPrefabStage() != null;
@@ -232,8 +168,18 @@ namespace Controller.Scripts.Editors.PlayerCamera.CameraUI
         
         public override void BulkUpdateComponents()
         {
-            _manager.isActive = _isActive.boolValue;
-            _manager.UpdateUIElements();
+            for (int i = 0; i < uiGroups.arraySize; i++)
+            {
+                SerializedProperty elementProperty = uiGroups.GetArrayElementAtIndex(i);
+                if(elementProperty.objectReferenceValue == null)
+                {
+                    uiGroups.DeleteArrayElementAtIndex(i);
+                    i--;
+                }
+                
+                UIGroup group = uiGroups.GetArrayElementAtIndex(i).objectReferenceValue as UIGroup;
+                group.ToggleUIElements(_isActive.boolValue);
+            }
         }
     }
 }

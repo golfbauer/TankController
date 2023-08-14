@@ -1,11 +1,10 @@
-﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI.ElementData;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
+namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements
 {
     public abstract class UIElement : MonoBehaviour
     {
-        public UIElementData Data;
+        public UIElementType type;
 
         public abstract void PerformUpdateAction();
         public abstract void DisplayGUI();
@@ -22,11 +21,12 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.Elements
 
         public virtual void InitializeUIElement()
         {
+            type = UIElementType.Basic;
         }
         
         public virtual UIElementType GetUIElementType()
         {
-            return Data.Type;
+            return type;
         }
     }
 }

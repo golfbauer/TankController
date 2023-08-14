@@ -18,6 +18,9 @@ namespace Controller.Scripts.Managers.Ammunition
         private int _currentAmmunitionTypeIndex;
         private bool _allowShortcuts;
         private float _currentReloadTime;
+        
+        public delegate void ReloadAction(AmmunitionType type, float reloadTime);
+        public event ReloadAction OnReload;
 
         private void Start()
         {
@@ -57,6 +60,7 @@ namespace Controller.Scripts.Managers.Ammunition
         private void Reload()
         {
             _currentReloadTime = 0;
+            OnReload?.Invoke(ammunitionTypes[_currentAmmunitionTypeIndex], reloadTime);
         }
 
         private void UseShortcuts()
@@ -76,11 +80,11 @@ namespace Controller.Scripts.Managers.Ammunition
             if (Input.GetKeyDown(switchToNextKey))
             {
                 _currentAmmunitionTypeIndex++;
-                Reload();
                 if (_currentAmmunitionTypeIndex > ammunitionTypes.Count - 1)
                 {
                     _currentAmmunitionTypeIndex = 0;
                 }
+                Reload();
             }
         }
         
@@ -89,11 +93,11 @@ namespace Controller.Scripts.Managers.Ammunition
             if(Input.GetKeyDown(switchToPreviousKey))
             {
                 _currentAmmunitionTypeIndex--;
-                Reload();
                 if (_currentAmmunitionTypeIndex < 0)
                 {
                     _currentAmmunitionTypeIndex = ammunitionTypes.Count - 1;
                 }
+                Reload();
             }
         }
         

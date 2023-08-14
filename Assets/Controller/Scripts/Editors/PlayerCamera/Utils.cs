@@ -4,16 +4,20 @@
     {
         public const string CameraPositions = "Camera Positions";
         public const string AddCameraPosition = "Add Camera Position";
-        public static string GeneralSettings = "General Controller Settings";
-        public static string CameraSwitchKey = "Camera Switch Key";
-        public static string CameraZOffset = "Camera Z Offset";
-        public static string CameraSensitivity = "Camera Sensitivity";
-        public static string MinPitch = "Min Pitch";
-        public static string MaxPitch = "Max Pitch";
-        public static string FieldOfView = "Field of View";
+        public const string GeneralSettings = "General Controller Settings";
+        public const string CameraSwitchKey = "Camera Switch Key";
+        public const string CameraZOffset = "Camera Z Offset";
+        public const string CameraSensitivity = "Camera Sensitivity";
+        public const string MinPitch = "Min Pitch";
+        public const string MaxPitch = "Max Pitch";
+        public const string FieldOfView = "Field of View";
         
-        public static string UIElements = "UI Elements";
-        public static string ShowUIElements = "Show UI Elements";
-        public static string Canvas = "Canvas";
+        public const string UIElements = "UI Elements";
+        public const string UIGroups = "UI Groups";
+        public const string UIGroup = "UI Group";
+        public const string ShowUI = "Show UI";
+        public const string Canvas = "Canvas";
+        public const string NoCanvasSelected = "No canvas assigned to CameraUIController!";
+        public const string GroupTypeNotImplemented = "Selected group type has not been added to Editor yet!";
     }
 }

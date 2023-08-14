@@ -1,4 +1,6 @@
-﻿namespace Controller.Scripts.Managers.PlayerCamera
+﻿using UnityEngine;
+
+namespace Controller.Scripts.Managers.PlayerCamera
 {
     public enum CameraType
     {
@@ -9,7 +11,16 @@
     public enum UIElementType
     {
         Basic,
-        StaticSprite,
+        Text,
+        Image,
+        AmmoText,
+        AmmoImage,
+    }
+
+    public enum UIGroupType
+    {
+        Basic,
         Ammo,
+        Group,
     }
 }

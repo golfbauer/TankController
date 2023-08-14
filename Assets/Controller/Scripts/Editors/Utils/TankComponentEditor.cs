@@ -62,14 +62,11 @@ namespace Controller.Scripts.Editors.Utils
 
         public virtual void UpdateAllGUI()
         {
-            EditorGUILayout.Space();
-            if(GUILayout.Button(GeneralMessages.UpdateAll))
-                updateAll = true;
+            updateAll = GUIUtils.UpdateAllGUI();
         }
         
         public virtual void BulkUpdateComponents()
         {
-            return;
         }
         
         private void RefreshParentSelection(GameObject parent)

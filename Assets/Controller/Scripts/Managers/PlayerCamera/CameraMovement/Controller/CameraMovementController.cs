@@ -95,7 +95,7 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
             if (CameraUIManager == null)
                 return;
             
-            CameraUIManager.ToggleUIElements(activate);
+            CameraUIManager.ToggleUI(activate);
         }
 
         public virtual void EditorGUI()
