@@ -1120,9 +1120,9 @@ GameObject:
   - component: {fileID: 5937495207688377601}
   - component: {fileID: 2862391456623828700}
   - component: {fileID: 6875858086539756302}
-  - component: {fileID: 6599546584963201873}
   - component: {fileID: 4153339708862152457}
   - component: {fileID: 5320292019487742925}
+  - component: {fileID: 3578967699382996158}
   m_Layer: 21
   m_Name: Turret
   m_TagString: Untagged
@@ -1246,20 +1246,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 400035716835603887}
   m_Mesh: {fileID: -4362156085821976181, guid: dbf47ba8757d7604fb970972fcb6b3c3, type: 3}
---- !u!64 &6599546584963201873
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 400035716835603887}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 53819394691302181, guid: dbf47ba8757d7604fb970972fcb6b3c3, type: 3}
 --- !u!114 &4153339708862152457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1272,7 +1258,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5ccb0308951486bafad1d6a67101482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armorSections: []
+  armorSections:
+  - connectingPoints:
+    - {x: -0.7753296, y: 0.52306896, z: 0.837904}
+    - {x: -0.77500916, y: 0.64148766, z: 0}
+    - {x: -1.0250473, y: -0.008366048, z: 0.42867088}
+    - {x: -0.89533615, y: 0.25735146, z: 0.878788}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: -0.77500916, y: 0.64148766, z: 0}
+    - {x: -0.56630325, y: 0.64148766, z: -0.66900635}
+    - {x: -0.81602097, y: -0.008512437, z: -0.66900635}
+    - {x: -1.0247269, y: -0.008512437, z: 0}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
   defaultArmorSection:
     connectingPoints: []
     thickness: 0
@@ -1314,16 +1316,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 525cedff9a824cddb70d5bf265716054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammunitionTypes:
-  - {fileID: 11400000, guid: 89ef1af9e75dc6741b0efa7b654d6c4d, type: 2}
-  - {fileID: 11400000, guid: 763c4711ba00a854f9976670174930d6, type: 2}
-  spawnPoint: {fileID: 8015611332811138275}
-  direction: {x: 0, y: 0, z: 0}
-  fireKey: 323
-  switchToNextKey: 101
-  switchToPreviousKey: 113
-  allowNumbers: 1
-  reloadTime: 3
+  AmmunitionTypes: []
+  SpawnPoint: {fileID: 0}
+  ReloadTime: 0
+  FireAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  SwitchToNextAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  SwitchToPreviousAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+--- !u!64 &3578967699382996158
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400035716835603887}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 53819394691302181, guid: dbf47ba8757d7604fb970972fcb6b3c3, type: 3}
 --- !u!1 &410320602604992400
 GameObject:
   m_ObjectHideFlags: 0
@@ -6077,8 +6113,8 @@ GameObject:
   - component: {fileID: 9185780536009755805}
   - component: {fileID: 5499054798853670898}
   - component: {fileID: 7039959170662537896}
-  - component: {fileID: 8490563653171747467}
-  - component: {fileID: 8350848349094799999}
+  - component: {fileID: 2896263804168328574}
+  - component: {fileID: 2910734974693114938}
   m_Layer: 21
   m_Name: Hull
   m_TagString: Untagged
@@ -6094,7 +6130,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2702287146473413408}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.23, z: -0.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6333,44 +6369,150 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5ccb0308951486bafad1d6a67101482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armorSections: []
+  armorSections:
+  - connectingPoints:
+    - {x: -1.2320023, y: 0.79999995, z: -0.80999947}
+    - {x: 1.2319984, y: 0.79999995, z: -0.80999947}
+    - {x: 1.1479988, y: 0.7156937, z: -2.1195545}
+    - {x: -1.1479988, y: 0.7156937, z: -2.1195545}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 1.2319984, y: 0.79999995, z: -0.80999947}
+    - {x: 1.2319984, y: 0.29999995, z: -0.80999947}
+    - {x: 1.1479988, y: 0.2999246, z: -2.2311516}
+    - {x: 1.1479988, y: 0.7156937, z: -2.1195545}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: -1.2320023, y: 0.79999995, z: -0.80999947}
+    - {x: -1.1479988, y: 0.7156937, z: -2.1195545}
+    - {x: -1.1479988, y: 0.2999246, z: -2.2311516}
+    - {x: -1.2320023, y: 0.29999995, z: -0.80999947}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: -1.1479988, y: 0.7156937, z: -2.1195545}
+    - {x: 1.1479988, y: 0.7156937, z: -2.1195545}
+    - {x: 1.1479988, y: 0.2999246, z: -2.2311516}
+    - {x: -1.1479988, y: 0.2999246, z: -2.2311516}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 1.2319998, y: 0.79999995, z: 0.90000045}
+    - {x: 0.97999966, y: 0.68561316, z: 1.8566129}
+    - {x: -0.97999966, y: 0.68561316, z: 1.8566129}
+    - {x: -1.2320011, y: 0.79999995, z: 0.90000045}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: -0.97999966, y: 0.68561316, z: 1.8566129}
+    - {x: -0.97999966, y: 0.29999998, z: 1.9499998}
+    - {x: -1.2320011, y: 0.3, z: 0.90000045}
+    - {x: -1.2320011, y: 0.79999995, z: 0.90000045}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 0.9800001, y: 0.10000002, z: 2.85}
+    - {x: -0.9799996, y: 0.10000002, z: 2.85}
+    - {x: -0.9799996, y: -0.3499999, z: 2.7508516}
+    - {x: 0.9800001, y: -0.3499999, z: 2.7508516}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 0.97999966, y: 0.29999998, z: 1.9499998}
+    - {x: -0.97999966, y: 0.29999998, z: 1.9499998}
+    - {x: -0.9799996, y: 0.10000002, z: 2.85}
+    - {x: 0.9800001, y: 0.10000002, z: 2.85}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 0.97999966, y: 0.68561316, z: 1.8566129}
+    - {x: -0.97999966, y: 0.68561316, z: 1.8566129}
+    - {x: -0.97999966, y: 0.29999998, z: 1.9499998}
+    - {x: 0.97999966, y: 0.29999998, z: 1.9499998}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: 1.2319998, y: 0.79999995, z: 0.90000045}
+    - {x: 0.97999966, y: 0.68561316, z: 1.8566129}
+    - {x: 0.97999966, y: 0.29999998, z: 1.9499998}
+    - {x: 1.2319998, y: 0.3, z: 0.90000045}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
+  - connectingPoints:
+    - {x: -1.2320011, y: 0.79999995, z: 0.90000045}
+    - {x: -1.2320011, y: 0.79999995, z: -0.8099998}
+    - {x: -1.2320011, y: 0.3, z: -0.8099998}
+    - {x: -1.2320011, y: 0.3, z: 0.90000045}
+    thickness: 0
+    armorMaterialType: 0
+    tolerance: 0.1
   defaultArmorSection:
     connectingPoints: []
     thickness: 0
     armorMaterialType: 0
     tolerance: 0
   vertices:
-  - {x: 35.000687, y: 2.2899246, z: -21.299143}
-  - {x: 34.916683, y: 2.29, z: -19.87799}
-  - {x: 34.916683, y: 2.79, z: -19.87799}
-  - {x: 35.000687, y: 2.7056937, z: -21.187546}
-  - {x: 37.380684, y: 2.79, z: -19.87799}
-  - {x: 37.296684, y: 2.7056937, z: -21.187546}
-  - {x: 37.296684, y: 2.2899246, z: -21.299143}
-  - {x: 37.380684, y: 2.29, z: -19.87799}
-  - {x: 37.380684, y: 2.29, z: -18.167992}
-  - {x: 37.128685, y: 2.6756132, z: -17.211378}
-  - {x: 37.128685, y: 2.29, z: -17.117992}
-  - {x: 35.168686, y: 2.29, z: -17.117992}
-  - {x: 37.380684, y: 2.79, z: -18.167992}
-  - {x: 34.916683, y: 2.79, z: -18.167992}
-  - {x: 34.916683, y: 2.29, z: -18.167992}
-  - {x: 35.168686, y: 2.6756132, z: -17.211378}
-  - {x: 35.168686, y: 2.09, z: -16.21799}
-  - {x: 37.128685, y: 2.09, z: -16.21799}
-  - {x: 35.168686, y: 1.6400001, z: -16.317139}
-  - {x: 35.168686, y: 1.49, z: -16.566803}
-  - {x: 35.168686, y: 1.49, z: -20.800709}
-  - {x: 37.128685, y: 1.49, z: -20.800709}
-  - {x: 37.128685, y: 1.49, z: -16.566803}
-  - {x: 37.128685, y: 1.6400001, z: -16.317139}
-  - {x: 35.168686, y: 2.29, z: -21.300652}
-  - {x: 37.128685, y: 2.29, z: -21.300652}
-  - {x: 37.128685, y: 1.5434927, z: -21.093792}
-  - {x: 35.168686, y: 1.5434927, z: -21.093792}
+  - {x: -1.1479995, y: 0.29992473, z: -2.2311516}
+  - {x: -1.2320011, y: 0.3, z: -0.8099998}
+  - {x: -1.2320011, y: 0.79999995, z: -0.8099998}
+  - {x: -1.1479995, y: 0.7156936, z: -2.1195536}
+  - {x: -1.1479995, y: 0.7156936, z: -2.1195536}
+  - {x: -1.2320011, y: 0.79999995, z: -0.8099998}
+  - {x: 1.2319998, y: 0.79999995, z: -0.8099998}
+  - {x: 1.1480001, y: 0.7156936, z: -2.1195536}
+  - {x: 1.1480001, y: 0.29992473, z: -2.2311516}
+  - {x: -1.1479995, y: 0.29992473, z: -2.2311516}
+  - {x: 1.1480001, y: 0.7156936, z: -2.1195536}
+  - {x: 1.2319998, y: 0.79999995, z: -0.8099998}
+  - {x: 1.2319998, y: 0.3, z: -0.8099998}
+  - {x: 1.1480001, y: 0.29992473, z: -2.2311516}
+  - {x: 1.2319998, y: 0.3, z: 0.90000045}
+  - {x: 0.97999966, y: 0.68561316, z: 1.8566129}
+  - {x: 0.97999966, y: 0.29999998, z: 1.9499998}
+  - {x: -0.97999966, y: 0.29999998, z: 1.9499998}
+  - {x: 1.2319998, y: 0.79999995, z: 0.90000045}
+  - {x: 1.2319998, y: 0.3, z: -0.8099998}
+  - {x: 1.2319998, y: 0.79999995, z: -0.8099998}
+  - {x: -1.2320011, y: 0.79999995, z: 0.90000045}
+  - {x: -1.2320011, y: 0.79999995, z: -0.8099998}
+  - {x: -1.2320011, y: 0.3, z: -0.8099998}
+  - {x: -1.2320011, y: 0.3, z: 0.90000045}
+  - {x: -0.97999966, y: 0.68561316, z: 1.8566129}
+  - {x: 0.9800001, y: 0.29999998, z: 1.9499999}
+  - {x: -0.9799996, y: 0.29999998, z: 1.9499999}
+  - {x: -0.9799996, y: 0.10000002, z: 2.85}
+  - {x: 0.9800001, y: 0.10000002, z: 2.85}
+  - {x: -0.9799996, y: -0.3499999, z: 2.7508516}
+  - {x: -0.9799996, y: -0.5, z: 2.501189}
+  - {x: -0.9799996, y: -0.5, z: -1.7327183}
+  - {x: 0.9800001, y: -0.5, z: -1.7327183}
+  - {x: 0.9800001, y: -0.5, z: 2.501189}
+  - {x: 0.9800001, y: -0.3499999, z: 2.7508516}
+  - {x: -0.9799996, y: 0.3, z: -2.2326608}
+  - {x: -0.9799996, y: -0.5, z: -1.7327183}
+  - {x: -0.9799996, y: 0.10000002, z: 2.85}
+  - {x: -0.9799996, y: 0.29999998, z: 1.9499999}
+  - {x: 0.9800001, y: 0.29999998, z: 1.9499999}
+  - {x: 0.9800001, y: 0.3, z: -2.2326608}
+  - {x: 0.9800001, y: 0.10000002, z: 2.85}
+  - {x: 0.9800001, y: -0.5, z: -1.7327183}
+  - {x: 0.9800001, y: -0.44650733, z: -2.0257998}
+  - {x: -0.9799996, y: -0.44650733, z: -2.0257998}
   useColliderVertices: 1
-  colliderColor: {r: 0, g: 0, b: 1, a: 1}
---- !u!64 &8490563653171747467
+  colliderColor: {r: 0, g: 0.18393894, b: 0.4811321, a: 1}
+--- !u!64 &2896263804168328574
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6384,7 +6526,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4147025820206734789, guid: dc2bc49ec1c56194a81faa1d5e00a1c9, type: 3}
---- !u!64 &8350848349094799999
+--- !u!64 &2910734974693114938
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

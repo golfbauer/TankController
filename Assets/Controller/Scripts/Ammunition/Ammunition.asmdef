@@ -1,0 +1,9 @@
+{
+  "name": "Ammunition",
+  "references": [
+    "Utils",
+    "ImpactCollision",
+    "Unity.VisualScripting.Core",
+    "Unity.InputSystem"
+  ]
+}

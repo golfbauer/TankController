@@ -1,0 +1,9 @@
+{
+  "name": "Turret",
+  "references": [
+    "ImpactCollision",
+    "Ammunition",
+    "Utils",
+    "Unity.VisualScripting.Core"
+  ]
+}

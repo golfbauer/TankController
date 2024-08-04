@@ -1,0 +1,8 @@
+{
+  "name": "PlayerCamera",
+  "references": [
+    "Utils",
+    "Unity.TextMeshPro",
+    "Ammunition"
+  ]
+}
