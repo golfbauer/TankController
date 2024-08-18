@@ -7,7 +7,7 @@ namespace Controller.Scripts.ImpactCollision.Services
     [Serializable]
     public class ArmorSection
     {
-        public List<Vector3> connectingPoints = new();
+        public List<Vector3> connectingPoints;
         public float thickness;
         public ArmorMaterialType armorMaterialType = ArmorMaterialType.LowCarbonSteelPlate;
         public float tolerance;
@@ -16,12 +16,12 @@ namespace Controller.Scripts.ImpactCollision.Services
 
         public ArmorSection(
             List<Vector3> connectingPoints,
-            float thickness,
+            float thickness = CollisionUtils.DefaultThickness,
             float tolerance = CollisionUtils.CollisionTolerance
         )
         {
             if (connectingPoints == null || connectingPoints.Count != 4)
-                throw new ArgumentException("connectingPoints must contain exactly 4 points.");
+                throw new ArgumentException("New armor section must have 4 connecting points");
             this.connectingPoints = connectingPoints;
             this.thickness = thickness;
             this.tolerance = tolerance;

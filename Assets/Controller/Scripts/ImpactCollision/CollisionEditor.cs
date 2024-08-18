@@ -8,42 +8,50 @@ using UnityEngine;
 namespace Controller.Scripts.ImpactCollision
 {
     [CustomEditor(typeof(CollisionManager))]
-    [CanEditMultipleObjects]
     public class CollisionEditor : TankComponentEditor
     {
-        // Collision Manager variables
-        private SerializedProperty _armorSections;
-        private SerializedProperty _colliderColor;
-        private SerializedProperty _defaultArmorSection;
-        private SerializedProperty _vertices;
-        private SerializedProperty _useColliderVertices;
-
         // Managers
         private CollisionManager _collisionManager;
 
-        // Temporary Editor variables
+        // Collision Manager variables
+        private SerializedProperty _armorSections;
+        private SerializedProperty _defaultArmorSection;
+
+        private SerializedProperty _vertices;
+        private SerializedProperty _colorThicknessModifier;
+        private SerializedProperty _showArmorSettingSection;
+
+        // Editor variables
         private readonly List<int> _highlightedSections = new();
         private readonly List<Vector3> _selectedVertices = new();
-
-        private bool _showVertexSettings;
-        private bool _showArmorSettings;
+        private readonly float _buttonSize = 0.07f;
 
         private bool _isAddingVertex;
-        private bool _addedVertex;
         private Vector3 _newVertex;
+
+        private PhysicsScene _physicsScene;
+
+        // Editor colors
+        private readonly Color _lightArmorColor = Color.red;
+        private readonly Color _mediumArmorColor = Color.yellow;
+        private readonly Color _heavyArmorColor = Color.green;
+        private readonly Color _highlightedArmorSectionColor = Color.blue;
+
+        private readonly Color _defaultVertexColor = Color.black;
+        private readonly Color _selectedVertexColor = Color.white;
 
         private void OnEnable()
         {
             _armorSections = serializedObject.FindProperty("armorSections");
             _defaultArmorSection = serializedObject.FindProperty("defaultArmorSection");
-
-            _colliderColor = serializedObject.FindProperty("colliderColor");
-
             _vertices = serializedObject.FindProperty("vertices");
-            _useColliderVertices = serializedObject.FindProperty("useColliderVertices");
+            _showArmorSettingSection = serializedObject.FindProperty("showArmorSettingSection");
+
+            _colorThicknessModifier = serializedObject.FindProperty("colorThicknessModifier");
 
             _collisionManager = (CollisionManager)target;
             transform = ((CollisionManager)target).gameObject.transform;
+            _physicsScene = transform.gameObject.scene.GetPhysicsScene();
         }
 
         private void OnDisable()
@@ -51,9 +59,7 @@ namespace Controller.Scripts.ImpactCollision
             _highlightedSections.Clear();
             _selectedVertices.Clear();
             _isAddingVertex = false;
-            _addedVertex = false;
-            _showVertexSettings = false;
-            _showArmorSettings = false;
+            _newVertex = Vector3.zero;
         }
 
         public void OnSceneGUI()
@@ -62,37 +68,39 @@ namespace Controller.Scripts.ImpactCollision
             if (IsInPrefabStage())
                 return;
 
-            CreateVertex();
+            AddNewVertex();
             ShowVertices();
             ShowArmorSections();
         }
 
         public override void SetUpGUI()
         {
-            _showVertexSettings = EditorGUILayout.Foldout(
-                _showVertexSettings,
-                CollisionMessages.VertexSettings
-            );
-            if (_showVertexSettings)
-                VertexGUI();
+            VertexGUI();
 
-            _showArmorSettings = EditorGUILayout.Foldout(
-                _showArmorSettings,
+            EditorGUILayout.Space();
+
+            _showArmorSettingSection.boolValue = EditorGUILayout.Foldout(
+                _showArmorSettingSection.boolValue,
                 CollisionMessages.ArmorSettings
             );
-            if (_showArmorSettings)
+            if (_showArmorSettingSection.boolValue)
                 ArmorGUI();
+
+            GUIUtils.UpdateAllGUI();
         }
 
         private void VertexGUI()
         {
-            GUIUtils.PropFieldGUI(_colliderColor, CollisionMessages.ColliderColor);
             GUIUtils.PropFieldGUI(_vertices, CollisionMessages.LocalVertices);
 
             if (GUILayout.Button(CollisionMessages.UseColliderVertices))
                 AddColliderVertices();
 
-            if (CollisionGUI.AddVertexButton(_isAddingVertex))
+            if (
+                GUILayout.Button(
+                    !_isAddingVertex ? CollisionMessages.AddVertex : GeneralMessages.Cancel
+                )
+            )
                 _isAddingVertex = !_isAddingVertex;
 
             if (GUILayout.Button(CollisionMessages.ClearVertices))
@@ -102,9 +110,13 @@ namespace Controller.Scripts.ImpactCollision
         private void ArmorGUI()
         {
             GUIUtils.HeaderGUI(CollisionMessages.DefaultArmorSection);
-            ArmorSectionGUI(_defaultArmorSection, 0, true);
+            ArmorSectionGUI(_defaultArmorSection, 0);
 
             GUIUtils.HeaderGUI(CollisionMessages.ArmorSections);
+            GUIUtils.PropFieldGUI(
+                _colorThicknessModifier,
+                CollisionMessages.ColorThicknessModifier
+            );
             for (var i = 0; i < _armorSections.arraySize; i++)
             {
                 var armorSection = _armorSections.GetArrayElementAtIndex(i);
@@ -120,14 +132,9 @@ namespace Controller.Scripts.ImpactCollision
             EditorGUILayout.Space();
             if (GUILayout.Button(CollisionMessages.ClearArmorSections))
                 _armorSections.ClearArray();
-            GUIUtils.UpdateAllGUI();
         }
 
-        private void ArmorSectionGUI(
-            SerializedProperty armorSection,
-            int index,
-            bool isDefault = false
-        )
+        private void ArmorSectionGUI(SerializedProperty armorSection, int index)
         {
             EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Armor Section " + (index + 1), EditorStyles.boldLabel);
@@ -144,12 +151,6 @@ namespace Controller.Scripts.ImpactCollision
                 armorSection.FindPropertyRelative("armorMaterialType"),
                 CollisionMessages.MaterialType
             );
-
-            if (!isDefault)
-            {
-                var connectingPoints = armorSection.FindPropertyRelative("connectingPoints");
-                GUIUtils.PropFieldGUI(connectingPoints, CollisionMessages.ConnectingPoints);
-            }
 
             EditorGUILayout.EndVertical();
         }
@@ -177,24 +178,24 @@ namespace Controller.Scripts.ImpactCollision
             }
         }
 
-        private void CreateVertex()
+        private void AddNewVertex()
         {
             if (!_isAddingVertex)
                 return;
 
-            var guiEvent = Event.current;
-            var worldRay = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition);
-            RaycastHit hitInfo;
-
-            if (Physics.Raycast(worldRay, out hitInfo))
+            var worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            if (_physicsScene.Raycast(worldRay.origin, worldRay.direction, out var hitInfo))
             {
+                if (hitInfo.transform != transform)
+                    return;
+
                 var worldPoint = hitInfo.point;
 
                 if (
                     Handles.Button(
                         worldPoint,
                         Quaternion.identity,
-                        0.1f,
+                        _buttonSize,
                         0.1f,
                         Handles.SphereHandleCap
                     )
@@ -202,7 +203,6 @@ namespace Controller.Scripts.ImpactCollision
                 {
                     _newVertex = worldPoint;
                     _isAddingVertex = false;
-                    _addedVertex = true;
                     update = true;
                     Repaint();
                 }
@@ -216,15 +216,12 @@ namespace Controller.Scripts.ImpactCollision
                 var vertexPoint = _vertices.GetArrayElementAtIndex(i).vector3Value;
                 var isSelected = _selectedVertices.Contains(vertexPoint);
 
-                if (isSelected)
-                    HandleVertexSelection(vertexPoint, Color.red, true);
-                else
-                    HandleVertexSelection(vertexPoint, Color.green, false);
+                ShowVertexButton(vertexPoint, isSelected);
             }
 
             if (_selectedVertices.Count >= 4)
             {
-                var newSection = new ArmorSection(_selectedVertices.GetRange(0, 4), 0);
+                var newSection = new ArmorSection(_selectedVertices.GetRange(0, 4));
                 _collisionManager.armorSections.Add(newSection);
 
                 _selectedVertices.Clear();
@@ -233,12 +230,18 @@ namespace Controller.Scripts.ImpactCollision
             }
         }
 
-        private void HandleVertexSelection(Vector3 localPoint, Color handleColor, bool isSelected)
+        private void ShowVertexButton(Vector3 localPoint, bool isSelected)
         {
-            Handles.color = handleColor;
+            Handles.color = isSelected ? _selectedVertexColor : _defaultVertexColor;
             var worldPoint = transform.TransformPoint(localPoint);
             if (
-                Handles.Button(worldPoint, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)
+                Handles.Button(
+                    worldPoint,
+                    Quaternion.identity,
+                    0.07f,
+                    0.1f,
+                    Handles.SphereHandleCap
+                )
             )
             {
                 if (isSelected)
@@ -246,31 +249,12 @@ namespace Controller.Scripts.ImpactCollision
                 else
                     _selectedVertices.Add(localPoint);
             }
+            Handles.color = Color.white;
         }
 
         private void ShowArmorSections()
         {
             var index = 0;
-            // foreach (SerializedProperty armorSection in _armorSections)
-            // {
-            //     if (armorSection == null)
-            //         continue;
-            //
-            //     if (_highlightedSections.Contains(index))
-            //     {
-            //         index++;
-            //         continue;
-            //     }
-            //
-            //     var connectingPoints = armorSection.FindPropertyRelative("connectingPoints");
-            //
-            //     Handles.color = _colliderColor.colorValue;
-            //
-            //     DrawConnectingPoints(connectingPoints, armorSection);
-            //
-            //     index++;
-            // }
-
             foreach (SerializedProperty armorSection in _armorSections)
             {
                 if (armorSection == null)
@@ -283,96 +267,70 @@ namespace Controller.Scripts.ImpactCollision
                     vertices[i] = connectingPoints.GetArrayElementAtIndex(i).vector3Value;
                 }
 
-                Color fillColor = _highlightedSections.Contains(index) ? Color.yellow : Color.green;
-                Color outlineColor = _colliderColor.colorValue;
-
-                DrawSolidPlate(vertices, fillColor, outlineColor);
+                Color fillColor = _highlightedSections.Contains(index)
+                    ? _highlightedArmorSectionColor
+                    : GetModifiedColor(armorSection.FindPropertyRelative("thickness").floatValue);
+                DrawSolidPlate(vertices, fillColor);
 
                 index++;
             }
-
-            foreach (var highlightedIndex in _highlightedSections)
-            {
-                var highlightedArmorSection = _armorSections.GetArrayElementAtIndex(
-                    highlightedIndex
-                );
-
-                if (highlightedArmorSection == null)
-                    continue;
-
-                var connectingPoints = highlightedArmorSection.FindPropertyRelative(
-                    "connectingPoints"
-                );
-
-                Handles.color = Color.yellow;
-
-                DrawConnectingPoints(connectingPoints, highlightedArmorSection);
-            }
         }
 
-        private void DrawSolidPlate(Vector3[] vertices, Color fillColor, Color outlineColor)
+        private Color GetModifiedColor(float armorThickness)
+        {
+            if (armorThickness * _colorThicknessModifier.floatValue > 74)
+            {
+                return _heavyArmorColor;
+            }
+
+            if (armorThickness * _colorThicknessModifier.floatValue > 29)
+            {
+                return _mediumArmorColor;
+            }
+
+            return _lightArmorColor;
+        }
+
+        private void DrawSolidPlate(Vector3[] vertices, Color fillColor)
         {
             if (vertices.Length < 4)
                 return;
 
-            // Convert vertices to world coordinates
+            // Calculate the centroid of the rectangle
+            Vector3 centroid = Vector3.zero;
+            for (int i = 0; i < 4; i++)
+            {
+                centroid += vertices[i];
+            }
+            centroid /= 4.0f;
+
+            // Convert vertices to world coordinates with a slight inward offset
             Vector3[] worldVertices = new Vector3[4];
             for (int i = 0; i < 4; i++)
             {
-                worldVertices[i] = transform.TransformPoint(vertices[i]);
+                Vector3 offsetDirection = (centroid - vertices[i]).normalized;
+                worldVertices[i] = transform.TransformPoint(vertices[i] + offsetDirection * 0.01f);
             }
 
-            // Set the alpha for semi-transparency
-            fillColor.a = 0.1f; // 50% transparent
-            outlineColor.a = 1.0f; // Fully opaque outline
-
-            // Draw the solid rectangle with outline
+            fillColor.a = 0.1f;
+            Color outlineColor = fillColor;
+            outlineColor.a = 1.0f;
             Handles.DrawSolidRectangleWithOutline(worldVertices, fillColor, outlineColor);
-        }
-
-        private void DrawConnectingPoints(
-            SerializedProperty connectingPoints,
-            SerializedProperty armorSection
-        )
-        {
-            for (var i = 0; i < connectingPoints.arraySize; i++)
-            {
-                if (i == connectingPoints.arraySize - 1)
-                    continue;
-
-                var connectingPoint = connectingPoints.GetArrayElementAtIndex(i).vector3Value;
-                var nextConnectingPoint = connectingPoints
-                    .GetArrayElementAtIndex(1 + i)
-                    .vector3Value;
-
-                Handles.DrawLine(
-                    connectingPoint + transform.position,
-                    nextConnectingPoint + transform.position,
-                    3f
-                );
-            }
-
-            Handles.DrawLine(
-                connectingPoints.GetArrayElementAtIndex(0).vector3Value + transform.position,
-                connectingPoints.GetArrayElementAtIndex(connectingPoints.arraySize - 1).vector3Value
-                    + transform.position,
-                3f
-            );
         }
 
         public override void ApplyUpdate()
         {
-            if (_addedVertex)
+            if (_newVertex != Vector3.zero)
             {
                 var index = _vertices.arraySize;
                 _vertices.InsertArrayElementAtIndex(index);
                 _vertices.GetArrayElementAtIndex(index).vector3Value =
                     transform.InverseTransformPoint(_newVertex);
-                _addedVertex = false;
+                _newVertex = Vector3.zero;
             }
         }
 
-        public void AddColliderVertices()
+        private void AddColliderVertices()
         {
             var meshColliders = transform.GetComponents<MeshCollider>();
 
