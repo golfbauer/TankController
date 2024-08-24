@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Codice.Client.ChangeTrackerService;
 using UnityEngine;
 
 namespace Controller.Scripts.ImpactCollision.Services
@@ -10,9 +11,17 @@ namespace Controller.Scripts.ImpactCollision.Services
         public List<Vector3> connectingPoints;
         public float thickness;
         public ArmorMaterialType armorMaterialType = ArmorMaterialType.LowCarbonSteelPlate;
-        public float tolerance;
 
-        private Vector3 _planeNormal;
+        private Vector3 _a;
+        private Vector3 _b;
+        private Vector3 _c;
+        private Vector3 _d;
+
+        private Vector3 _leftPlaneNormal;
+        private float _leftPlaneD;
+        
+        private Vector3 _rightPlaneNormal;
+        private float _rightPlaneD;
 
         public ArmorSection(
             List<Vector3> connectingPoints,
@@ -24,37 +33,58 @@ namespace Controller.Scripts.ImpactCollision.Services
                 throw new ArgumentException("New armor section must have 4 connecting points");
             this.connectingPoints = connectingPoints;
             this.thickness = thickness;
-            this.tolerance = tolerance;
+            _a = connectingPoints[0];
+            _b = connectingPoints[1];
+            _c = connectingPoints[2];
+            _d = connectingPoints[3];
+            
+            CalculateLeftPlane();
+            CalculateRightPlane();
         }
 
-        public bool IsImpactPointWithinArmorSection(Vector3 impactPoint, Vector3 objectPosition)
+        private void CalculateLeftPlane()
         {
-            var A = connectingPoints[0] + objectPosition;
-            var B = connectingPoints[1] + objectPosition;
-            var C = connectingPoints[2] + objectPosition;
-            var D = connectingPoints[3] + objectPosition;
+            // Calculate the normal of the left plane
+            _leftPlaneNormal = Vector3.Cross(_b - _a, _c - _a).normalized;
 
-            _planeNormal = Vector3.Cross(B - A, C - A).normalized;
+            // Find d for the left plane equation => ax + by + cz + d = 0
+            _leftPlaneD = -Vector3.Dot(_leftPlaneNormal, _a);
+        }
+        
+        private void CalculateRightPlane()
+        {
+            // Calculate the normal of the right plane
+            _rightPlaneNormal = Vector3.Cross(_c - _b, _d - _b).normalized;
 
-            // Find d for the plane equation => ax + by + cz + d = 0
-            var planeD = -Vector3.Dot(_planeNormal, A);
+            // Find d for the right plane
+            _rightPlaneD = -Vector3.Dot(_rightPlaneNormal, _b);
+        }
 
-            // Calculate the distance of the point from the plane
-            var distance = Mathf.Abs(
-                _planeNormal.x * impactPoint.x
-                    + _planeNormal.y * impactPoint.y
-                    + _planeNormal.z * impactPoint.z
-                    + planeD
+        public bool IsImpactPointWithinArmorSection(Vector3 impactPoint, float tolerance)
+        {
+            // Calculate the distance of the point from the left triangle
+            float leftDistance = Mathf.Abs(
+                _leftPlaneNormal.x * impactPoint.x
+                    + _leftPlaneNormal.y * impactPoint.y
+                    + _leftPlaneNormal.z * impactPoint.z
+                    + _leftPlaneD
+            );
+            
+            // Check if the distance is within a predefined tolerance &&
+            // Check if the point is inside the quadrilateral (by checking if it's inside any of the two triangles)
+            if (leftDistance <= tolerance && IsPointInTriangle(impactPoint, _b, _c, _d))
+                return true;
+            
+            float rightDistance = Mathf.Abs(
+                _rightPlaneNormal.x * impactPoint.x
+                + _rightPlaneNormal.y * impactPoint.y
+                + _rightPlaneNormal.z * impactPoint.z
+                + _rightPlaneD
             );
 
-            // Check if the distance is within some tolerance
-            if (distance > tolerance)
-                return false;
-
-            // Check if the point is inside the quadrilateral (by checking if it's inside any of the two triangles)
-            if (IsPointInTriangle(impactPoint, A, B, D) || IsPointInTriangle(impactPoint, B, C, D))
+            if (rightDistance <= tolerance && IsPointInTriangle(impactPoint, _a, _b, _d))
                 return true;
-
+           
             return false;
         }
 
@@ -65,16 +95,16 @@ namespace Controller.Scripts.ImpactCollision.Services
 
             // Choose the two dimensions to project onto
             if (
-                Mathf.Abs(_planeNormal.x)
-                <= Mathf.Min(Mathf.Abs(_planeNormal.y), Mathf.Abs(_planeNormal.z))
+                Mathf.Abs(_leftPlaneNormal.x)
+                >= Mathf.Max(Mathf.Abs(_leftPlaneNormal.y), Mathf.Abs(_leftPlaneNormal.z))
             )
             {
                 dim1 = 1; // y
                 dim2 = 2; // z
             }
             else if (
-                Mathf.Abs(_planeNormal.y)
-                <= Mathf.Min(Mathf.Abs(_planeNormal.x), Mathf.Abs(_planeNormal.z))
+                Mathf.Abs(_leftPlaneNormal.y)
+                >= Mathf.Max(Mathf.Abs(_leftPlaneNormal.x), Mathf.Abs(_leftPlaneNormal.z))
             )
             {
                 dim1 = 0; // x

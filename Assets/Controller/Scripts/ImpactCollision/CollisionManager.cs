@@ -13,6 +13,9 @@ namespace Controller.Scripts.ImpactCollision
         [SerializeField]
         public ArmorSection defaultArmorSection;
 
+        [SerializeField]
+        public float tolerance = 0.01f;
+
         // Serialized Editor properties
         public List<Vector3> vertices = new();
         public bool useColliderVertices = true;
@@ -22,14 +25,15 @@ namespace Controller.Scripts.ImpactCollision
         public ArmorSection HandleImpact(Vector3 impactPoint, Transform transform)
         {
             ArmorSection matchingArmorSection = null;
+            Vector3 localImpactPoint = transform.InverseTransformPoint(impactPoint);
             Parallel.ForEach(
                 armorSections,
                 (armorSection, state) =>
                 {
                     if (
                         armorSection.IsImpactPointWithinArmorSection(
-                            impactPoint,
-                            transform.position
+                            impactPoint = localImpactPoint,
+                            tolerance = tolerance
                         )
                     )
                     {

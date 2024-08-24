@@ -132,34 +132,59 @@ namespace Controller.Scripts.TriangleProblem
             int dim1,
                 dim2;
 
+            Vector3 dimensionToProjectOnto = Vector3.zero;
+
             // Choose the two dimensions to project onto
             if (
                 Mathf.Abs(_planeNormal.x)
-                <= Mathf.Min(Mathf.Abs(_planeNormal.y), Mathf.Abs(_planeNormal.z))
+                >= Mathf.Max(Mathf.Abs(_planeNormal.y), Mathf.Abs(_planeNormal.z))
             )
             {
                 dim1 = 1; // y
                 dim2 = 2; // z
+                dimensionToProjectOnto = new Vector3(0, 1, 1);
             }
             else if (
                 Mathf.Abs(_planeNormal.y)
-                <= Mathf.Min(Mathf.Abs(_planeNormal.x), Mathf.Abs(_planeNormal.z))
+                >= Mathf.Max(Mathf.Abs(_planeNormal.x), Mathf.Abs(_planeNormal.z))
             )
             {
                 dim1 = 0; // x
                 dim2 = 2; // z
+                dimensionToProjectOnto = new Vector3(1, 0, 1);
             }
             else
             {
                 dim1 = 0; // x
                 dim2 = 1; // y
+                dimensionToProjectOnto = new Vector3(1, 1, 0);
             }
 
             // Project the 3D points onto the 2D plane by picking the two dimensions
-            var A2D = new Vector2(A[dim1], A[dim2]);
-            var B2D = new Vector2(B[dim1], B[dim2]);
-            var C2D = new Vector2(C[dim1], C[dim2]);
-            var P2D = new Vector2(P[dim1], P[dim2]);
+            // var A2D = new Vector2(A[dim1], A[dim2]);
+            // var B2D = new Vector2(B[dim1], B[dim2]);
+            // var C2D = new Vector2(C[dim1], C[dim2]);
+            // var P2D = new Vector2(P[dim1], P[dim2]);
+            var A2D = new Vector3(
+                A.x * dimensionToProjectOnto.x,
+                A.y * dimensionToProjectOnto.y,
+                A.z * dimensionToProjectOnto.z
+            );
+            var B2D = new Vector3(
+                B.x * dimensionToProjectOnto.x,
+                B.y * dimensionToProjectOnto.y,
+                B.z * dimensionToProjectOnto.z
+            );
+            var C2D = new Vector3(
+                C.x * dimensionToProjectOnto.x,
+                C.y * dimensionToProjectOnto.y,
+                C.z * dimensionToProjectOnto.z
+            );
+            var P2D = new Vector3(
+                P.x * dimensionToProjectOnto.x,
+                P.y * dimensionToProjectOnto.y,
+                P.z * dimensionToProjectOnto.z
+            );
 
             // Draw the 2D triangle
             Handles.DrawLine(A2D, B2D);

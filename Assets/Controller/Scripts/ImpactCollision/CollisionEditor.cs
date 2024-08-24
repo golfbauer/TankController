@@ -144,10 +144,6 @@ namespace Controller.Scripts.ImpactCollision
                 CollisionMessages.Thickness
             );
             GUIUtils.PropFieldGUI(
-                armorSection.FindPropertyRelative("tolerance"),
-                CollisionMessages.Tolerance
-            );
-            GUIUtils.PropFieldGUI(
                 armorSection.FindPropertyRelative("armorMaterialType"),
                 CollisionMessages.MaterialType
             );
