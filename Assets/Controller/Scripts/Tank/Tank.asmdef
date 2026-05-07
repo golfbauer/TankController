@@ -1,0 +1,11 @@
+{
+  "name": "Tank",
+  "references": [
+    "Utils",
+    "Wheels",
+    "Movement",
+    "ImpactCollision",
+    "PlayerCamera",
+    "Turret"
+  ]
+}

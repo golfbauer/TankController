@@ -1,0 +1,14 @@
+{
+  "name": "AmmunitionTests",
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "references": [
+    "Ammunition",
+    "Unity.InputSystem",
+    "Unity.InputSystem.TestFramework"
+  ],
+  "testables": [
+    "com.unity.inputsystem"
+  ]
+}

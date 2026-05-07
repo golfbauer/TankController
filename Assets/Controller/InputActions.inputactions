@@ -1,0 +1,34 @@
+{
+    "name": "InputActions",
+    "maps": [
+        {
+            "name": "AmmunitionManager",
+            "id": "b17ec324-da13-4cd0-8464-f6148b841066",
+            "actions": [
+                {
+                    "name": "SwitchToNext",
+                    "type": "Button",
+                    "id": "c67d737e-65d1-4197-9899-73713fa4854f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "978cd7f5-ff10-4891-baab-b99d959fcf1c",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchToNext",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
