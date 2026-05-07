@@ -4,7 +4,6 @@ using Controller.Scripts.Ammunition.Services;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup;
 using Controller.Scripts.PlayerCamera.Services;
-using UnityEditor;
 using UnityEngine;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.AmmoElements

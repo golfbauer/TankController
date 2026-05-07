@@ -1,5 +1,7 @@
 ﻿using Controller.Scripts.PlayerCamera.Services;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,12 +30,14 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElem
 
         public override void DisplayGUI()
         {
+#if UNITY_EDITOR
             Sprite newSprite = (Sprite)
                 EditorGUILayout.ObjectField("Sprite", image.sprite, typeof(Sprite), true);
             if (newSprite != image.sprite)
             {
                 image.sprite = newSprite;
             }
+#endif
         }
     }
 }

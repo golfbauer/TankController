@@ -52,9 +52,3 @@ When adding cross-module references, update the module's `.asmdef` `references` 
 - Most modules have a `Services/` subfolder containing a `Messages.cs` (string constants for inspector UI) and a `Utils.cs` (helpers). When adding inspector text, follow the existing `Messages.cs` pattern in that module.
 - Custom inspectors extend `TankComponentEditor` (in `Utils/`). New editors should do the same.
 - Public fields on MonoBehaviours are used for serialization (rather than `[SerializeField] private`). The custom inspectors call `serializedObject.FindProperty("fieldName")` by string name, so renaming a public field requires updating the matching editor.
-
-## Known structural issues (read before adding code)
-
-- **Editor scripts live in runtime assemblies without `#if UNITY_EDITOR` guards.** Every `*Editor.cs` sits next to its runtime sibling and the parent `.asmdef` has no editor-platform split. Standalone (non-editor) builds will currently fail to compile. When adding new editor code, either wrap it in `#if UNITY_EDITOR ... #endif` or place it in a future `Editor/` subfolder. Don't make this worse.
-- The branch `improve-structure` is ~8.9k lines ahead of `master` with informal commits ("stuff"); current work continues there. `master` is stale.
-- `TriangleProblem/` (scripts + scene) is an empty experiment and is unrelated to the tank.
