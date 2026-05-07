@@ -24,7 +24,9 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElem
 
         public override void DisplayGUI()
         {
+#if UNITY_EDITOR
             text.text = UnityEditor.EditorGUILayout.TextField("Text", text.text);
+#endif
         }
     }
 }

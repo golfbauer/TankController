@@ -1,6 +1,8 @@
 ﻿using System;
 using Controller.Scripts.PlayerCamera;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using CameraType = Controller.Scripts.PlayerCamera.Services.CameraType;
 
@@ -93,7 +95,9 @@ namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 
         public override void EditorGUI()
         {
+#if UNITY_EDITOR
             timeToZoom = EditorGUILayout.FloatField("Time to zoom", timeToZoom);
+#endif
         }
     }
 }
