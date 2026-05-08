@@ -1,4 +1,4 @@
-﻿namespace Controller.Scripts.Editors.Turret
+﻿namespace Controller.Scripts.Turret
 {
     public static class TurretMessages
     {

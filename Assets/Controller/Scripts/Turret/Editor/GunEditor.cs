@@ -5,7 +5,7 @@ using Controller.Scripts.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace Controller.Scripts.Editors.Turret.Gun
+namespace Controller.Scripts.Turret.Editor
 {
     [CustomEditor(typeof(Gun))]
     [CanEditMultipleObjects]
