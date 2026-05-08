@@ -32,7 +32,7 @@ namespace Controller.Scripts.Wheels
 
             WheelRigidbody.maxAngularVelocity = maxSpeed;
             WheelRigidbody.AddRelativeTorque(torqueDirection * torque);
-            WheelRigidbody.angularDrag = drag;
+            WheelRigidbody.angularDamping = drag;
         }
     }
 }

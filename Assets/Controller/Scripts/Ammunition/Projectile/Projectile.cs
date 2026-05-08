@@ -25,15 +25,15 @@ namespace Controller.Scripts.Ammunition.Projectile
 
             Rigidbody.useGravity = true;
             Rigidbody.isKinematic = false;
-            Rigidbody.drag = 0;
-            Rigidbody.angularDrag = 0;
+            Rigidbody.linearDamping = 0;
+            Rigidbody.angularDamping = 0;
             Rigidbody.mass = Mass;
             Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
 
         protected virtual void Start()
         {
-            Rigidbody.velocity = transform.forward * InitVelocity;
+            Rigidbody.linearVelocity = transform.forward * InitVelocity;
             Destroy(gameObject, MaxLifetime);
         }
 
@@ -48,7 +48,7 @@ namespace Controller.Scripts.Ammunition.Projectile
             float pf = 1.225f
         )
         {
-            Vector3 velocity = Rigidbody.velocity - airVelocity;
+            Vector3 velocity = Rigidbody.linearVelocity - airVelocity;
             Vector3 direction = velocity.normalized;
             float A = Mathf.PI * Mathf.Pow(Diameter / 2, 2); // Area
             float v = velocity.magnitude; // Velocity

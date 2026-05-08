@@ -14,7 +14,7 @@ namespace Controller.Scripts.Turret
         public List<Mesh> colliderMeshes;
 
         public bool useBoxCollider;
-        public PhysicMaterial physicsMaterial;
+        public PhysicsMaterial physicsMaterial;
 
         public bool boxColliderChangeManually;
         public Vector3 boxColliderSize;

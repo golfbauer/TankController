@@ -439,7 +439,7 @@ namespace Controller.Scripts.Wheels.Chain
             var boxCollider = chainLink.AddComponent<BoxCollider>();
             boxCollider.size = _boxColliderSize.vector3Value;
             boxCollider.center = _boxColliderCenter.vector3Value;
-            boxCollider.material = _boxColliderMaterial.objectReferenceValue as PhysicMaterial;
+            boxCollider.material = _boxColliderMaterial.objectReferenceValue as PhysicsMaterial;
         }
 
         private void AttachHingeJoints(List<GameObject> chainLinks)

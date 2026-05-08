@@ -103,7 +103,7 @@ namespace Controller.Scripts.Movement
 
         private void FixedUpdate()
         {
-            _actualSpeed = _rigidbody.velocity.magnitude;
+            _actualSpeed = _rigidbody.linearVelocity.magnitude;
         }
 
         public void ToggleBrake()
