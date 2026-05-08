@@ -74,8 +74,6 @@ namespace Controller.Scripts.Ammunition
         {
             if (_currentReloadTime < ReloadTime)
             {
-                float percentage = _currentReloadTime / ReloadTime * 100;
-                Debug.Log("Reloading, " + percentage + "% done.");
                 _currentReloadTime += Time.deltaTime;
             }
         }
@@ -87,13 +85,6 @@ namespace Controller.Scripts.Ammunition
             {
                 _currentAmmunitionTypeIndex = 0;
             }
-            Debug.Log(
-                "Switched to "
-                    + GetLoadedAmmoTypeName()
-                    + ", "
-                    + GetLoadedAmmoTypeCount()
-                    + " shots left!"
-            );
             Reload();
         }
 
@@ -104,13 +95,6 @@ namespace Controller.Scripts.Ammunition
             {
                 _currentAmmunitionTypeIndex = AmmunitionTypes.Count - 1;
             }
-            Debug.Log(
-                "Switched to "
-                    + GetLoadedAmmoTypeName()
-                    + ", "
-                    + GetLoadedAmmoTypeCount()
-                    + " shots left!"
-            );
             Reload();
         }
 
@@ -123,13 +107,6 @@ namespace Controller.Scripts.Ammunition
             }
 
             _currentAmmunitionTypeIndex = index;
-            Debug.Log(
-                "Switched to "
-                    + GetLoadedAmmoTypeName()
-                    + ", "
-                    + GetLoadedAmmoTypeCount()
-                    + " shots left!"
-            );
             Reload();
         }
 
@@ -166,7 +143,6 @@ namespace Controller.Scripts.Ammunition
 
             Quaternion rotation = Quaternion.LookRotation(fireDirection.normalized);
             Instantiate(projectile, SpawnPoint.transform.position, rotation);
-            Debug.LogWarning("Fired " + ammunitionType.name + "!");
         }
 
         public AmmunitionType GetLoadedAmmoType()
