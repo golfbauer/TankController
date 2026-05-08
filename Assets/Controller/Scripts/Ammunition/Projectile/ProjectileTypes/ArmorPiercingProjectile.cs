@@ -1,4 +1,4 @@
-﻿using Controller.Scripts.ImpactCollision.Services;
+﻿using Controller.Scripts.ImpactCollision;
 using UnityEngine;
 
 namespace Controller.Scripts.Ammunition.Projectile.ProjectileTypes

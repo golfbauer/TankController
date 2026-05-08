@@ -1,0 +1,28 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+namespace Controller.Scripts.Turret
+{
+    public class Turret : MonoBehaviour
+    {
+        // Turret
+        // Mesh
+        public Mesh turretMesh;
+        public List<Material> turretMaterials;
+
+        // Collider
+        public List<Mesh> colliderMeshes;
+
+        public bool useBoxCollider;
+        public PhysicsMaterial physicsMaterial;
+
+        public bool boxColliderChangeManually;
+        public Vector3 boxColliderSize;
+        public Vector3 boxColliderCenter;
+
+        // Manager
+        public bool useAmmunitionManager = true;
+        public bool useRotationManager = true;
+        public bool useCollisionManager = true;
+    }
+}

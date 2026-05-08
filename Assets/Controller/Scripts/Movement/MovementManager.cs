@@ -17,8 +17,8 @@ namespace Controller.Scripts.Movement
 
         public float turningDrag = 50;
         public float minTurningDrag = 20;
-        public float breakDrag = 100;
-        public float breakDecelerationRate = 10;
+        public float brakeDrag = 100;
+        public float brakeDecelerationRate = 10;
         public float rollingDrag = 20;
 
         public float maxForwardSpeed = 4;
@@ -32,7 +32,7 @@ namespace Controller.Scripts.Movement
 
         private MovementInputManager _movementInputManager;
         private Rigidbody _rigidbody;
-        private bool _breakTank;
+        private bool _brakeTank;
 
         private float _actualSpeed;
         private float _leftTrackSpeed;
@@ -61,6 +61,9 @@ namespace Controller.Scripts.Movement
                     _movementInputManager = gameObject.AddComponent<KeyboardInputMovementManager>();
                     break;
 
+                // MovementInputType.Joystick is declared in the enum but not yet implemented;
+                // selecting it in the inspector will throw at runtime. Add the case branch
+                // when joystick/gamepad support lands.
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -72,9 +75,9 @@ namespace Controller.Scripts.Movement
         {
             _movementInputManager.MovementInput();
 
-            if (_breakTank)
+            if (_brakeTank)
             {
-                ApplyBreak();
+                ApplyBrake();
                 return;
             }
 
@@ -100,30 +103,30 @@ namespace Controller.Scripts.Movement
 
         private void FixedUpdate()
         {
-            _actualSpeed = _rigidbody.velocity.magnitude;
+            _actualSpeed = _rigidbody.linearVelocity.magnitude;
         }
 
-        public void ToggleBreak()
+        public void ToggleBrake()
         {
-            _breakTank = !_breakTank;
+            _brakeTank = !_brakeTank;
         }
 
-        public void ApplyBreak()
+        public void ApplyBrake()
         {
             _leftTrackSpeed = Mathf.Max(
                 0,
-                _leftTrackSpeed - breakDecelerationRate * Time.deltaTime
+                _leftTrackSpeed - brakeDecelerationRate * Time.deltaTime
             );
             _rightTrackSpeed = Mathf.Max(
                 0,
-                _rightTrackSpeed - breakDecelerationRate * Time.deltaTime
+                _rightTrackSpeed - brakeDecelerationRate * Time.deltaTime
             );
 
             _leftTorque = 0;
             _rightTorque = 0;
 
-            _leftDrag = breakDrag;
-            _rightDrag = breakDrag;
+            _leftDrag = brakeDrag;
+            _rightDrag = brakeDrag;
         }
 
         private void PivotTurn()

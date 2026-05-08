@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Controller.Scripts.ImpactCollision.Services;
+using Controller.Scripts.ImpactCollision;
 using UnityEngine;
 
 namespace Controller.Scripts.ImpactCollision
@@ -22,6 +22,11 @@ namespace Controller.Scripts.ImpactCollision
         public float colorThicknessModifier = 1.0f;
         public bool showArmorSettingSection;
 
+        // TODO(refactor 3.2): Replace Parallel.ForEach with a serial foreach. Three issues:
+        //   1. `matchingArmorSection = armorSection` is an unsynchronized cross-thread write — race.
+        //   2. armorSections is small; Parallel dispatch overhead exceeds the work.
+        //   3. `impactPoint = localImpactPoint, tolerance = tolerance` look like named args
+        //      but are assignment expressions — the second one needlessly rewrites the field on every call.
         public ArmorSection HandleImpact(Vector3 impactPoint, Transform transform)
         {
             ArmorSection matchingArmorSection = null;

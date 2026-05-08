@@ -1,0 +1,18 @@
+{
+    "name": "Movement.Editor",
+    "references": [
+        "Movement",
+        "Utils",
+        "Utils.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

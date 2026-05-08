@@ -29,7 +29,7 @@ namespace Controller.Scripts.Wheels
 
         // Collider
         public float wheelColliderRadius = 0.3f;
-        public PhysicMaterial wheelColliderMaterial;
+        public PhysicsMaterial wheelColliderMaterial;
 
         // Relation
         public float wheelDistance = 0.1f;

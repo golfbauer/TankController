@@ -1,0 +1,41 @@
+﻿namespace Controller.Scripts.Tank
+{
+    public static class CreateTankMessages
+    {
+        public const string Hull = "Hull";
+        public const string Rigidbody = "Rigidbody";
+        public const string Collider = "Collider";
+
+        public const string Component = "Component";
+        public const string Components = "Components";
+
+        public const string Mass = "Mass";
+        public const string PhysicsIterations = "Physics Iterations";
+        public const string CenterOfMass = "Center Of Mass";
+
+        public const string Mesh = "Mesh";
+        public const string Material = "Material";
+
+        public const string UseBoxCollider = "Use Box Collider";
+        public const string MeshCollider = "Mesh Collider";
+        public const string ColliderCenter = "Collider Center";
+        public const string ColliderSize = "Collider Size";
+
+        public const string Create = "Create";
+
+        public const string TankManager = "Tank Manager";
+        public const string UseCameraManager = "Use Camera Manager";
+        public const string UseCollisionManager = "Use Collision Manager";
+        public const string UseMovementManager = "Use Movement Manager";
+    }
+
+    public enum ComponentType
+    {
+        SupportWheel,
+        DriveWheel,
+        SuspensionWheel,
+        RearWheel,
+        Chain,
+        Turret
+    }
+}

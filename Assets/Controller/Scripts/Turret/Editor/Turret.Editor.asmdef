@@ -1,0 +1,21 @@
+{
+    "name": "Turret.Editor",
+    "references": [
+        "Turret",
+        "Utils",
+        "Utils.Editor",
+        "ImpactCollision",
+        "Ammunition",
+        "Unity.VisualScripting.Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
