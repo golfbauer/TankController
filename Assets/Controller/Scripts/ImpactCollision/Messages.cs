@@ -1,4 +1,4 @@
-﻿namespace Controller.Scripts.ImpactCollision.Services
+﻿namespace Controller.Scripts.ImpactCollision
 {
     public static class CollisionMessages
     {

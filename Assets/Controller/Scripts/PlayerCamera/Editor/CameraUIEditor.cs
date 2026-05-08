@@ -3,7 +3,7 @@ using Controller.Scripts.Managers.PlayerCamera;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup;
-using Controller.Scripts.PlayerCamera.Services;
+using Controller.Scripts.PlayerCamera;
 using Controller.Scripts.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;

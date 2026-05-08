@@ -1,4 +1,4 @@
-﻿namespace Controller.Scripts.Tank.Services
+﻿namespace Controller.Scripts.Tank
 {
     public static class CreateTankMessages
     {

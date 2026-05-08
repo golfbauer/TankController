@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Controller.Scripts.ImpactCollision.Services
+namespace Controller.Scripts.ImpactCollision
 {
     [Serializable]
     public class ArmorSection

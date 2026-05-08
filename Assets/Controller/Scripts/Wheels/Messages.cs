@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Wheels.Services
+namespace Controller.Scripts.Wheels
 {
     public static class WheelMessages
     {

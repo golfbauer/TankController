@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Controller.Scripts.Ammunition.Services;
+using Controller.Scripts.Ammunition;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;

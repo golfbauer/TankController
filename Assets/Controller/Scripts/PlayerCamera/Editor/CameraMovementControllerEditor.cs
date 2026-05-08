@@ -1,5 +1,5 @@
 ﻿using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
-using Controller.Scripts.PlayerCamera.Services;
+using Controller.Scripts.PlayerCamera;
 using Controller.Scripts.Utils;
 using UnityEditor;
 

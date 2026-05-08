@@ -1,4 +1,4 @@
-﻿namespace Controller.Scripts.PlayerCamera.Services
+﻿namespace Controller.Scripts.PlayerCamera
 {
     public enum CameraType
     {

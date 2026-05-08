@@ -1,7 +1,7 @@
 ﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI;
 using Controller.Scripts.PlayerCamera;
 using UnityEngine;
-using CameraType = Controller.Scripts.PlayerCamera.Services.CameraType;
+using CameraType = Controller.Scripts.PlayerCamera.CameraType;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
 {

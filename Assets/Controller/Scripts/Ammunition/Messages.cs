@@ -1,4 +1,4 @@
-﻿namespace Controller.Scripts.Ammunition.Services
+﻿namespace Controller.Scripts.Ammunition
 {
     public static class AmmunitionMessages
     {

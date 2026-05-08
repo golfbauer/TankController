@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements;
-using Controller.Scripts.PlayerCamera.Services;
+using Controller.Scripts.PlayerCamera;
 using UnityEngine;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups

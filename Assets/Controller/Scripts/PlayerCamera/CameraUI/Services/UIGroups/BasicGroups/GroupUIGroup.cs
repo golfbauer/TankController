@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Controller.Scripts.PlayerCamera.Services;
+using Controller.Scripts.PlayerCamera;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup
 {

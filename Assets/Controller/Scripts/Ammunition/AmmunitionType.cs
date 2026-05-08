@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Ammunition.Services
+namespace Controller.Scripts.Ammunition
 {
     [CreateAssetMenu(
         fileName = "AmmunitionType",

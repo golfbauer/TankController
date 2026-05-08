@@ -1,4 +1,4 @@
-﻿using Controller.Scripts.PlayerCamera.Services;
+﻿using Controller.Scripts.PlayerCamera;
 using TMPro;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements

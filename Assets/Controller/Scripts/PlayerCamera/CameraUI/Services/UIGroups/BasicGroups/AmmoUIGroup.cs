@@ -1,6 +1,5 @@
 ﻿using Controller.Scripts.Ammunition;
-using Controller.Scripts.Ammunition.Services;
-using Controller.Scripts.PlayerCamera.Services;
+using Controller.Scripts.PlayerCamera;
 using UnityEngine.PlayerLoop;
 
 namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup

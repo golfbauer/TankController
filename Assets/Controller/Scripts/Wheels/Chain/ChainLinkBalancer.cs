@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller.Scripts.Wheels.Chain.Services
+namespace Controller.Scripts.Wheels.Chain
 {
     public class ChainLinkBalancer : MonoBehaviour
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Controller.Scripts.ImpactCollision.Services;
+using Controller.Scripts.ImpactCollision;
 using Controller.Scripts.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
