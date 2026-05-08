@@ -1,7 +1,5 @@
 ﻿using System;
 using Controller.Scripts.Ammunition;
-using Controller.Scripts.Editors.Turret;
-using Controller.Scripts.Editors.Turret.Gun;
 using Controller.Scripts.ImpactCollision;
 using Controller.Scripts.Managers.Turret;
 using Controller.Scripts.Utils;
@@ -9,9 +7,9 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-namespace Controller.Scripts.Turret.Editors.Base
+namespace Controller.Scripts.Turret.Editor
 {
-    [CustomEditor(typeof(Scripts.Editors.Turret.Base.Turret))]
+    [CustomEditor(typeof(Turret))]
     [CanEditMultipleObjects]
     public class TurretEditor : TankComponentEditor
     {
@@ -57,7 +55,7 @@ namespace Controller.Scripts.Turret.Editors.Base
 
         private void Initialize()
         {
-            transform = ((Scripts.Editors.Turret.Base.Turret)target).gameObject.transform;
+            transform = ((Turret)target).gameObject.transform;
             LayerUtils.SetLayer(transform.gameObject, LayerUtils.HullLayer);
 
             if (!transform.GetComponent<AmmunitionManager>() && _useAmmunitionManager.boolValue)

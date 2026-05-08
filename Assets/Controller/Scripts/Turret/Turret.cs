@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Controller.Scripts.Editors.Turret.Base
+namespace Controller.Scripts.Turret
 {
     public class Turret : MonoBehaviour
     {
