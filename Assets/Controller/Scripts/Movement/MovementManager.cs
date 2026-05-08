@@ -61,6 +61,9 @@ namespace Controller.Scripts.Movement
                     _movementInputManager = gameObject.AddComponent<KeyboardInputMovementManager>();
                     break;
 
+                // MovementInputType.Joystick is declared in the enum but not yet implemented;
+                // selecting it in the inspector will throw at runtime. Add the case branch
+                // when joystick/gamepad support lands.
                 default:
                     throw new ArgumentOutOfRangeException();
             }

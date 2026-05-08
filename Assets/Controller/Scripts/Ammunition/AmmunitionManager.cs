@@ -51,6 +51,10 @@ namespace Controller.Scripts.Ammunition
             SwitchToPreviousAction.performed += _onSwitchPrev;
             FireAction.performed += _onFire;
 
+            // TODO(refactor 3.4.a): Replace this per-slot InputAction rebuild with a single
+            // InputActionMap, or one action bound to `<Keyboard>/#(0-9)` that reads the digit
+            // from the callback context. Currently allocates N actions on every OnEnable and
+            // disposes them on OnDisable.
             for (int i = 0; i < AmmunitionTypes.Count; i++)
             {
                 string binding = $"<Keyboard>/{i}";
