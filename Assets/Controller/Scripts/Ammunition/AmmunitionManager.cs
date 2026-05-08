@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Controller.Scripts.Ammunition;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,6 +20,10 @@ namespace Controller.Scripts.Ammunition
         private int _currentAmmunitionTypeIndex;
         private float _currentReloadTime;
 
+        private Action<InputAction.CallbackContext> _onSwitchNext;
+        private Action<InputAction.CallbackContext> _onSwitchPrev;
+        private Action<InputAction.CallbackContext> _onFire;
+
         public delegate void ReloadAction(AmmunitionType type, float reloadTime);
         public event ReloadAction OnReload;
 
@@ -38,9 +43,13 @@ namespace Controller.Scripts.Ammunition
             SwitchToPreviousAction.Enable();
             FireAction.Enable();
 
-            SwitchToNextAction.performed += _ => SwitchToNext();
-            SwitchToPreviousAction.performed += _ => SwitchToPrevious();
-            FireAction.performed += _ => CheckFire();
+            _onSwitchNext = _ => SwitchToNext();
+            _onSwitchPrev = _ => SwitchToPrevious();
+            _onFire = _ => CheckFire();
+
+            SwitchToNextAction.performed += _onSwitchNext;
+            SwitchToPreviousAction.performed += _onSwitchPrev;
+            FireAction.performed += _onFire;
 
             for (int i = 0; i < AmmunitionTypes.Count; i++)
             {
@@ -59,9 +68,9 @@ namespace Controller.Scripts.Ammunition
             SwitchToPreviousAction.Disable();
             FireAction.Disable();
 
-            SwitchToNextAction.performed -= _ => SwitchToNext();
-            SwitchToPreviousAction.performed -= _ => SwitchToPrevious();
-            FireAction.performed -= _ => CheckFire();
+            SwitchToNextAction.performed -= _onSwitchNext;
+            SwitchToPreviousAction.performed -= _onSwitchPrev;
+            FireAction.performed -= _onFire;
 
             foreach (var action in _numberKeyActions)
             {
