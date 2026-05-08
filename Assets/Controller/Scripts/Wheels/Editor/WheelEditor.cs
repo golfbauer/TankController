@@ -1,5 +1,5 @@
 ﻿using Controller.Scripts.Utils;
-using Controller.Scripts.Wheels.Services;
+using Controller.Scripts.Wheels;
 using UnityEngine;
 
 namespace Controller.Scripts.Wheels

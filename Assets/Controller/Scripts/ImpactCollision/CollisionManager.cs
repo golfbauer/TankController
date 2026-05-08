@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Controller.Scripts.ImpactCollision.Services;
+using Controller.Scripts.ImpactCollision;
 using UnityEngine;
 
 namespace Controller.Scripts.ImpactCollision

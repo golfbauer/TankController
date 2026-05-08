@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Controller.Scripts.Utils;
-using Controller.Scripts.Wheels.Chain.Services;
-using Controller.Scripts.Wheels.Services;
+using Controller.Scripts.Wheels.Chain;
+using Controller.Scripts.Wheels;
 using UnityEditor;
 using UnityEngine;
 

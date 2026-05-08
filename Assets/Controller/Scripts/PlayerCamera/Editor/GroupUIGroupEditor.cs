@@ -1,14 +1,12 @@
 ﻿using System;
-using Controller.Scripts.Managers.PlayerCamera;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup;
-using Controller.Scripts.PlayerCamera.Services;
+using Controller.Scripts.PlayerCamera;
+using Controller.Scripts.PlayerCamera.UI.Groups;
 using Controller.Scripts.Utils;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-namespace Controller.Scripts.Editors.PlayerCamera.CameraUI.UIGroupEditor
+namespace Controller.Scripts.PlayerCamera.Editor
 {
     [CustomEditor(typeof(GroupUIGroup), true)]
     [CanEditMultipleObjects]

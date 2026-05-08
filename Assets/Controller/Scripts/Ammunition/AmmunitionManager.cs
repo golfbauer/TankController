@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Controller.Scripts.Ammunition.Services;
+using Controller.Scripts.Ammunition;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
