@@ -26,8 +26,8 @@ namespace Controller.Scripts.Movement.PlayerInput
                         ? 1
                         : 0;
 
-            if (Input.GetKey(InputUtils.Break))
-                MovementManager.ToggleBreak();
+            if (Input.GetKey(InputUtils.Brake))
+                MovementManager.ToggleBrake();
         }
     }
 }

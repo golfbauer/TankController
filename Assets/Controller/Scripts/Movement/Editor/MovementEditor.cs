@@ -19,8 +19,8 @@ namespace Controller.Scripts.Movement
 
         private SerializedProperty _turningDrag;
         private SerializedProperty _minTurningDrag;
-        private SerializedProperty _breakDrag;
-        private SerializedProperty _breakDecelerationRate;
+        private SerializedProperty _brakeDrag;
+        private SerializedProperty _brakeDecelerationRate;
         private SerializedProperty _rollingDrag;
 
         private SerializedProperty _maxForwardSpeed;
@@ -45,8 +45,8 @@ namespace Controller.Scripts.Movement
 
             _turningDrag = serializedObject.FindProperty("turningDrag");
             _minTurningDrag = serializedObject.FindProperty("minTurningDrag");
-            _breakDrag = serializedObject.FindProperty("breakDrag");
-            _breakDecelerationRate = serializedObject.FindProperty("breakDecelerationRate");
+            _brakeDrag = serializedObject.FindProperty("brakeDrag");
+            _brakeDecelerationRate = serializedObject.FindProperty("brakeDecelerationRate");
             _rollingDrag = serializedObject.FindProperty("rollingDrag");
 
             _maxForwardSpeed = serializedObject.FindProperty("maxForwardSpeed");
@@ -76,10 +76,10 @@ namespace Controller.Scripts.Movement
             }
 
             EditorGUILayout.Space();
-            GUIUtils.HeaderGUI("Break");
+            GUIUtils.HeaderGUI("Brake");
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(_breakDrag);
-            EditorGUILayout.PropertyField(_breakDecelerationRate);
+            EditorGUILayout.PropertyField(_brakeDrag);
+            EditorGUILayout.PropertyField(_brakeDecelerationRate);
             EditorGUI.indentLevel--;
 
             EditorGUILayout.Space();

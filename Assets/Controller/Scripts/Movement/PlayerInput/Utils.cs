@@ -9,7 +9,7 @@ namespace Controller.Scripts.Movement.PlayerInput
         public static readonly KeyCode Left = KeyCode.A;
         public static readonly KeyCode Right = KeyCode.D;
 
-        public static readonly KeyCode Break = KeyCode.Space;
+        public static readonly KeyCode Brake = KeyCode.Space;
     }
 
     public enum MovementInputType
