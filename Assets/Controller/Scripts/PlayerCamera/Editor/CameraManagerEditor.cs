@@ -1,5 +1,5 @@
 ﻿using System;
-using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
+using Controller.Scripts.PlayerCamera.Controllers;
 using Controller.Scripts.PlayerCamera.UI;
 using Controller.Scripts.PlayerCamera;
 using Controller.Scripts.Utils;

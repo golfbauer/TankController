@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
+using Controller.Scripts.PlayerCamera.Controllers;
 using UnityEngine;
 
 namespace Controller.Scripts.PlayerCamera

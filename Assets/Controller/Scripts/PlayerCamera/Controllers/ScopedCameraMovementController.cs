@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using CameraType = Controller.Scripts.PlayerCamera.CameraType;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
+namespace Controller.Scripts.PlayerCamera.Controllers
 {
     public class ScopedCameraMovementController : CameraMovementController
     {

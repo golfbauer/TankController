@@ -3,7 +3,7 @@ using Controller.Scripts.PlayerCamera;
 using UnityEngine;
 using CameraType = Controller.Scripts.PlayerCamera.CameraType;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller
+namespace Controller.Scripts.PlayerCamera.Controllers
 {
     /// <summary>
     /// I recommend taking a look at the ThirdPersonCameraMovementController.cs and the ScopedCameraMovementController.cs
