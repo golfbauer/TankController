@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Controller.Scripts.PlayerCamera;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup
+namespace Controller.Scripts.PlayerCamera.UI.Groups
 {
     public class GroupUIGroup : UIGroup
     {

@@ -2,7 +2,7 @@
 using Controller.Scripts.PlayerCamera;
 using UnityEngine.PlayerLoop;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup
+namespace Controller.Scripts.PlayerCamera.UI.Groups
 {
     public class AmmoUIGroup : UIGroup
     {

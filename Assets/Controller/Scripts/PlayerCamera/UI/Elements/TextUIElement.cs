@@ -1,7 +1,7 @@
 ﻿using Controller.Scripts.PlayerCamera;
 using TMPro;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements
+namespace Controller.Scripts.PlayerCamera.UI.Elements
 {
     public class TextUIElement : UIElement
     {

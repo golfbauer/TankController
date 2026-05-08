@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements;
+using Controller.Scripts.PlayerCamera.UI.Elements;
 using Controller.Scripts.PlayerCamera;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups
+namespace Controller.Scripts.PlayerCamera.UI.Groups
 {
     public abstract class UIGroup : MonoBehaviour
     {

@@ -1,16 +1,13 @@
 ﻿using System;
-using Controller.Scripts.Managers.PlayerCamera;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.AmmoElements;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups;
 using Controller.Scripts.PlayerCamera;
+using Controller.Scripts.PlayerCamera.UI.Elements;
+using Controller.Scripts.PlayerCamera.UI.Groups;
 using Controller.Scripts.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Controller.Scripts.Editors.PlayerCamera.CameraUI.UIGroupEditor
+namespace Controller.Scripts.PlayerCamera.Editor
 {
     [CustomEditor(typeof(UIGroup), true)]
     [CanEditMultipleObjects]

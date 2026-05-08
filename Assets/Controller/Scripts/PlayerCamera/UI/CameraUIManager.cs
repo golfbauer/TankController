@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups;
+using Controller.Scripts.PlayerCamera.UI.Groups;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI
+namespace Controller.Scripts.PlayerCamera.UI
 {
     [Serializable]
     public class CameraUIManager : MonoBehaviour

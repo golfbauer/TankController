@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Controller.Scripts.Ammunition;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup;
+using Controller.Scripts.PlayerCamera.UI.Elements;
+using Controller.Scripts.PlayerCamera.UI.Groups;
 using Controller.Scripts.PlayerCamera;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.AmmoElements
+namespace Controller.Scripts.PlayerCamera.UI.Elements
 {
     public class AmmoImageUIElement : ImageUIElement
     {

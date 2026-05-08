@@ -3,7 +3,7 @@ using Controller.Scripts.PlayerCamera;
 using Controller.Scripts.Utils;
 using UnityEditor;
 
-namespace Controller.Scripts.Editors.PlayerCamera.Controller
+namespace Controller.Scripts.PlayerCamera.Editor
 {
     [CustomEditor(typeof(CameraMovementController), true)]
     [CanEditMultipleObjects]

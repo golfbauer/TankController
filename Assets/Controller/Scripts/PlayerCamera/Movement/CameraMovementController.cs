@@ -1,4 +1,4 @@
-﻿using Controller.Scripts.Managers.PlayerCamera.CameraUI;
+﻿using Controller.Scripts.PlayerCamera.UI;
 using Controller.Scripts.PlayerCamera;
 using UnityEngine;
 using CameraType = Controller.Scripts.PlayerCamera.CameraType;

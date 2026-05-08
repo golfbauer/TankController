@@ -1,13 +1,13 @@
 ﻿using System;
 using Controller.Scripts.Managers.PlayerCamera.CameraMovement.Controller;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI;
+using Controller.Scripts.PlayerCamera.UI;
 using Controller.Scripts.PlayerCamera;
 using Controller.Scripts.Utils;
 using UnityEditor;
 using UnityEngine;
 using CameraType = Controller.Scripts.PlayerCamera.CameraType;
 
-namespace Controller.Scripts.PlayerCamera
+namespace Controller.Scripts.PlayerCamera.Editor
 {
     [CustomEditor(typeof(CameraManager), true)]
     [CanEditMultipleObjects]

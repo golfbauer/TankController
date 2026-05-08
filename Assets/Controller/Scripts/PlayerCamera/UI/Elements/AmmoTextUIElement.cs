@@ -1,9 +1,9 @@
 ﻿using Controller.Scripts.Ammunition;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements;
-using Controller.Scripts.Managers.PlayerCamera.CameraUI.UIGroups.BasicUIGroup;
+using Controller.Scripts.PlayerCamera.UI.Elements;
+using Controller.Scripts.PlayerCamera.UI.Groups;
 using Controller.Scripts.PlayerCamera;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.AmmoElements
+namespace Controller.Scripts.PlayerCamera.UI.Elements
 {
     public class AmmoTextUIElement : TextUIElement
     {

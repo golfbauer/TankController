@@ -1,7 +1,7 @@
 ﻿using Controller.Scripts.PlayerCamera;
 using UnityEngine;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements
+namespace Controller.Scripts.PlayerCamera.UI.Elements
 {
     public abstract class UIElement : MonoBehaviour
     {

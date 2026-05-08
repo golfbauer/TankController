@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Controller.Scripts.Managers.PlayerCamera.CameraUI.UIElements.BasicElements
+namespace Controller.Scripts.PlayerCamera.UI.Elements
 {
     public class ImageUIElement : UIElement
     {
