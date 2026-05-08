@@ -1,0 +1,53 @@
+* text=auto eol=lf
+
+# Source / config — force LF
+*.cs        text eol=lf
+*.shader    text eol=lf
+*.cginc     text eol=lf
+*.hlsl      text eol=lf
+*.compute   text eol=lf
+*.txt       text eol=lf
+*.md        text eol=lf
+*.json      text eol=lf
+*.xml       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.rsp       text eol=lf
+
+# Unity YAML — union merge reduces conflicts on serialized assets
+*.meta             merge=union eol=lf text
+*.unity            merge=union eol=lf text
+*.prefab           merge=union eol=lf text
+*.asset            merge=union eol=lf text
+*.controller       merge=union eol=lf text
+*.anim             merge=union eol=lf text
+*.mat              merge=union eol=lf text
+*.physicMaterial   merge=union eol=lf text
+*.physicsMaterial  merge=union eol=lf text
+*.lighting         merge=union eol=lf text
+*.asmdef           text eol=lf
+*.asmref           text eol=lf
+*.inputactions     text eol=lf
+
+# Binaries
+*.png          binary
+*.jpg          binary
+*.jpeg         binary
+*.gif          binary
+*.psd          binary
+*.fbx          binary
+*.obj          binary
+*.blend        binary
+*.wav          binary
+*.mp3          binary
+*.ogg          binary
+*.tga          binary
+*.tif          binary
+*.tiff         binary
+*.bmp          binary
+*.exr          binary
+*.hdr          binary
+*.dll          binary
+*.so           binary
+*.dylib        binary
+*.unitypackage binary
