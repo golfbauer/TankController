@@ -129,7 +129,7 @@ namespace Controller.Scripts.Utils
                 meshCollider.convex = true;
 
                 if (colliderMaterial != null)
-                    meshCollider.material = colliderMaterial.objectReferenceValue as PhysicMaterial;
+                    meshCollider.material = colliderMaterial.objectReferenceValue as PhysicsMaterial;
             }
         }
 
@@ -183,7 +183,7 @@ namespace Controller.Scripts.Utils
         )
         {
             var boxCollider = UpdateBoxCollider(thisTransform, colliderCenter, colliderSize);
-            boxCollider.material = colliderMaterial.objectReferenceValue as PhysicMaterial;
+            boxCollider.material = colliderMaterial.objectReferenceValue as PhysicsMaterial;
 
             return boxCollider;
         }
@@ -224,7 +224,7 @@ namespace Controller.Scripts.Utils
         )
         {
             var sphereCollider = UpdateSphereCollider(thisTransform, radius);
-            sphereCollider.material = material.objectReferenceValue as PhysicMaterial;
+            sphereCollider.material = material.objectReferenceValue as PhysicsMaterial;
 
             return sphereCollider;
         }
@@ -269,7 +269,7 @@ namespace Controller.Scripts.Utils
         {
             var rigidbody = UpdateRigidbody(thisTransform, hullMass, isKinematic, useGravity);
 
-            rigidbody.angularDrag = angularDrag.floatValue;
+            rigidbody.angularDamping = angularDrag.floatValue;
 
             return rigidbody;
         }
